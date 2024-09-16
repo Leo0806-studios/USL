@@ -1,0 +1,125 @@
+Uprise Scripting Language
+defs
+
+custom operators
+operator overloading
+method overloading
+inlinse asm , c++
+compiles to c++
+custom keywords (as seperate compile unit. gets integrated inot dnmamic link compiler)
+multipass to prefent the need for forward declaration
+
+
+source files ---> lexer--->ast--> optimisation-->translation to c++---> paste into cpp file---> call cpp compiler - produce output
+multiple debugoptions change generated c++ code
+engine specific functions like get_obj , etc...
+
+inbuild keywords
+_internal
+class
+namepace
+TYPE
+TYPE*
+operator
+operator(DEF)
+template
+null
+async
+sync
+unsigned
+
+primitive types
+byte
+short
+int
+long
+long long
+float
+double
+bool
+char
+hash
+string
+uuid
+
+priimitives 
+
+byte is byte(8bit, whole numbr)
+
+compleatly custom operators.
+syntax
+
+operator(DEF) #(parameter p,...){
+// Default behaviour...
+}
+
+
+operator overloading
+syntax
+
+operator() #(parameter p){
+//return hash of p
+}
+
+
+
+typedefs
+synax
+
+TYPE  typename   replacer;
+
+custom keywords
+syntax
+
+
+keyword(DEF) name{
+//keyword def
+}
+
+
+pointer typedefs
+syntax
+TYPE* name replacer
+
+vars of type name can only be pointers to type replacer
+
+generics
+syntax
+
+[GENERIC(T)]
+void AddComponet(T _Component){
+_internal Add_Component<T>(_Component);
+}
+
+template
+synax
+
+template<class T>
+void AddComponent(T _Component){
+_internal Add_Component(_Component);
+}
+difference between template and generics;
+generics use rtti to function, templates are compile time . generics are more flexible but slower on runtime, templates are stricter and sower to compile but faster during runtime.
+
+atomic Operatins
+methods can be declared as atomic to guarantee that two of them cant be executed at the same time
+syntax
+[ATOMIC]
+//method declaration
+
+
+atomic vars
+vars can be declared as atomic to guarantee threadsafety for that var at a considerable performance cost
+syntax
+[ATOMIC(VAR)] //Var declaration;
+
+Macros
+preprocessor macros
+syntax
+#MACRO macro "This is a macro"
+
+the text macro will be replaced by "This is a macro"
+
+compiler macros
+forces the compiler to generate a specific c++ sequenze at the specific position
+#C_MACRO macro std::cout<"this is a compiler macro";
