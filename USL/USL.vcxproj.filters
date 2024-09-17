@@ -30,8 +30,64 @@
     <ClCompile Include="MODULES\POINTER\SMART_POINTER\SMART_POINTER.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MODULES\POINTER\SMART_PTR.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\_GLOBALS\STORAGE\GLOBAL_STORAGE.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL_TABLE.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL\SYMBOL.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\LEXER\LEXER.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\LEXER\TOKENS\TOKEN.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\_GLOBALS\ENUMS\GLOBAL_ENUMS.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\CONTAINERS\HASH_MAP\HASH_MAP.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\THREADING\THREADING\THREADING.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USLLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USLListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USLBaseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GLOBAL_MACROS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\USLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\USLLexer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\USLListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\USLBaseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

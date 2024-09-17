@@ -70,19 +70,16 @@ private:
 			// No need to shrink if length and capacity are the same
 			return;
 		}
-
-		// Allocate a new array with size exactly matching the current length
 		_T* tmp = new _T[length];
 
-		// Copy only the elements from 0 to length (not capacity)
+
 		rsize_t size = length * sizeof(_T);
 		memcpy(tmp, data, size);
 
-		// Delete the old array and assign the new one
 		delete[] data;
 		data = tmp;
 
-		// Update the capacity to match the length
+
 		capacity = length;
 	}
 	bool _Check_if_Fits() {
