@@ -1,0 +1,16 @@
+code generator output
+
+
+module imports
+header includes
+
+forward declaration of all classes and structs 
+metadata for all classes and structs
+
+rest of code
+
+after code are core functions
+handle of dll load
+init of dll
+setup of shared storage to preserve state between dll loads
+shutdown and unload of dll

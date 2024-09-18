@@ -52,6 +52,12 @@ public:
   virtual void enterVarDeclarationWithAtr(USLParser::VarDeclarationWithAtrContext * /*ctx*/) override { }
   virtual void exitVarDeclarationWithAtr(USLParser::VarDeclarationWithAtrContext * /*ctx*/) override { }
 
+  virtual void enterMemberAcces(USLParser::MemberAccesContext * /*ctx*/) override { }
+  virtual void exitMemberAcces(USLParser::MemberAccesContext * /*ctx*/) override { }
+
+  virtual void enterFuncCall(USLParser::FuncCallContext * /*ctx*/) override { }
+  virtual void exitFuncCall(USLParser::FuncCallContext * /*ctx*/) override { }
+
   virtual void enterParameterList(USLParser::ParameterListContext * /*ctx*/) override { }
   virtual void exitParameterList(USLParser::ParameterListContext * /*ctx*/) override { }
 
@@ -61,8 +67,11 @@ public:
   virtual void enterAssignment(USLParser::AssignmentContext * /*ctx*/) override { }
   virtual void exitAssignment(USLParser::AssignmentContext * /*ctx*/) override { }
 
-  virtual void enterTypeSpacifier(USLParser::TypeSpacifierContext * /*ctx*/) override { }
-  virtual void exitTypeSpacifier(USLParser::TypeSpacifierContext * /*ctx*/) override { }
+  virtual void enterTemplateDeclaration(USLParser::TemplateDeclarationContext * /*ctx*/) override { }
+  virtual void exitTemplateDeclaration(USLParser::TemplateDeclarationContext * /*ctx*/) override { }
+
+  virtual void enterTypeSpecifier(USLParser::TypeSpecifierContext * /*ctx*/) override { }
+  virtual void exitTypeSpecifier(USLParser::TypeSpecifierContext * /*ctx*/) override { }
 
   virtual void enterExpression(USLParser::ExpressionContext * /*ctx*/) override { }
   virtual void exitExpression(USLParser::ExpressionContext * /*ctx*/) override { }

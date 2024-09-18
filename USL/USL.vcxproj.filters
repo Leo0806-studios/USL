@@ -69,9 +69,25 @@
     <ClCompile Include="SRC\USLBaseListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MODULES\TRANSLATOR\REFLECTION\REFLECTION.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\TRANSLATOR\GENERICS\GENERIC_LIST.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\TRANSLATOR\VISITORS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\GLOBAL_STORAGE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MODULES\CODE_GENERATOR.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
+    <Text Include="_____DEFS\def.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLOBAL_MACROS.h">
@@ -89,5 +105,25 @@
     <ClInclude Include="HEADER\USLBaseListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MODULES\TRANSLATOR\BASE\CODE_TEMPLATES\TYPES_TEMPLATE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE_STUB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\GLOBAL_STORAGE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\src.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\src.asm">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

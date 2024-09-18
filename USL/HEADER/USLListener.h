@@ -50,6 +50,12 @@ public:
   virtual void enterVarDeclarationWithAtr(USLParser::VarDeclarationWithAtrContext *ctx) = 0;
   virtual void exitVarDeclarationWithAtr(USLParser::VarDeclarationWithAtrContext *ctx) = 0;
 
+  virtual void enterMemberAcces(USLParser::MemberAccesContext *ctx) = 0;
+  virtual void exitMemberAcces(USLParser::MemberAccesContext *ctx) = 0;
+
+  virtual void enterFuncCall(USLParser::FuncCallContext *ctx) = 0;
+  virtual void exitFuncCall(USLParser::FuncCallContext *ctx) = 0;
+
   virtual void enterParameterList(USLParser::ParameterListContext *ctx) = 0;
   virtual void exitParameterList(USLParser::ParameterListContext *ctx) = 0;
 
@@ -59,8 +65,11 @@ public:
   virtual void enterAssignment(USLParser::AssignmentContext *ctx) = 0;
   virtual void exitAssignment(USLParser::AssignmentContext *ctx) = 0;
 
-  virtual void enterTypeSpacifier(USLParser::TypeSpacifierContext *ctx) = 0;
-  virtual void exitTypeSpacifier(USLParser::TypeSpacifierContext *ctx) = 0;
+  virtual void enterTemplateDeclaration(USLParser::TemplateDeclarationContext *ctx) = 0;
+  virtual void exitTemplateDeclaration(USLParser::TemplateDeclarationContext *ctx) = 0;
+
+  virtual void enterTypeSpecifier(USLParser::TypeSpecifierContext *ctx) = 0;
+  virtual void exitTypeSpecifier(USLParser::TypeSpecifierContext *ctx) = 0;
 
   virtual void enterExpression(USLParser::ExpressionContext *ctx) = 0;
   virtual void exitExpression(USLParser::ExpressionContext *ctx) = 0;

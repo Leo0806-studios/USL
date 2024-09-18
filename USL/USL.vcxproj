@@ -108,13 +108,13 @@
       <EnableModules>true</EnableModules>
       <BuildStlModules>true</BuildStlModules>
       <ForcedIncludeFiles>$(ProjectDir)GLOBAL_MACROS.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\depend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\USL\MODULES;C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\depend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\leo08\source\repos\USL\depend;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>antlr4-runtime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>antlr4-runtime.lib;src.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,6 +134,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MODULES\CODE_GENERATOR.ixx" />
+    <ClCompile Include="MODULES\TRANSLATOR\GENERICS\GENERIC_LIST.ixx" />
+    <ClCompile Include="MODULES\TRANSLATOR\REFLECTION\REFLECTION.ixx" />
+    <ClCompile Include="MODULES\TRANSLATOR\VISITORS.cpp" />
+    <ClCompile Include="SRC\GLOBAL_STORAGE.cpp" />
     <ClCompile Include="SRC\USLBaseListener.cpp" />
     <ClCompile Include="SRC\USLListener.cpp" />
     <ClCompile Include="SRC\USLParser.cpp" />
@@ -155,13 +160,22 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
+    <Text Include="_____DEFS\def.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HEADER\GLOBAL_STORAGE.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
     <ClInclude Include="HEADER\USLListener.h" />
     <ClInclude Include="HEADER\USLLexer.h" />
     <ClInclude Include="HEADER\USLParser.h" />
     <ClInclude Include="GLOBAL_MACROS.h" />
+    <ClInclude Include="MODULES\TRANSLATOR\BASE\CODE_TEMPLATES\TYPES_TEMPLATE.h" />
+    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE.h" />
+    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE_STUB.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\src.asm" />
+    <None Include="SRC\src.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

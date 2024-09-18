@@ -23,6 +23,8 @@ DIV                     :'/';
 MOD                     :'%';
 HASH                    :'#';
 
+//dereff
+DEREF                   :'->';
 
 //operators Binary
 INCREMENT               :'++';
@@ -45,8 +47,8 @@ LARGER_EQ               :'>='|'=>';
 COMMA                   : ',';
 DOT                     : '.';
 SEMI                    :';';
-LS                      :'(';
-RS                      :')';
+//LS                      :'(';
+//RS                      :')';
 LC                      :'{';
 RC                      :'}';
 LA                      :'[';
@@ -91,6 +93,7 @@ statement                                           : customControlFlowDeclarati
                                                     |assignment
                                                     |expressionStatement
                                                     |block
+                                                    |funcCall
                                                     ;
                                                     
 customKeyDeclaration                                : CUSTOM_KEYWORD ID block;
@@ -98,39 +101,55 @@ customKeyDeclaration                                : CUSTOM_KEYWORD ID block;
 
 
 
-customOperatorDeclaration                           :typeSpacifier CUSTOM_OPERATOR ID block;
+customOperatorDeclaration                           :typeSpecifier CUSTOM_OPERATOR ID block;
 
 customControlFlowDeclaration                        : CUSTOM_FLOW_CONTROL ID block;
 
 namespaceDeclaration                                :NAMESPACE ID block;
 
-classDeclaration                                    :CLASS ID '{' classMember* '}';
+classDeclaration                                    :templateDeclaration? CLASS ID '{' classMember* '}';
 
 classMember                                         : varDeclaration
                                                     | functionDeclaration
                                                     ;
-functionDeclaration                                 : (ASYNC | SYNC )? typeSpacifier ID LS parameterList RS block;
-functionDeclarationWithAtr                          :attribute (ASYNC | SYNC )? typeSpacifier ID LS parameterList RS block;
+functionDeclaration                                 : (ASYNC | SYNC )? typeSpecifier ID '(' parameterList ')' block;
+functionDeclarationWithAtr                          :attribute (ASYNC | SYNC )? typeSpecifier ID '(' parameterList ')' block;
 
-varDeclaration                                      :(attribute)* typeSpacifier ID ('='expression)? ';';
-varDeclarationWithAtr                               :attribute typeSpacifier ID ('='expression)? ';';
+varDeclaration                                      :(attribute)* typeSpecifier ID ('='expression)? ';';
+varDeclarationWithAtr                               :attribute typeSpecifier ID ('='expression)? ';';
 
+memberAcces                                         :ID DOT ID
+                                                    |ID DEREF ID
+                                                    
+                                                    ;
+
+
+funcCall                                            :ID '('expression? ')'SEMI
+                                                    |memberAcces '('expression?')' SEMI
+                                                    ;
 
 parameterList                                       :parameter (COMMA parameter )*;
-parameter                                           : typeSpacifier ID;
 
-assignment                                          :ID ASSIGN expression SEMI;
+parameter                                           : typeSpecifier ID;
 
-typeSpacifier                                       : INBUILD_TYPE
+assignment                                          :(ID ASSIGN expression SEMI)
+                                                    |(expression ASSIGN expression SEMI)
+                                                    ;
+
+templateDeclaration                                 :TEMPLATE'<'CLASS TEMPLATE_PARAM (COMMA TEMPLATE_PARAM)* '>'
+                                                    ;
+
+typeSpecifier                                       : INBUILD_TYPE
                                                     |ID
-                                                    |TEMPLATE '<'CLASS typeSpacifier (COMMA (CLASS typeSpacifier))*'>'
+                                                    |TEMPLATE '<'CLASS typeSpecifier (COMMA (CLASS typeSpecifier))*'>'
                                                     ;
 
 expression                                          :primary
                                                     |expression (PLUS|MINUS|MULT|DIV|MOD) expression
-                                                    |ID LS (expression (COMMA expression)*)? RS
+                                                    |ID '(' (expression (COMMA expression)*)? ')'
                                                     |ID INCREMENT
                                                     |ID DECREMENT
+                                                    |memberAcces
                                                     ;
 
 primary                                             :INT
