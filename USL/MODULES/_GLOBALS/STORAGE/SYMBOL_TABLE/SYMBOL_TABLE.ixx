@@ -1,6 +1,54 @@
 export module SYMBOL_TABLE;
-
 import std;
+using String = std::string;
+
+class Var {
+
+};
+class Enum {
+
+};
+class Class;
+class Struct;
+class Function {
+    std::map<String, Struct> Structs;
+    std::map<std::string, Class> Classes;
+    std::map<std::string, Function> Functions;
+    std::map<String, Enum> Enums;
+    std::map<std::string, Var> Vars;
+};
+class Class {
+    std::map<String, Struct> Structs;
+    std::map<std::string, Class> Classes;
+    std::map<std::string, Function> Functions;
+    std::map<String, Enum> Enums;
+    std::map<std::string, Var> Vars;
+};
+class Struct {
+    std::map<String, Struct> Structs;
+    std::map<std::string, Class> Classes;
+    std::map<std::string, Function> Functions;
+    std::map<String, Enum> Enums;
+    std::map<std::string, Var> Vars;
+};
+class Namespace {
+    std::map<String, Struct> Structs;
+    std::map<std::string, Class> Classes;
+    std::map<std::string, Function> Functions;
+    std::map<String, Enum> Enums;
+    std::map<std::string, Var> Vars;
+};
+class Symbol {
+    enum active{NS,ST,FN,EM,VR} ActiveMember;
+    union Sym{
+        Namespace NS;
+        Struct ST;
+        Class CS;
+        Function FN;
+        Enum EM;
+        Var VR;
+    };
+};
 export namespace GLOBAL {
     class SymbolTable {
     public:
@@ -37,5 +85,10 @@ export namespace GLOBAL {
         std::unordered_set<std::string> classes;
         std::unordered_map<std::string, std::unordered_set<std::string>> classMembers;
         std::unordered_map<std::string, std::string> variableTypes;
+    };
+
+    class Symbol_Tabel {
+    private:
+        std::map<std::string, Symbol> Symbols;
     };
 }

@@ -140,6 +140,7 @@
     <ClCompile Include="MODULES\TRANSLATOR\VISITORS.cpp" />
     <ClCompile Include="SRC\GLOBAL_STORAGE.cpp" />
     <ClCompile Include="SRC\USLBaseListener.cpp" />
+    <ClCompile Include="SRC\USLBaseVisitor.cpp" />
     <ClCompile Include="SRC\USLListener.cpp" />
     <ClCompile Include="SRC\USLParser.cpp" />
     <ClCompile Include="SRC\USLLexer.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="MODULES\_GLOBALS\STORAGE\GLOBAL_STORAGE.ixx" />
     <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL\SYMBOL.ixx" />
     <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL_TABLE.ixx" />
+    <ClCompile Include="SRC\USLVisitor.cpp" />
     <ClCompile Include="USL.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,16 +167,21 @@
   <ItemGroup>
     <ClInclude Include="HEADER\GLOBAL_STORAGE.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
+    <ClInclude Include="HEADER\USLBaseVisitor.h" />
     <ClInclude Include="HEADER\USLListener.h" />
     <ClInclude Include="HEADER\USLLexer.h" />
     <ClInclude Include="HEADER\USLParser.h" />
     <ClInclude Include="GLOBAL_MACROS.h" />
+    <ClInclude Include="HEADER\USLVisitor.h" />
     <ClInclude Include="MODULES\TRANSLATOR\BASE\CODE_TEMPLATES\TYPES_TEMPLATE.h" />
     <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE.h" />
     <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE_STUB.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\src.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm" />
     <None Include="SRC\src.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

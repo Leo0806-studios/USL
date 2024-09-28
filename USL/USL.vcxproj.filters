@@ -84,6 +84,12 @@
     <ClCompile Include="MODULES\CODE_GENERATOR.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\USLBaseVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\USLVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -117,12 +123,27 @@
     <ClInclude Include="HEADER\GLOBAL_STORAGE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HEADER\USLBaseVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\USLVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\src.asm">
       <Filter>Source Files</Filter>
     </None>
     <None Include="SRC\src.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
