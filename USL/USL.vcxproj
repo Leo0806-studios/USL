@@ -179,9 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\src.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\THREADS\THREAD_POOL.asm" />
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\PROPS_SIG.asm" />
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA.asm" />
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm" />
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\VAR_sIG.asm" />
     <None Include="SRC\src.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
