@@ -165,6 +165,7 @@
     <Text Include="_____DEFS\def.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
     <ClInclude Include="HEADER\GLOBAL_STORAGE.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
     <ClInclude Include="HEADER\USLBaseVisitor.h" />

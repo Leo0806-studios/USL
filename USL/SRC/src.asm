@@ -9,7 +9,9 @@ section .text
 
 
 JUMPTO:
-    jmp rcx              
+	 
+
+    jmp rdx              
     ret
 
 

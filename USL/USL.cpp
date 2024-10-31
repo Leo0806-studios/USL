@@ -11,6 +11,7 @@ import SYMBOL;
 #include "USLBaseListener.h"
 #include "USLBaseVisitor.h"
 #include "HEADER/GLOBAL_STORAGE.h"
+#include "HEADER/BENCHMARK/BENCHMARK.h"
 import std;
 struct MyStruct {
     int a;
@@ -349,7 +350,13 @@ private:
 
 
 
-
+class TEST_CALL {
+public:
+    int i;
+    void R() {
+        std::cout << "i is: " << i << "\n";
+    }
+};
 
 #pragma region ee
 
@@ -391,12 +398,38 @@ static eee ptr = &Reflection::Type_TypeName::t;
 //static eee ptr = &Reflection::Type_TypeName::t;
 //static void* ptr =  memvunc(&Reflection::Type_TypeName::t);
 typedef void(*r)();
-extern "C" void JUMPTO(void* address);
+extern "C" void JUMPTO(void* address,void* obj_base);
 extern "C" void TEST();
 #pragma endregion
 
+//template <class T>
+//class Ref_Wrapper {
+//private:
+//    T* Obj;
+//        Ref_Wrapper(int i) {
+//            Obj = new T();
+//    }
+//public:
+//
+//
+//   Ref_Wrapper<T> operator new(Ref_Wrapper<T>& other) {
+//       return Ref_Wrapper<T>(1);
+//
+//    }
+//};
+void TEST_BM() {
+    std::cout << "testing with globals\n";
+    int i = 1233;
+    i = i * 123;
+    i = sqrt(i);
+}
 int main(int argc, char** argv)
 {
+    t rrr;
+
+    BENCHMARK_CM(t, et, ddd(), 1);
+    BENCHMARK_G(eeeeer, TEST_BM(), 1);
+    
 #pragma region MyRegion 
     //constexpr  std::uintptr_t funcPtrAsIntww= functionPointerToInt(Reflection::Type_TypeName::t);
    // std::cout << (unsigned long long)ptr<<"\n";
@@ -414,7 +447,21 @@ int main(int argc, char** argv)
 
 
     TEST();
-    JUMPTO((void*)hell.aslong);
+    TEST_CALL tttttt;
+  /*  Ref_Wrapper<TEST_CALL> refwrp();*/
+
+    struct ttcon {
+    public:
+        typedef void(TEST_CALL::* e)(void);
+        union {
+            e prt;
+            unsigned long long aslong;
+        };
+    };
+    ttcon con;
+    con.prt = &TEST_CALL::R;
+    tttttt.i = 80085;
+    JUMPTO((void*)& tttttt, (void*)con.aslong);
 #pragma endregion
     char buffer[MAX_PATH];
     DWORD length = GetModuleFileNameA(NULL, buffer, MAX_PATH);

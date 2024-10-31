@@ -129,6 +129,9 @@
     <ClInclude Include="HEADER\USLVisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\src.asm">
