@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\src.asm" />
+    <None Include="ANTLR\USL.g4" />
     <None Include="SRC\ASM\ASM TEMPLATES\THREADS\THREAD_POOL.asm" />
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm" />
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\PROPS_SIG.asm" />

@@ -1,218 +1,220 @@
+module;
 #include <corecrt_malloc.h>
+#include "string"
 export module SYMBOL_TABLE;
 import std;
 using String = std::string;
-
-class Var {
-    std::string Type;
+enum access { Public, Private, Protected };
+enum funcType { Constructor, Destructor, MemberFunction, StaticFunction, VirtualFunction, PureVirtualFunction };
+enum varType{Static,member};
+class MemberVar {
+public:
+	Var var;
+	access Access;
+	varType Type;
 
 };
-class Enum {
+class Var {
+	std::string Type;
+	std::string Name;
+	unsigned long long typeID;
 
+};
+class Parameter {
+public:
+	unsigned long long typeID;
+	std::string Type;
+	std::string Name;
+};
+class memberFunction {
+public:
+	Function function;
+	access Access;
+	funcType Type;
+	
+};
+class memmberEnum {
+public:
+	Enum Enum;
+	access Access;
+};
+class Enum {
+public:
+	unsigned long long typeID;
+	std::string Type;
+	std::map<std::string, int> Values;
 };
 class Class;
 class Struct;
 class Function {
-    std::map<String, Struct> Structs;
-    std::map<std::string, Class> Classes;
-    std::map<std::string, Function> Functions;
-    std::map<String, Enum> Enums;
-    std::map<std::string, Var> Vars;
+	public:
+		unsigned long long returnTypeID;
+		std::string returnType;
+		std::map<std::string, Parameter> Parameters;
+		std::string name;
+  //  std::map<String, Struct> Structs;
+  //  std::map<std::string, Class> Classes;
+  //  std::map<std::string, Function> Functions;
+  //  std::map<String, Enum> Enums;
+	//std::map<std::string, Var> Vars;
 };
 class Class {
-    std::map<String, Struct> Structs;
-    std::map<std::string, Class> Classes;
-    std::map<std::string, Function> Functions;
-    std::map<String, Enum> Enums;
-    std::map<std::string, Var> Vars;
+public:
+	std::string Type;
+	unsigned long long typeID;
+	std::map<std::string, MemberVar> Vars;
+	std::map<std::string, memberFunction> Functions;
+	std::map<String, memmberEnum> Enums;
+  //  std::map<String, Struct> Structs;
+  //  std::map<std::string, Class> Classes;
+	//std::map<std::string, Function> Functions;
+   // std::map<String, Enum> Enums;
+   // std::map<std::string, Var> Vars;
 };
 class Struct {
-    std::map<String, Struct> Structs;
-    std::map<std::string, Class> Classes;
-    std::map<std::string, Function> Functions;
-    std::map<String, Enum> Enums;
-    std::map<std::string, Var> Vars;
+  //  std::map<String, Struct> Structs;
+	//std::map<std::string, Class> Classes;
+public:
+	std::string Type;
+	unsigned long long typeID;
+	std::map<std::string, MemberVar> Vars;
+	std::map<std::string, memberFunction> Functions;
+	std::map<String, memmberEnum> Enums;
 };
 class Namespace {
-    std::map<String, Struct> Structs;
-    std::map<std::string, Class> Classes;
-    std::map<std::string, Function> Functions;
-    std::map<String, Enum> Enums;
-    std::map<std::string, Var> Vars;
+public:
+	std::string Name;
+	unsigned long long namespaceID;
+	std::map<String, Struct> Structs;
+	std::map<std::string, Class> Classes;
+   // std::map<std::string, Function> Functions;
+	std::map<String, Enum> Enums;
+	//std::map<std::string, Var> Vars;
 };
 class Symbol {
-    enum active{NS,ST,FN,EM,VR} ActiveMember;
-    union Sym{
-        Namespace NS;
-        Struct ST;
-        Class CS;
-        Function FN;
-        Enum EM;
-        Var VR;
-    };
+public:
+	enum active { NS, ST, FN, EM, VR };
+private:
+	active ActiveMember;
+public:
+	union Sym{
+		Namespace NS;
+		Struct ST;
+		Class CS;
+		Function FN;
+		Enum EM;
+		Var VR;
+	} sym;
+	active getActive() {
+		return ActiveMember;
+	}
+	Sym* getSym() {
+		return &sym;
+	}
 };
 export namespace GLOBAL {
-    class SymbolTable {
-    public:
-        void addClass(const std::string& className) {
-            classes.insert(className);
-        }
+	class SymbolTable {
+	public:
+		void addClass(const std::string& className) {
+			classes.insert(className);
+		}
 
-        void addMember(const std::string& className, const std::string& member) {
-            classMembers[className].insert(member);
-        }
+		void addMember(const std::string& className, const std::string& member) {
+			classMembers[className].insert(member);
+		}
 
-        void addVariable(const std::string& varName, const std::string& type) {
-            variableTypes[varName] = type;
-        }
+		void addVariable(const std::string& varName, const std::string& type) {
+			variableTypes[varName] = type;
+		}
 
-        std::string getVariableType(const std::string& varName) const {
-            auto it = variableTypes.find(varName);
-            return (it != variableTypes.end()) ? it->second : "";
-        }
+		std::string getVariableType(const std::string& varName) const {
+			auto it = variableTypes.find(varName);
+			return (it != variableTypes.end()) ? it->second : "";
+		}
 
-        bool isValidMember(const std::string& className, const std::string& member) const {
-            auto it = classMembers.find(className);
-            if (it != classMembers.end()) {
-                return it->second.find(member) != it->second.end();
-            }
-            return false;
-        }
+		bool isValidMember(const std::string& className, const std::string& member) const {
+			auto it = classMembers.find(className);
+			if (it != classMembers.end()) {
+				return it->second.find(member) != it->second.end();
+			}
+			return false;
+		}
 
-        bool classExists(const std::string& className) const {
-            return classes.find(className) != classes.end();
-        }
+		bool classExists(const std::string& className) const {
+			return classes.find(className) != classes.end();
+		}
 
-    private:
-        std::unordered_set<std::string> classes;
-        std::unordered_map<std::string, std::unordered_set<std::string>> classMembers;
-        std::unordered_map<std::string, std::string> variableTypes;
-    };
-    class NODE {
-    public:
-        enum type{Struct,Class,Namespace,Function,Global} Active;
-        String Name;
-    };
-    class Stack {
-         NODE* First;
-         long long Lengt;
-         long long cap;
-        static Stack* stack;
-        static Stack* _Backup;
-        Stack() {
-            First = (GLOBAL::NODE*)malloc(sizeof(NODE) * 10);
-        }
-        void Resize_and_Cpy() {
-            NODE* tmp = (NODE*)malloc((sizeof(NODE) * stack->Lengt)*2);
-            memcpy(tmp, stack->First, sizeof(NODE) * stack->Lengt);
-            stack->First = tmp;
-        }
-    public:
-        static void Backup() {
-            _Backup = new Stack();
-            *_Backup = *stack;
-            _Backup->First = (GLOBAL::NODE*)malloc(sizeof(NODE) * (stack->Lengt));
-            memcpy(_Backup->First, stack->First, sizeof(NODE) * (stack->Lengt));
-        }
-        static void Rstore() {
-            free(stack->First);
-            delete stack;
-            stack = _Backup;
-        }
-        static Stack* Create() {
-            stack = new Stack();
-            return stack;
-        }
-        static void Push(NODE* node) {
-            if (stack->Lengt == stack->cap-2) {
-                stack->Resize_and_Cpy();
-            }
-            stack->First[stack->Lengt] = *node;
-            stack->Lengt++;
-        }
-        static NODE* Pop() {
-            NODE* ret= &stack->First[stack->Lengt - 1];
-            stack->Lengt--;
-            return ret;
-        }
-        static long long Length() {
-            return stack->Lengt;
-        }
+	private:
+		std::unordered_set<std::string> classes;
+		std::unordered_map<std::string, std::unordered_set<std::string>> classMembers;
+		std::unordered_map<std::string, std::string> variableTypes;
+	};
 
-    };
-    class Symbol_Tabel {
-    private:
-        std::map<std::string, Symbol> Symbols;
-        void reccursiveAdd(NODE* node) {
-            switch (node->Active) {
-            case NODE::Namespace: {
+	class Symbol_Tabel {
+	private:
+		std::map<unsigned long long, std::string> typeids;
+		std::map<unsigned long long, std::string> namespaceIDs;
+		std::map<std::string, Namespace> symbols;
+		std::map<std::string, Var>localSymbols;
+		Namespace* currentNamespace;
+		union { Struct* current_struct; Class* currnet_class; }current_classorstruct;
+		enum currentType { _Struct, _Class } currentType;
+	public:
+		void tryAddNamespace(const std::string& name) {
+			if (symbols.find(name) == symbols.end()) {
+				Namespace s;
+				if (!symbols.contains(name) ) {
+					symbols[name] = s;
+					currentNamespace = &symbols[name];
+				}
+			}
+		}
+		void tryAddStruct(const std::string& name) {
+			if (currentNamespace != nullptr) {
+				if (currentNamespace->Structs.find(name) == currentNamespace->Structs.end()) {
+					Struct s;
+					if (!currentNamespace->Structs.contains(name)) {
+						currentNamespace->Structs[name] = s;
+						current_classorstruct.current_struct = &currentNamespace->Structs[name];
+						currentType = _Struct;
+					}
+				}
+			}
+		}
+		void tryAddClass(const std::string& name) {
+			if (currentNamespace != nullptr) {
+				if (currentNamespace->Classes.find(name) == currentNamespace->Classes.end()) {
+					Class s;
+					if (!currentNamespace->Classes.contains(name)) {
+						currentNamespace->Classes[name] = s;
+						current_classorstruct.currnet_class = &currentNamespace->Classes[name];
+						currentType = _Class;
+					}
+				}
+			}
+		}
+		void tryAddFunction(const std::string& name) {
+			if (currentNamespace != nullptr) {
+				if (currentType == _Struct) {
+					if (current_classorstruct.current_struct->Functions.find(name) == current_classorstruct.current_struct->Functions.end()) {
+						memberFunction s;
+						if (!current_classorstruct.current_struct->Functions.contains(name)) {
+							current_classorstruct.current_struct->Functions[name] = s;
+							s.function.name = name;
+						}
+					}
+				}
+				else if (currentType == _Class) {
+					if (current_classorstruct.currnet_class->Functions.find(name) == current_classorstruct.currnet_class->Functions.end()) {
+						memberFunction s;
+						if (!current_classorstruct.currnet_class->Functions.contains(name)) {
+							current_classorstruct.currnet_class->Functions[name] = s;
+							s.function.name = name;
+						}
+					}
+				}
+			}
+		}
 
-                break;
-            }
-            case NODE::Struct: {
-                break;
-            }
-            case NODE::Class: {
-                break;
-
-            }
-            case NODE::Function: {
-
-            }
-            case NODE::Global: {
-
-            }
-            }
-
-        }
-    public:
-        enum Kind {
-            var,
-            func,
-            cs,
-            ns,
-            st
-        };
-        void Add_Symbol(String Name,Kind kind) {
-            std::string list = "";
-            Stack::Backup();
-            int l = Stack::Length();
-            NODE* node;
-            node = Stack::Pop();
-
-#pragma region first node
-
-
-            switch (node->Active) {
-            case NODE::Namespace: {
-
-                break;
-            }
-            case NODE::Struct: {
-                break;
-            }
-            case NODE::Class: {
-                break;
-
-            }
-            case NODE::Function: {
-
-            }
-            case NODE::Global: {
-                //Symbols["Global"] = ;
-
-            }
-            }
-#pragma endregion
-            for (int i = 0; i < l; i++) {
-                node = Stack::Pop();
-              //  reccursiveAdd(node);
-
-                Symbol sym;
-
-
-            }
-            Stack::Rstore();
-        }
-    };
+	};
 }

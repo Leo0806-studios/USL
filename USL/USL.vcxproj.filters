@@ -149,5 +149,15 @@
     <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\THREADS\THREAD_POOL.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\PROPS_SIG.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\VAR_sIG.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ANTLR\USL.g4" />
   </ItemGroup>
 </Project>
