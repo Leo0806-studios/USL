@@ -100,21 +100,27 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ANTLR4CPP_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
       <BuildStlModules>true</BuildStlModules>
-      <ForcedIncludeFiles>$(ProjectDir)GLOBAL_MACROS.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\USL\MODULES;C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\depend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\USL;C:\Users\leo08\source\repos\USL\USL\MODULES;C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\depend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableSpecificWarnings>5045</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\leo08\source\repos\USL\depend;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>antlr4-runtime.lib;src.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>antlr4-runtime.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,30 +140,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MODULES\CODE_GENERATOR.ixx" />
-    <ClCompile Include="MODULES\TRANSLATOR\GENERICS\GENERIC_LIST.ixx" />
-    <ClCompile Include="MODULES\TRANSLATOR\REFLECTION\REFLECTION.ixx" />
-    <ClCompile Include="MODULES\TRANSLATOR\VISITORS.cpp" />
-    <ClCompile Include="SRC\GLOBAL_STORAGE.cpp" />
-    <ClCompile Include="SRC\USLBaseListener.cpp" />
-    <ClCompile Include="SRC\USLBaseVisitor.cpp" />
-    <ClCompile Include="SRC\USLListener.cpp" />
-    <ClCompile Include="SRC\USLParser.cpp" />
-    <ClCompile Include="SRC\USLLexer.cpp" />
-    <ClCompile Include="MODULES\ABSTRACT_SYNTAX_TREE\AST_INTERFACE.ixx" />
-    <ClCompile Include="MODULES\ABSTRACT_SYNTAX_TREE\NODE\AST_NODE.ixx" />
-    <ClCompile Include="MODULES\CONTAINERS\DYNAMIC_ARRAY\DYNAMIC_ARRAY.ixx" />
-    <ClCompile Include="MODULES\CONTAINERS\HASH_MAP\HASH_MAP.ixx" />
-    <ClCompile Include="MODULES\LEXER\LEXER.ixx" />
-    <ClCompile Include="MODULES\LEXER\TOKENS\TOKEN.ixx" />
-    <ClCompile Include="MODULES\POINTER\SMART_POINTER\SMART_POINTER.ixx" />
-    <ClCompile Include="MODULES\POINTER\SMART_PTR.ixx" />
-    <ClCompile Include="MODULES\THREADING\THREADING\THREADING.ixx" />
-    <ClCompile Include="MODULES\_GLOBALS\ENUMS\GLOBAL_ENUMS.ixx" />
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\GLOBAL_STORAGE.ixx" />
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL\SYMBOL.ixx" />
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL_TABLE.ixx" />
-    <ClCompile Include="SRC\USLVisitor.cpp" />
+    <ClCompile Include="SRC\COMPILER\COMMAND_LINE\PARSER\PARSER.cpp" />
+    <ClCompile Include="SRC\USLBaseListener.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="SRC\USLBaseVisitor.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="SRC\USLListener.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="SRC\USLParser.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="SRC\USLLexer.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="SRC\USLVisitor.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
     <ClCompile Include="USL.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,28 +167,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
-    <ClInclude Include="HEADER\GLOBAL_STORAGE.h" />
+    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSER\PARSER.h" />
+    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSSED_ARGS\PARSED_ARGS.h" />
+    <ClInclude Include="HEADER\COMPILER\PRINT_HELP\PRINT_HELP.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
     <ClInclude Include="HEADER\USLBaseVisitor.h" />
     <ClInclude Include="HEADER\USLListener.h" />
     <ClInclude Include="HEADER\USLLexer.h" />
     <ClInclude Include="HEADER\USLParser.h" />
-    <ClInclude Include="GLOBAL_MACROS.h" />
     <ClInclude Include="HEADER\USLVisitor.h" />
-    <ClInclude Include="MODULES\TRANSLATOR\BASE\CODE_TEMPLATES\TYPES_TEMPLATE.h" />
-    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE.h" />
-    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE_STUB.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Desktop\src.asm" />
     <None Include="ANTLR\USL.g4" />
-    <None Include="SRC\ASM\ASM TEMPLATES\THREADS\THREAD_POOL.asm" />
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm" />
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\PROPS_SIG.asm" />
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA.asm" />
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm" />
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\VAR_sIG.asm" />
-    <None Include="SRC\src.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

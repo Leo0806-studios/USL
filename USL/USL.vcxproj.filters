@@ -18,45 +18,6 @@
     <ClCompile Include="USL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MODULES\ABSTRACT_SYNTAX_TREE\AST_INTERFACE.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\ABSTRACT_SYNTAX_TREE\NODE\AST_NODE.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\CONTAINERS\DYNAMIC_ARRAY\DYNAMIC_ARRAY.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\POINTER\SMART_POINTER\SMART_POINTER.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\POINTER\SMART_PTR.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\GLOBAL_STORAGE.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL_TABLE.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\_GLOBALS\STORAGE\SYMBOL_TABLE\SYMBOL\SYMBOL.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\LEXER\LEXER.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\LEXER\TOKENS\TOKEN.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\_GLOBALS\ENUMS\GLOBAL_ENUMS.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\CONTAINERS\HASH_MAP\HASH_MAP.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\THREADING\THREADING\THREADING.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SRC\USLLexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,25 +30,13 @@
     <ClCompile Include="SRC\USLBaseListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MODULES\TRANSLATOR\REFLECTION\REFLECTION.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\TRANSLATOR\GENERICS\GENERIC_LIST.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\TRANSLATOR\VISITORS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRC\GLOBAL_STORAGE.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MODULES\CODE_GENERATOR.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SRC\USLBaseVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\USLVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\COMPILER\COMMAND_LINE\PARSER\PARSER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,9 +45,6 @@
     <Text Include="_____DEFS\def.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GLOBAL_MACROS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HEADER\USLParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -111,18 +57,6 @@
     <ClInclude Include="HEADER\USLBaseListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MODULES\TRANSLATOR\BASE\CODE_TEMPLATES\TYPES_TEMPLATE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MODULES\TRANSLATOR\REFLECTION\CODE_TEMPLATES\TYPE_TEMPLATE_STUB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HEADER\GLOBAL_STORAGE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HEADER\USLBaseVisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -132,32 +66,17 @@
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\PRINT_HELP\PRINT_HELP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSSED_ARGS\PARSED_ARGS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSER\PARSER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Desktop\src.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\src.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\FUNC_SIGS.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\TYPE_DATA_CONSTRUCT.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\THREADS\THREAD_POOL.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\PROPS_SIG.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="SRC\ASM\ASM TEMPLATES\TYPES_DATA\VAR_sIG.asm">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="ANTLR\USL.g4" />
   </ItemGroup>
 </Project>
