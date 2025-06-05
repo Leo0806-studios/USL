@@ -10,34 +10,59 @@
 #include <COMPILER/PRINT_HELP/PRINT_HELP.h>
 #include "HEADER/COMPILER/COMMAND_LINE/PARSER/PARSER.h"
 import std;
-
 int main(int argc, char** argv)
 {
-    std::ios::sync_with_stdio(false);
-	USL_COMPILER::CmdArgsParser::ParseCmd(argc, argv);
+	std::ios::sync_with_stdio(false);
+	auto a =USL_COMPILER::CmdArgsParser::ParseCmd(argc, argv);
+   // std::string pth;
+	//std::cin >> pth;
+	int charcount = 0;
+	for (char c : a.InputFiles[0]) {
+		std::cout << static_cast<int>(c) << ' ';
+		charcount++;
+	}
+	std::cout << '\n' << charcount << std::endl;
+	std::ifstream stream(a.InputFiles[0]);
+
+	std::string l = "C:\\Users\\leo08\\source\\repos\\USL\\x64\\Debug\\test.txt";
+	int count = 0;
+	for(char c : l) {
+		std::cout << static_cast<int>(c) << ' ';
+		count++;
+	}
+	std::cout <<'\n' << count << std::endl;
+	std::cout << (l == a.InputFiles[0]) << std::endl;
+   //stream.open("C:\\Users\\leo08\\source\\repos\\USL\\x64\\Debug\\test.txt");
+	antlr4::ANTLRInputStream input(stream);
+	USLLexer lexer(&input);
+	antlr4::CommonTokenStream tokens(&lexer);
+	USLParser parser(&tokens);
+	auto tree = parser.program();
+
+	std::cout << tree->toStringTree(&parser) << std::endl;
  
 
 
 
-    //std::stringstream strm;
-    //strm << file.rdbuf();
-    //std::string content = strm.str();
-    //stream.open("C:\\Users\\leo08\\source\\repos\\USL\\x64\\Debug\\test.txt");
-    //antlr4::ANTLRInputStream input(stream);
-    //USLLexer lexer(&input);
-    //STORARE::lexer = &lexer;
-    //antlr4::CommonTokenStream tokens(&lexer);
-    //STORARE::tokens = &tokens;
-    //tokens.fill();
-    //for (auto token : tokens.getTokens()) {
-    //    std::cout << token->toString() << std::endl;
-    //}
-    //USLParser prser(&tokens);
-    //STORARE::parser = &prser;
-    //parser = &prser;
-    //antlr4::tree::ParseTree* tree = parser->program();
-    //std::cout << tree->toStringTree(parser) << std::endl;
-    return 0;
+	//std::stringstream strm;
+	//strm << file.rdbuf();
+	//std::string content = strm.str();
+	//
+	//antlr4::ANTLRInputStream input(stream);
+	//USLLexer lexer(&input);
+	//STORARE::lexer = &lexer;
+	//antlr4::CommonTokenStream tokens(&lexer);
+	//STORARE::tokens = &tokens;
+	//tokens.fill();
+	//for (auto token : tokens.getTokens()) {
+	//    std::cout << token->toString() << std::endl;
+	//}
+	//USLParser prser(&tokens);
+	//STORARE::parser = &prser;
+	//parser = &prser;
+	//antlr4::tree::ParseTree* tree = parser->program();
+	//std::cout << tree->toStringTree(parser) << std::endl;
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

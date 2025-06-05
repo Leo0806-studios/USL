@@ -1,0 +1,7 @@
+{
+  "dependencies": [{
+    "name": "llvm",
+    "default-features": false,
+    "features": ["target-x86"]
+  }]
+}
