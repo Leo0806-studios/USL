@@ -27,6 +27,7 @@ possible options:
 			specifies the amount of input paths to the compiler
 			the argument immideatly after that is the amount of paths
 			the next [count] arguments are the input paths
+			recrusevly scans the paths and compiles all .usl files in them
 		-of [multiple] boolean
 			specifies if the compiler should output multiple files
 			true by default
@@ -36,13 +37,13 @@ possible options:
 			if not specified, the output path is the current working directory
 			if the output path does not exist, it will be created
 			if the output path is not a directory, the compiler will fail
-		-dmpSymbolTable [fileName] string
+		-dmpSymbolTable  
 			specifies if the compiler should dump the symbol table to a file
-			if the argument is not specified the name will be "sym_dmp.txt"
+			the name will be "sym_dmp.txt"
 			if the file already exists, it will be overwritten
-		-dmpAST [fileName] string
+		-dmpAST 
 			specifies if the compiler should dump the AST to a file
-			if the argument is not specified the name will be "ast_dmp.txt"
+			the name will be "ast_dmp.txt"
 			if the file already exists, it will be overwritten
 		-dmpIR 
 			specifies if the compiler should dump the IR to a file
@@ -57,21 +58,21 @@ possible options:
 		-preDefMacros [count] integer
 			specifies the amount of predefined macros to the compiler
 			the argument immideatly after that is the amount of macros
-			the next [count] arguments are the macros in the format "name=value"
+			the next [count] arguments are the macros in the format "name=value"(must be in "")
 			if value is not specified, the macro will be defined with an empty value
-		-enablePreprocessorLoops [boolean] boolean
+		-enablePreprocessorLoops 
 			enables or disables the use of special loop statements for the preprocessor (in macros)
 			by default, this is disabled
-		-enablePreprocessorIfs [boolean] boolean
+		-enablePreprocessorIfs 
 			enables or disables the use of special if statements for the preprocessor (in macros)
 			by default, this is disabled;
 		-warnLvl [level] integer
 			specifies the warning level of the compiler
 			defaults to 3 out of 7
-		-warnFail [boolean] boolean
+		-warnFail 
 			stops the compilation if a warning is encountered.
 			by default, this is false
-		-showDetailedErrors [boolean] boolean
+		-showDetailedErrors 
 			shows detailed errors in the compiler output
 			this for example contains the first token that failed to parse ( might be the closest to the error)
 			also shows what type of toke the first failed toke was excpected to be and what the few tokens before the error were

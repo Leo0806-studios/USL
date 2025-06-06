@@ -5,8 +5,8 @@ import std;
 namespace USL_COMPILER {
 	class ParsedArgs {
 	public:
-		bool IsHelp = false;
-		bool IsVersion = false;
+		bool IsHelp = false;//
+		bool IsVersion = false;//
 		bool MultipleOfiles = true;
 		bool DumpSymbols = false;
 		bool DumpASTT = false;
@@ -18,14 +18,14 @@ namespace USL_COMPILER {
 		unsigned char WarningLevel = 3;
 		bool TreatWarningsAsErrors = false;
 		bool ShowDetailedErrors = false;
-		std::vector<std::string> InputFiles{};
-		std::vector<std::filesystem::path> InputPaths{};
-		std::filesystem::path OutputPath{};
+		std::vector<std::string> InputFiles{};//
+		std::vector<std::filesystem::path> InputPaths{};//
+		std::filesystem::path OutputPath{};//
 		struct MacroPair {
 			std::string Name{};
 			std::string Value{};
 		};
-		std::vector<USL_COMPILER::ParsedArgs::MacroPair> PredefinedMacros{};
+		std::vector<USL_COMPILER::ParsedArgs::MacroPair> PredefinedMacros{};//
 
 
 

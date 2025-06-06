@@ -60,9 +60,14 @@ namespace USL_COMPILER
 
 		}
 		auto length = args.size();
-		ParsedArgs FullRet{};
+		std::filesystem::path DefaultOutputPath = argv[0];
+
+		ParsedArgs FullRet{.OutputPath=DefaultOutputPath.parent_path()};
 		for(size_t i =0;i<length;i++)
 		{
+			size_t ICopy = i;
+
+			//current Argin loop (replacer for the range for loop var)
 			auto& arg = args[i];
 			if (arg == "-help" || arg == "-h") {
 				PrintHelp::PrintHelp_General();
@@ -118,7 +123,79 @@ namespace USL_COMPILER
 				}
 				i++;// Skip the next argument as it is the count of input paths
 			}
+			else if (arg == "-preDefMacros") {
+				std::string  PreDefinedMacrosCountString = args[i + 1];
+				size_t PreDefinedMacrosCount = string_toInt(PreDefinedMacrosCountString);
+				if (PreDefinedMacrosCount == std::numeric_limits<size_t>::max()) {
+					std::cerr << "Pre Defined Macros  count contains non digit characters\n";
+					exit(-1);
+				}
+				if (length < PreDefinedMacrosCount) {
+					std::cerr << "more PreDefinedMacros specified than total arguments\n";
+					exit(-1);
 
+				}
+				size_t ii = i + 2;
+				size_t ll = ICopy + 2 + PreDefinedMacrosCount;
+				for (; ii < ll; ii++) {
+					std::string Line =  args[ii];
+		
+
+					auto Name = Line.substr(0, Line.find('='));
+					auto Value = Line.substr(Line.find('=') + 1, Line.length());
+					if (Name.empty() || Value.empty()) {
+						std::cerr << "Pre Defined Macro name or value is empty\n";
+						exit(-1);
+					}
+					FullRet.PredefinedMacros.emplace_back(Name, Value);
+					i++;// Increment i to skip the input path names
+				}
+				i++;// Skip the next argument as it is the count of input paths
+
+			}
+			else if (arg == "-op") {
+				FullRet.OutputPath = args[i + 1];
+				i++; // Skip the next argument as it is the output path
+			}
+			else if (arg == "-dmpSymbolTable") {
+				FullRet.DumpSymbols = true;
+			}
+			else if (arg == "-dmpAST") {
+				FullRet.DumpASTT = true;
+			}
+			else if (arg == "-dmpIR") {
+				FullRet.DumpIR = true;
+			}
+			else if (arg == "-freestanding") {
+				FullRet.Freestanding = true;
+			}
+			else if (arg == "-unsafe") {
+				FullRet.Unsafe = true;
+			}
+			else if (arg == "-warnLvl") {
+				std::string warnlvlcountstring = args[i + 1];
+				size_t warnlvlcount = string_toInt(warnlvlcountstring);
+				if (warnlvlcount == std::numeric_limits<size_t>::max()) {
+					std::cerr << "Warning Level count contains non digit characters\n";
+					exit(-1);
+				}
+				if(warnlvlcount>7 || warnlvlcount < 0)
+				{
+					std::cerr << "Warning Level count must be between 0 and 7\n";
+					exit(-1);
+				}
+				FullRet.WarningLevel = warnlvlcount;
+				
+			}
+			else if (arg == "-warnFail") {
+				FullRet.TreatWarningsAsErrors = true;
+			}
+			else if (arg == "-enablePreprocessorIfs") {
+				FullRet.EnablePreprocessorIfs = true;
+			}
+			else if (arg == "-enablePreprocessorLoops") {
+				FullRet.EnablePreprocessorLoops = true;
+			}
 		}
 
 		return FullRet;

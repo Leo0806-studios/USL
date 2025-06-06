@@ -179,6 +179,7 @@
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
     <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSER\PARSER.h" />
     <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSSED_ARGS\PARSED_ARGS.h" />
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h" />
     <ClInclude Include="HEADER\COMPILER\PRINT_HELP\PRINT_HELP.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
     <ClInclude Include="HEADER\USLBaseVisitor.h" />
