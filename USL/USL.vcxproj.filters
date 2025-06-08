@@ -39,6 +39,18 @@
     <ClCompile Include="SRC\COMPILER\COMMAND_LINE\PARSER\PARSER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\GLOBAL_STORAGE\GLOBAL_STORAGE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -76,6 +88,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

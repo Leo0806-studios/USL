@@ -72,7 +72,8 @@ namespace USL_COMPILER
 			if (arg == "-help" || arg == "-h") {
 				PrintHelp::PrintHelp_General();
 				ParsedArgs ret = { .IsHelp = true };
-				return ret;
+				exit(-1);
+
 
 			}
 			else if (arg == "-V" || arg == "-version") {
@@ -179,12 +180,12 @@ namespace USL_COMPILER
 					std::cerr << "Warning Level count contains non digit characters\n";
 					exit(-1);
 				}
-				if(warnlvlcount>7 || warnlvlcount < 0)
+				if(warnlvlcount>7 )
 				{
 					std::cerr << "Warning Level count must be between 0 and 7\n";
 					exit(-1);
 				}
-				FullRet.WarningLevel = warnlvlcount;
+				FullRet.WarningLevel = static_cast<unsigned char>(warnlvlcount);
 				
 			}
 			else if (arg == "-warnFail") {
