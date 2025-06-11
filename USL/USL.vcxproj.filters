@@ -51,6 +51,12 @@
     <ClCompile Include="SRC\GLOBAL_STORAGE\GLOBAL_STORAGE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -94,6 +100,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HEADER\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

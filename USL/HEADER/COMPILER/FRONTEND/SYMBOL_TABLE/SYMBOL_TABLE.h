@@ -26,18 +26,26 @@ namespace USL_COMPILER {
 	class Symbol {
 		SymbolType type;
 		std::string name;
+	protected:
+		std::atomic_bool isResolved = false;
+		std::atomic_bool is_reading = false;
+		std::atomic_bool is_writing = false;
 	public:
 		explicit constexpr  Symbol(SymbolType type) : type(type) {}
 		explicit Symbol(SymbolType type, const std::string& name) : type(type), name(name) {}
 		const std::string& Name() const { return name; }
 		SymbolType SymbolType() const { return type; }
+		Symbol(const Symbol& other);
+		Symbol& operator=(const Symbol& other);
 		virtual bool HasChildSymbols()const = 0;
-		virtual std::unordered_map<std::string, std::shared_ptr<Symbol>> GetChildSymbols() = 0;
+		virtual std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() = 0;
 		virtual void SetParent(std::shared_ptr<Symbol> parent) = 0;
 		virtual void addSymbol(std::shared_ptr<Symbol> symbol) {
 			throw std::runtime_error("This symbol does not support adding child symbols.");
 		}
 		virtual ~Symbol() = default;
+		virtual bool IsScope() const = 0;
+		virtual std::shared_ptr<Scope> GetScope() const = 0;
 	};
 
 	using SymbolPtr = std::shared_ptr<Symbol>;
@@ -45,15 +53,22 @@ namespace USL_COMPILER {
 	class VariableSymbol : public Symbol {
 	private:
 		SymbolPtr parent = nullptr;
+		SymbolPtr type = nullptr;
 	public:
 		VariableSymbol() :Symbol(SymbolType::VARIABLE) {}
 		VariableSymbol(const std::string& name, SymbolPtr parent = nullptr) : Symbol(SymbolType::VARIABLE, name), parent(parent) {}
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
-		std::unordered_map<std::string, std::shared_ptr<Symbol>> GetChildSymbols() override;
+		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
 
 		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
+
+		// Inherited via Symbol
+		bool IsScope() const override;
+		std::shared_ptr<Scope> GetScope() const override;
+		void SetType(SymbolPtr variableType) { this->type = variableType; }
+		SymbolPtr GetVariableType() const { return type; }
 	};
 
 	class FunctionSymbol : public Symbol {
@@ -62,6 +77,8 @@ namespace USL_COMPILER {
 	private:
 		std::unordered_map<std::string, SymbolPtr> symbols;
 		std::shared_ptr<Scope> ownScope = nullptr;
+		std::vector<SymbolPtr> parameters = {};
+		SymbolPtr returnType;
 	public:
 		FunctionSymbol() :Symbol(SymbolType::FUNCTION) {}
 	explicit	FunctionSymbol(const std::string& name, SymbolPtr parent = nullptr);
@@ -69,11 +86,18 @@ namespace USL_COMPILER {
 		std::shared_ptr<Scope> getScope() const { return ownScope; }
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
-		std::unordered_map<std::string, std::shared_ptr<Symbol>> GetChildSymbols() override;
+		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
 
 		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
 		void addSymbol(SymbolPtr symbol)override;
+		void SetReturnType(SymbolPtr  ptr);
+
+		// Inherited via Symbol
+		bool IsScope() const override;
+
+		std::shared_ptr<Scope> GetScope() const override;
+		SymbolPtr GetReturnType();
 
 	};
 
@@ -82,6 +106,7 @@ namespace USL_COMPILER {
 		SymbolPtr parent = nullptr;
 		std::unordered_map<std::string, SymbolPtr> symbols;
 		std::shared_ptr<Scope> ownScope = nullptr;
+
 	public:
 		TypeSymbol() :Symbol(SymbolType::TYPE) {}
 		explicit TypeSymbol(const std::string& name, SymbolPtr parrent = nullptr);
@@ -93,11 +118,16 @@ namespace USL_COMPILER {
 
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
-		std::unordered_map<std::string, std::shared_ptr<Symbol>> GetChildSymbols() override;
+		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
 
 		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
+
+		// Inherited via Symbol
+		bool IsScope() const override;
+		std::shared_ptr<Scope> GetScope() const override;
 	};
+
 
 	class NamespaceSymbol :public Symbol {
 	private:
@@ -115,11 +145,18 @@ namespace USL_COMPILER {
 		void addSymbol(SymbolPtr symbol);
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
-		std::unordered_map<std::string, std::shared_ptr<Symbol>> GetChildSymbols() override;
+		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
 
 		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
+
+		// Inherited via Symbol
+		bool IsScope() const override;
+		std::shared_ptr<Scope> GetScope() const override;
 	};
+
+
+
 	class Scope {
 	private:
 		std::shared_ptr<Scope> parent = nullptr;
@@ -139,6 +176,13 @@ namespace USL_COMPILER {
 	};
 	using ScopePtr = std::shared_ptr<Scope>;
 	class SymbolTable {
+		//thread safety
+
+		static	std::atomic_bool is_reading;
+		static	std::atomic_bool is_writing;
+
+
+
 		static	std::unordered_map<std::string, std::shared_ptr<Scope>> scopes;
 		static SymbolPtr rootSymbol;
 		/// <summary>
@@ -183,7 +227,7 @@ namespace USL_COMPILER {
 		/// </summary>
 		/// <param name="Symbol"></param>
 		/// <returns></returns>
-		static	bool ResolveSymbol(SymbolPtr Symbol);
+		static	SymbolPtr ResolveSymbol(const std::string& Symbol, const std::vector<std::string>& scopeResolution = {});
 		/// <summary>
 		/// Resolves the provided sybol within the provided scope
 		/// first it searches relative to the current scope and the n from the global scope
@@ -206,6 +250,16 @@ namespace USL_COMPILER {
 		static ScopePtr PopScopeStack();
 		static std::string SymbolTableToString();
 		static ScopePtr GetCurrentScope() { return currentScope; }
+		static SymbolPtr GetRootSymbol() { return rootSymbol; }
+		static ScopePtr GetScopeByName(const std::string& name);
+		static SymbolPtr GetSymbolByName(const std::string& name, const std::vector<std::string> scopeResolution= {}) {
+			if (scopeResolution.empty()) {
+				return ResolveSymbol(name);
+			}
+			else {
+				return ResolveSymbol(name, scopeResolution);
+			}
+		}
 	};
 }
 

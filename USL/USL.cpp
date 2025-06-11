@@ -12,6 +12,8 @@
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h"
 #include "HEADER/COMPILER/FRONTEND/PARSING_ERROR_LISTENER/PARSING_ERROR_LISTENER.h"
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
+#include "HEADER/COMPILER/FRONTEND/SYMBOL_RESOLVER/SYMBOL_RESOLVER.h"
+#include "HEADER/COMPILER/FRONTEND/SEMANTIC_ANALYZER/SEMANTIC_ANALYZER.h"
 import std;
 
 void printAST(antlr4::tree::ParseTree* tree,antlr4::Parser* parser, const std::string& indent = "", bool last = true) {
@@ -40,25 +42,9 @@ int main(int argc, char** argv)
 {
 	std::ios::sync_with_stdio(false);
 	auto a =USL_COMPILER::CmdArgsParser::ParseCmd(argc, argv);
-   // std::string pth;
-	//std::cin >> pth;
-	int charcount = 0;
-	for (char c : a.InputFiles[0]) {
-		std::cout << static_cast<int>(c) << ' ';
-		charcount++;
-	}
-	std::cout << '\n' << charcount << std::endl;
+
 	std::ifstream stream(a.InputFiles[0]);
 
-	std::string l = "C:\\Users\\leo08\\source\\repos\\USL\\x64\\Debug\\test.txt";
-	int count = 0;
-	for(char c : l) {
-		std::cout << static_cast<int>(c) << ' ';
-		count++;
-	}
-	std::cout <<'\n' << count << std::endl;
-	std::cout << (l == a.InputFiles[0]) << std::endl;
-   //stream.open("C:\\Users\\leo08\\source\\repos\\USL\\x64\\Debug\\test.txt");
 
 
 	antlr4::ANTLRInputStream input(stream);
@@ -83,14 +69,23 @@ int main(int argc, char** argv)
 	antlr4::tree::ParseTreeWalker walker;
 	USL_COMPILER::SymbolGatherer gatherer;
 	walker.walk(&gatherer, tree);
-	std::cout << "Symbol Gathered Successfully" << std::endl;
+	USL_COMPILER::SymbolResolver resolver;
+	walker.walk(&resolver, tree);
+	USL_COMPILER::SemanticAnalyzer semantinc_analyzer;
+	semantinc_analyzer.visit(tree);
+
+	std::cout << "\n\n\n\nSymbol Gathered Successfully" << std::endl;
 	std::cout << USL_COMPILER::SymbolTable::SymbolTableToString() << std::endl;
-	auto smyfile = std::filesystem::path(argv[0]).parent_path().string();
-	smyfile += "\\sym_dmp.txt";
-	std::fstream symfile(smyfile);
-	symfile.open(smyfile, std::ios::out );
+	auto symfile_path = std::filesystem::path(argv[0]).parent_path().string();
+	symfile_path += "\\sym_dmp.txt";
+	if(std::filesystem::exists(symfile_path)) {
+		std::filesystem::remove(symfile_path);
+	}
+	std::fstream symfile;
+	symfile.open(symfile_path, std::ios::out );
+	
 	if (!symfile.is_open()) {
-		std::cerr << "Failed to open symbol dump file: " << smyfile << std::endl;
+		std::cerr << "Failed to open symbol dump file: " << symfile_path << std::endl;
 		return -1;
 	}
 	symfile << USL_COMPILER::SymbolTable::SymbolTableToString();
@@ -98,24 +93,7 @@ int main(int argc, char** argv)
 	symfile.close();
 
 
-	//std::stringstream strm;
-	//strm << file.rdbuf();
-	//std::string content = strm.str();
-	//
-	//antlr4::ANTLRInputStream input(stream);
-	//USLLexer lexer(&input);
-	//STORARE::lexer = &lexer;
-	//antlr4::CommonTokenStream tokens(&lexer);
-	//STORARE::tokens = &tokens;
-	//tokens.fill();
-	//for (auto token : tokens.getTokens()) {
-	//    std::cout << token->toString() << std::endl;
-	//}
-	//USLParser prser(&tokens);
-	//STORARE::parser = &prser;
-	//parser = &prser;
-	//antlr4::tree::ParseTree* tree = parser->program();
-	//std::cout << tree->toStringTree(parser) << std::endl;
+
 	return 0;
 }
 
