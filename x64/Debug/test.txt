@@ -1,0 +1,15 @@
+[TestAttribute]
+class Program{
+void Test(byte b, int i, long l, string s,char c, hash h, short sh){
+};
+void Main(int argc, long argv){
+int i ;
+int k;
+i=k;
+bool b;
+b= i==k;
+i==k=b;
+i=(5+3)*2*4+5;
+call Test(1+1,2,3,4,5,6,7);
+};
+}
