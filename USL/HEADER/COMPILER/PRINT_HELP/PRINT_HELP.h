@@ -76,6 +76,11 @@ possible options:
 			shows detailed errors in the compiler output
 			this for example contains the first token that failed to parse ( might be the closest to the error)
 			also shows what type of toke the first failed toke was excpected to be and what the few tokens before the error were
+		-langServerWork [sharedMemName] string [pointerToRegion] long [sizeOfRegion] long 
+			uses the compiler as a language server for USL
+			will not create a binary and instead will enter into the shared region specified by the arguments
+			and write a json version of the ast , symboltable and symbol resolve to it.
+			moght crash if no shared region with the specified name exists
 				)";
 			std::cout << helpText;
 		}

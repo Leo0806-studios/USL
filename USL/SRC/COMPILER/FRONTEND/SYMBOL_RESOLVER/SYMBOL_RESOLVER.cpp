@@ -1,5 +1,6 @@
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_RESOLVER/SYMBOL_RESOLVER.h"
 #include <HEADER/COMPILER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>
+#include <HEADER/COMPILER/FRONTEND/ERROR_TABLE/ERROR_TABLE.h>
 namespace USL_COMPILER {
 
 	struct TypeAndScope {
@@ -93,15 +94,50 @@ namespace USL_COMPILER {
 		SymbolTable::PopScopeStack();
 	}
 
-	void USL_COMPILER::SymbolResolver::enterClass_delcaratiom(USLParser::Class_delcaratiomContext* param)
+	void USL_COMPILER::SymbolResolver::enterClass_delcaration(USLParser::Class_delcarationContext* param)
 	{
 		SymbolTable::SetScope(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(param->ID()->toString())->GetScope());
 
 	}
 
-	void USL_COMPILER::SymbolResolver::exitClass_delcaratiom(USLParser::Class_delcaratiomContext* param)
+	void USL_COMPILER::SymbolResolver::exitClass_delcaration(USLParser::Class_delcarationContext* param)
 	{
 		SymbolTable::PopScopeStack();
+	}
+	static void ReportVoidParameter(const std::string& func, const size_t line, const size_t collum) {
+		ErrorPtr error = std::make_shared<SemanticError>(
+			"cant use Void as Type for parameter in function declaration: " + func,
+			line,
+			collum
+		);
+		ErrorTable::AddError(error, ErrorType::SEMANTIC_ERROR);
+	}
+	static void ReportNUnknownType(const std::string& func,const std::string& type, const size_t line, const size_t collum) {
+		ErrorPtr error = std::make_shared<SemanticError>(
+			"Type : " +type +" used as function parameter in "+func+ + " does not exists in any specified scope ",
+			line,
+			collum
+		);
+		ErrorTable::AddError(error, ErrorType::SEMANTIC_ERROR);
+	}
+	void ProcessParameter(USLParser::ParameterContext* parameter, std::shared_ptr<FunctionSymbol> FunctionSymbol) {
+		if (parameter->type()) {
+			TypeAndScope typeAndScope = TypeToString(parameter->type());
+			if (typeAndScope.scope.empty()) {
+				SymbolPtr type = SymbolTable::ResolveSymbol(typeAndScope.Type);
+				if (type) {
+					FunctionSymbol->AddParameter(type);
+				}
+				else {
+					const auto* const start = parameter->getStart();
+					ReportNUnknownType(parameter->ID()->toString(), typeAndScope.Type, start->getLine(), start->getCharPositionInLine());
+
+				}
+			}
+		}
+		else {
+			ReportVoidParameter(parameter->ID()->toString(), parameter->getStart()->getLine(), parameter->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void USL_COMPILER::SymbolResolver::enterFunction_declaration(USLParser::Function_declarationContext* param)
@@ -109,16 +145,39 @@ namespace USL_COMPILER {
 
 		SymbolTable::SetScope(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(param->ID()->toString())->GetScope());
 		SymbolPtr Func = SymbolTable::GetSymbolByName(param->ID()->toString());
-		auto a = TypeToString(param->type());
-		SymbolPtr rettype = nullptr;
-		if (a.scope.empty()) {
-			rettype = SymbolTable::ResolveSymbol(a.Type);
-
+		const TypeAndScope a = [&]() {	
+			if (param->type()) {
+			return TypeToString(param->type());
 		}
-		else{
-			rettype = SymbolTable::ResolveSymbol(a.Type, a.scope);
+		else {
+			return TypeAndScope{ .Type = param->VOID()->toString(), .scope = {} };
+		}}();
+		const SymbolPtr rettype = [&](){
+				if (a.scope.empty()) {
+					return  SymbolTable::ResolveSymbol(a.Type);
+
+				}
+				else {
+					return  SymbolTable::ResolveSymbol(a.Type, a.scope);
+				}
+				}();
+		if(rettype == nullptr) {
+			ReportNUnknownType(param->ID()->toString(), a.Type, param->getStart()->getLine(), param->getStart()->getCharPositionInLine());
+			return;
 		}
 		std::static_pointer_cast<FunctionSymbol>(Func)->SetReturnType(rettype);
+		auto asfuncsymbol = std::static_pointer_cast<FunctionSymbol>(Func);
+		if (!param->parameterList()) {
+			return;
+		}
+
+
+		auto parameter_list = param->parameterList();
+			auto parameters = parameter_list->parameter();
+			for (auto& parameter : parameter_list->parameter()) {
+				ProcessParameter(parameter, asfuncsymbol);
+			}
+		
 
 	}
 
@@ -131,111 +190,21 @@ namespace USL_COMPILER {
 	{
 		std::shared_ptr<VariableSymbol> varSymbol = std::static_pointer_cast<VariableSymbol>(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(param->ID()->toString()));
 		std::cout << "Var declaration: " << param->ID()->toString() <<"   ";
-		if (param->type()->scope_ressolution()) {
-			std::vector<std::string> scopes;
-			auto scopesss = param->type()->scope_ressolution()->ID();
-			for (auto& scope : scopesss) {
-				std::cout << scope->toString() << '\n';
-				scopes.push_back(scope->toString());
+		TypeAndScope typeAndScope = TypeToString(param->type());
+	
 
-			}
-			std::string symbolType{};
-			if (param->type()->ID()) {
-				symbolType = param->type()->ID()->toString();
+
+			if (typeAndScope.scope.empty()) {
+				auto it = SymbolTable::ResolveSymbol(typeAndScope.Type);
+				varSymbol->SetType(it);
 			}
 			else {
-				if (param->type()->primitives()->BOOL()) {
-					symbolType = param->type()->primitives()->BOOL()->toString();
-
-				}
-				else if (param->type()->primitives()->BYTE()) {
-					symbolType = param->type()->primitives()->BYTE()->toString();
-
-				}
-				else if (param->type()->primitives()->CHAR()) {
-					symbolType = param->type()->primitives()->CHAR()->toString();
-				}
-				else if (param->type()->primitives()->DOUBLE()) {
-					symbolType = param->type()->primitives()->DOUBLE()->toString();
-				}
-				else if (param->type()->primitives()->FLOAT()) {
-					symbolType = param->type()->primitives()->FLOAT()->toString();
-				}
-				else if (param->type()->primitives()->HASH()) {
-					symbolType = param->type()->primitives()->HASH()->toString();
-				}
-				else if (param->type()->primitives()->INT()) {
-					symbolType = param->type()->primitives()->INT()->toString();
-				}
-				else if (param->type()->primitives()->LONG()) {
-					symbolType = param->type()->primitives()->LONG()->toString();
-				}
-				else if (param->type()->primitives()->SHORT()) {
-					symbolType = param->type()->primitives()->SHORT()->toString();
-				}
-				else if (param->type()->primitives()->STRING()) {
-					symbolType = param->type()->primitives()->STRING()->toString();
-				}
-				else {
-					std::cerr << "Unknown type in var declaration: " << param->type()->getText() << std::endl;
-				}
-
-
-			}
-			auto it = SymbolTable::ResolveSymbol(symbolType, scopes);
-			varSymbol->SetType(it );
-
-		}
-		else {
-
-			std::string symbolType{};
-
-			if(param->type()->ID()) {
-				symbolType = param->type()->ID()->toString();
-			}
-			else {
-				if (param->type()->primitives()->BOOL()) {
-					symbolType = param->type()->primitives()->BOOL()->toString();
-
-				}
-				else if (param->type()->primitives()->BYTE()) {
-					symbolType = param->type()->primitives()->BYTE()->toString();
-
-				}
-				else if (param->type()->primitives()->CHAR()) {
-					symbolType = param->type()->primitives()->CHAR()->toString();
-				}
-				else if (param->type()->primitives()->DOUBLE()) {
-					symbolType = param->type()->primitives()->DOUBLE()->toString();
-				}
-				else if (param->type()->primitives()->FLOAT()) {
-					symbolType = param->type()->primitives()->FLOAT()->toString();
-				}
-				else if (param->type()->primitives()->HASH()){ 
-					symbolType = param->type()->primitives()->HASH()->toString();
-				}
-				else if (param->type()->primitives()->INT()) {
-					symbolType = param->type()->primitives()->INT()->toString();
-				}
-				else if (param->type()->primitives()->LONG()) {
-					symbolType = param->type()->primitives()->LONG()->toString();
-				}
-				else if (param->type()->primitives()->SHORT()) {
-					symbolType = param->type()->primitives()->SHORT()->toString();
-				}
-				else if (param->type()->primitives()->STRING()) {
-					symbolType = param->type()->primitives()->STRING()->toString();
-				}
-				else {
-					std::cerr << "Unknown type in var declaration: " << param->type()->getText() << std::endl;
-				}
-
-
+				auto it = SymbolTable::ResolveSymbol(typeAndScope.Type, typeAndScope.scope);
+				varSymbol->SetType(it);
 			}
 			
-			auto it = SymbolTable::ResolveSymbol(symbolType);
-			varSymbol->SetType(it);
-		}
+
+		
 	}
 
 	void USL_COMPILER::SymbolResolver::exitVar_declaration(USLParser::Var_declarationContext* param)

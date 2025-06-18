@@ -22,6 +22,10 @@ namespace USL_COMPILER
 		globalScope->addSymbol(std::make_shared<TypeSymbol>("void"));
 		globalScope->addSymbol(std::make_shared<TypeSymbol>("null"));
 		globalScope->addSymbol(std::make_shared<TypeSymbol>("bool"));
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ubyte"));
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ushort"));
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("uint"));
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ulong"));
 	}
 	void SymbolGatherer::enterProgram(USLParser::ProgramContext*)
 	{
@@ -53,7 +57,7 @@ namespace USL_COMPILER
 		(void)param;
 	}
 
-	void USL_COMPILER::SymbolGatherer::enterClass_delcaratiom(USLParser::Class_delcaratiomContext* param) {
+	void USL_COMPILER::SymbolGatherer::enterClass_delcaration(USLParser::Class_delcarationContext* param) {
 		std::cout << "entering class " << param->ID()->toString() << '\n';
 		std::shared_ptr<TypeSymbol> cls = std::make_shared<TypeSymbol>(param->ID()->toString());
 		cls->SetParent(SymbolTable::GetCurrentScope()->getOwnSymbol());
@@ -62,7 +66,7 @@ namespace USL_COMPILER
 		SymbolTable::SetScope(cls->getScope());
 	}
 
-	void USL_COMPILER::SymbolGatherer::exitClass_delcaratiom(USLParser::Class_delcaratiomContext* param)
+	void USL_COMPILER::SymbolGatherer::exitClass_delcaration(USLParser::Class_delcarationContext* param)
 	{
 		SymbolTable::PopScopeStack();
 		(void)param;
@@ -97,6 +101,13 @@ namespace USL_COMPILER
 	{
 	}
 	void SymbolGatherer::exitEnum_declaration(USLParser::Enum_declarationContext* param)
+	{
+	}
+	void SymbolGatherer::enterParameter(USLParser::ParameterContext* param)
+	{
+
+	}
+	void SymbolGatherer::exitParameter(USLParser::ParameterContext* param)
 	{
 	}
 }

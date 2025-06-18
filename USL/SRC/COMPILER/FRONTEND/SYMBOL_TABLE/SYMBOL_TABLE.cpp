@@ -27,6 +27,7 @@ namespace USL_COMPILER {
 			return "ST_NAMESPACE";
 			break;
 		}
+		case ScopeType::ST_ATTRIBUTE:{}
 		default: {
 			return "";
 			break;
@@ -57,6 +58,9 @@ namespace USL_COMPILER {
 			return "TYPE";
 			break;
 		}
+		case SymbolType::ATTRIBUTE: {
+
+		}
 		default: {
 			return "UNKNOWN";
 			break;
@@ -74,7 +78,15 @@ namespace USL_COMPILER {
 			break;
 		}
 		case SymbolType::FUNCTION: {
-			outText += intendent + "Name: " + Symbol->Name() + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			std::shared_ptr<FunctionSymbol> funcSymbol = std::static_pointer_cast<FunctionSymbol>(Symbol);
+			std::string parameters = "";
+			for (const auto& param : funcSymbol->GetParameters()) {
+				if (!parameters.empty()) {
+					parameters += ", ";
+				}
+				parameters += "parameter type: " + param->Name();
+			}
+			outText += intendent + "Name: " + Symbol->Name() + " Return Type: "+ funcSymbol->GetReturnType()->Name()+ "parameters : "+parameters + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
 
 			break;
 		}
@@ -92,6 +104,9 @@ namespace USL_COMPILER {
 			outText += intendent + "Name: " + Symbol->Name() + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
 
 			break;
+		}
+		case SymbolType::ATTRIBUTE: {
+
 		}
 		}
 
@@ -410,6 +425,15 @@ namespace USL_COMPILER {
 	{
 		this->returnType = ptr;
 	}
+	void FunctionSymbol::AddParameter(SymbolPtr parameter)
+	{
+		if (parameter) {
+			parameters.push_back(parameter);
+		}
+		else {
+			throw std::invalid_argument("Parameter cannot be null");
+		}
+	}
 	bool FunctionSymbol::IsScope() const
 	{
 		return true;
@@ -471,5 +495,28 @@ namespace USL_COMPILER {
 
 
 
+	bool AttributeSymbol::HasChildSymbols() const
+	{
+		return !symbols.empty();
+	}
+
+	std::unordered_map<std::string, std::shared_ptr<Symbol>>& AttributeSymbol::GetChildSymbols()
+	{
+		return symbols;
+	}
+
+	void AttributeSymbol::SetParent(std::shared_ptr<Symbol> parent_)
+	{
+	}
+
+	bool AttributeSymbol::IsScope() const
+	{
+		return true;
+	}
+
+	std::shared_ptr<Scope> AttributeSymbol::GetScope() const
+	{
+		return ownScope;
+	}
 
 }

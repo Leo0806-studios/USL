@@ -35,7 +35,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClass_delcaratiom(USLParser::Class_delcaratiomContext *ctx) override {
+  virtual std::any visitClass_delcaration(USLParser::Class_delcarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -48,6 +48,18 @@ public:
   }
 
   virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -127,6 +139,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitLitteral(USLParser::LitteralContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -152,6 +172,30 @@ public:
   }
 
   virtual std::any visitScope_ressolution(USLParser::Scope_ressolutionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitAtribute_parameter(USLParser::Atribute_parameterContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExtern_spec(USLParser::Extern_specContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitId_with_scope(USLParser::Id_with_scopeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) override {
     return visitChildren(ctx);
   }
 

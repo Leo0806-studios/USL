@@ -7,14 +7,16 @@ namespace USL_COMPILER {
 	enum class  ScopeType {
 		ST_NAMESPACE,
 		ST_CLASS,
-		ST_FUNCTION
+		ST_FUNCTION,
+		ST_ATTRIBUTE
 	};
 	enum class SymbolType {
 		VARIABLE,
 		FUNCTION,
 		TYPE,
 		ENUM,
-		NAMESPACE
+		NAMESPACE,
+		ATTRIBUTE
 	};
 	extern std::string ScopeTypeToString(ScopeType type);
 	extern std::string SymbolTypeToString(SymbolType type);
@@ -84,6 +86,9 @@ namespace USL_COMPILER {
 	explicit	FunctionSymbol(const std::string& name, SymbolPtr parent = nullptr);
 		void AddScope(std::shared_ptr<Scope> scope);
 		std::shared_ptr<Scope> getScope() const { return ownScope; }
+		void SetReturnType(SymbolPtr  ptr);
+		void AddParameter(SymbolPtr parameter);
+		const std::vector<SymbolPtr>& GetParameters() const { return parameters; }
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
 		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
@@ -91,7 +96,6 @@ namespace USL_COMPILER {
 		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
 		void addSymbol(SymbolPtr symbol)override;
-		void SetReturnType(SymbolPtr  ptr);
 
 		// Inherited via Symbol
 		bool IsScope() const override;
@@ -154,14 +158,24 @@ namespace USL_COMPILER {
 		bool IsScope() const override;
 		std::shared_ptr<Scope> GetScope() const override;
 	};
-
+	class AttributeSymbol : public Symbol {
+		SymbolPtr parent = nullptr;
+		std::unordered_map<std::string, SymbolPtr> symbols = {};
+		std::shared_ptr<Scope> ownScope = nullptr;
+	public:
+		explicit AttributeSymbol(const std::string& name, SymbolPtr parent = nullptr) : Symbol(SymbolType::ATTRIBUTE, name), parent(parent) {}
+		// Inherited via Symbol
+		bool HasChildSymbols() const override;
+		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
+		void SetParent(std::shared_ptr<Symbol> parent_) override;
+		bool IsScope() const override;
+		std::shared_ptr<Scope> GetScope() const override;
+	};
 
 
 	class Scope {
 	private:
 		std::shared_ptr<Scope> parent = nullptr;
-
-		//	std::unordered_map < std::string, SymbolPtr> symbols{};
 		SymbolPtr ownSymbol = nullptr;
 		ScopeType type;
 

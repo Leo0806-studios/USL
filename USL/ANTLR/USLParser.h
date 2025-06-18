@@ -13,33 +13,41 @@ class  USLParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    NAMESPACE = 8, CLASS = 9, ENUM = 10, ATRIBUTE = 11, BYTE = 12, SHORT = 13, 
-    INT = 14, LONG = 15, FLOAT = 16, DOUBLE = 17, HASH = 18, STRING = 19, 
-    CHAR = 20, VOID = 21, NULL_ = 22, BOOL = 23, SIGNDNES = 24, TEMPLATE = 25, 
-    ASYNC = 26, SYNC = 27, INTERNAL = 28, OPPERATOR = 29, UNSAFE = 30, STACK_ALLOC = 31, 
-    REINTERPRET_CAST = 32, STATIC_CAST = 33, UNSAFE_CAST = 34, CUSTOM_OP = 35, 
-    CUSTOM_KEYWORD = 36, CUSTOM_CONTROL = 37, TYPE_QUALIFYERS = 38, STATIC = 39, 
-    VIRTUAL = 40, NOEXCEPT = 41, OVERRIDE = 42, NULLPTR = 43, RETURN = 44, 
-    REQUIRES = 45, AUTO = 46, CALL = 47, ASSIGN_OP = 48, PLUS_OP = 49, MINUS_OP = 50, 
-    MULT_OP = 51, DIV_OP = 52, MOD_OP = 53, HASH_OP = 54, DEREF = 55, INCREMENT = 56, 
-    DECREMENT = 57, B_LEFT = 58, B_RIGHT = 59, EQUALS = 60, LESS = 61, LARGER = 62, 
-    NOT = 63, LESS_EQ = 64, LARGER_EQ = 65, SCOPE_RESSOLUTION_OP = 66, INT_LITTERAL = 67, 
-    FLOAT_LITTERAL = 68, CHAR_LITTERAL = 69, STRING_LITTERAL = 70, BOOL_LITTERAL = 71, 
-    COMMENT = 72, WS = 73, ID = 74, CUSTOM_OP_SYMBOLS = 75
+    T__7 = 8, T__8 = 9, NAMESPACE = 10, CLASS = 11, ENUM = 12, ATRIBUTE = 13, 
+    BYTE = 14, UBYTE = 15, SHORT = 16, USHORT = 17, INT = 18, UINT = 19, 
+    LONG = 20, ULONG = 21, FLOAT = 22, DOUBLE = 23, HASH = 24, STRING = 25, 
+    CHAR = 26, VOID = 27, NULL_ = 28, BOOL = 29, TEMPLATE = 30, ASYNC = 31, 
+    SYNC = 32, INTERNAL = 33, OPPERATOR = 34, UNSAFE = 35, STACK_ALLOC = 36, 
+    REINTERPRET_CAST = 37, STATIC_CAST = 38, UNSAFE_CAST = 39, CUSTOM_OP = 40, 
+    CUSTOM_KEYWORD = 41, CUSTOM_CONTROL = 42, TYPE_QUALIFYERS = 43, STATIC = 44, 
+    VIRTUAL = 45, NOEXCEPT = 46, OVERRIDE = 47, NULLPTR = 48, RETURN = 49, 
+    REQUIRES = 50, AUTO = 51, CALL = 52, EXTERN = 53, DECLSPEC = 54, DLLEXPORT = 55, 
+    DLLIMPORT = 56, NEW = 57, UNSAFE_NEW = 58, UNSAFE_DELETE = 59, INTRINSIC = 60, 
+    NORVO = 61, OVERLAPSWITH = 62, JUMPTABLE = 63, UNROLL = 64, VECTORIZE = 65, 
+    ASSIGN_OP = 66, PLUS_OP = 67, MINUS_OP = 68, MULT_OP = 69, DIV_OP = 70, 
+    MOD_OP = 71, HASH_OP = 72, DEREF = 73, INCREMENT = 74, DECREMENT = 75, 
+    B_LEFT = 76, B_RIGHT = 77, EQUALS = 78, LESS = 79, LARGER = 80, NOT = 81, 
+    LESS_EQ = 82, LARGER_EQ = 83, SCOPE_RESSOLUTION_OP = 84, INT_LITTERAL = 85, 
+    UINT_LITTERAL = 86, FLOAT_LITTERAL = 87, CHAR_LITTERAL = 88, STRING_LITTERAL = 89, 
+    BOOL_LITTERAL = 90, COMMENT = 91, WS = 92, ID = 93, CUSTOM_OP_SYMBOLS = 94
   };
 
   enum {
     RuleProgram = 0, RuleGlobal_statement = 1, RuleStatement = 2, RuleExpression = 3, 
-    RuleBasic_block = 4, RuleClass_delcaratiom = 5, RuleNamespace_declaration = 6, 
-    RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleEnum_declaration = 9, 
-    RuleVar_declaration = 10, RuleCustom_opperator_sym = 11, RuleNoexcept_specifyer = 12, 
-    RuleAssignment_expr = 13, RuleEquality_expr = 14, RuleComparison_expr = 15, 
-    RuleBitshift_expr = 16, RuleAdditive_expr = 17, RuleMultiplicative_expr = 18, 
-    RuleUnary_expr = 19, RulePrimary_expr = 20, RuleFunction_call = 21, 
-    RuleAtribute_constructor = 22, RuleAtrribute_requires = 23, RuleImplements_function = 24, 
-    RuleImplements_Var = 25, RulePrimitives = 26, RuleIntegral_type = 27, 
-    RuleLitteral = 28, RuleType = 29, RuleParameter = 30, RuleParameterList = 31, 
-    RuleClassmember_declaration = 32, RuleOperator_symbols = 33, RuleScope_ressolution = 34
+    RuleBasic_block = 4, RuleClass_delcaration = 5, RuleNamespace_declaration = 6, 
+    RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleIntrinsic_function_pre_declaration = 9, 
+    RuleExtern_function_pre_declaration = 10, RuleExter_function_declaratio = 11, 
+    RuleEnum_declaration = 12, RuleVar_declaration = 13, RuleCustom_opperator_sym = 14, 
+    RuleNoexcept_specifyer = 15, RuleAssignment_expr = 16, RuleEquality_expr = 17, 
+    RuleComparison_expr = 18, RuleBitshift_expr = 19, RuleAdditive_expr = 20, 
+    RuleMultiplicative_expr = 21, RuleUnary_expr = 22, RulePrimary_expr = 23, 
+    RuleFunction_call = 24, RuleAtribute_constructor = 25, RuleAtrribute_requires = 26, 
+    RuleImplements_function = 27, RuleImplements_Var = 28, RulePrimitives = 29, 
+    RuleIntegral_type = 30, RuleSigned_inegral_type = 31, RuleUnsigned_integral_type = 32, 
+    RuleLitteral = 33, RuleType = 34, RuleParameter = 35, RuleParameterList = 36, 
+    RuleClassmember_declaration = 37, RuleOperator_symbols = 38, RuleScope_ressolution = 39, 
+    RuleAtribute_parameter = 40, RuleAtribute_parameter_list = 41, RuleAtribute_decorators = 42, 
+    RuleExtern_spec = 43, RuleId_with_scope = 44, RuleFunction_call_parameters = 45
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -64,10 +72,13 @@ public:
   class StatementContext;
   class ExpressionContext;
   class Basic_blockContext;
-  class Class_delcaratiomContext;
+  class Class_delcarationContext;
   class Namespace_declarationContext;
   class Atribute_declarationContext;
   class Function_declarationContext;
+  class Intrinsic_function_pre_declarationContext;
+  class Extern_function_pre_declarationContext;
+  class Exter_function_declaratioContext;
   class Enum_declarationContext;
   class Var_declarationContext;
   class Custom_opperator_symContext;
@@ -87,13 +98,21 @@ public:
   class Implements_VarContext;
   class PrimitivesContext;
   class Integral_typeContext;
+  class Signed_inegral_typeContext;
+  class Unsigned_integral_typeContext;
   class LitteralContext;
   class TypeContext;
   class ParameterContext;
   class ParameterListContext;
   class Classmember_declarationContext;
   class Operator_symbolsContext;
-  class Scope_ressolutionContext; 
+  class Scope_ressolutionContext;
+  class Atribute_parameterContext;
+  class Atribute_parameter_listContext;
+  class Atribute_decoratorsContext;
+  class Extern_specContext;
+  class Id_with_scopeContext;
+  class Function_call_parametersContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -116,9 +135,12 @@ public:
   public:
     Global_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Class_delcaratiomContext *class_delcaratiom();
+    Class_delcarationContext *class_delcaration();
     Namespace_declarationContext *namespace_declaration();
     Enum_declarationContext *enum_declaration();
+    Atribute_declarationContext *atribute_declaration();
+    Intrinsic_function_pre_declarationContext *intrinsic_function_pre_declaration();
+    Extern_function_pre_declarationContext *extern_function_pre_declaration();
     StatementContext *statement();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -178,12 +200,13 @@ public:
 
   Basic_blockContext* basic_block();
 
-  class  Class_delcaratiomContext : public antlr4::ParserRuleContext {
+  class  Class_delcarationContext : public antlr4::ParserRuleContext {
   public:
-    Class_delcaratiomContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Class_delcarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *CLASS();
     antlr4::tree::TerminalNode *ID();
+    Atribute_decoratorsContext *atribute_decorators();
     std::vector<StatementContext *> statement();
     StatementContext* statement(size_t i);
 
@@ -194,7 +217,7 @@ public:
    
   };
 
-  Class_delcaratiomContext* class_delcaratiom();
+  Class_delcarationContext* class_delcaration();
 
   class  Namespace_declarationContext : public antlr4::ParserRuleContext {
   public:
@@ -257,6 +280,64 @@ public:
   };
 
   Function_declarationContext* function_declaration();
+
+  class  Intrinsic_function_pre_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Intrinsic_function_pre_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *INTRINSIC();
+    antlr4::tree::TerminalNode *ID();
+    antlr4::tree::TerminalNode *VOID();
+    TypeContext *type();
+    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    ParameterListContext *parameterList();
+    Noexcept_specifyerContext *noexcept_specifyer();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Intrinsic_function_pre_declarationContext* intrinsic_function_pre_declaration();
+
+  class  Extern_function_pre_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Extern_function_pre_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Extern_specContext *extern_spec();
+    antlr4::tree::TerminalNode *ID();
+    antlr4::tree::TerminalNode *VOID();
+    TypeContext *type();
+    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    ParameterListContext *parameterList();
+    Noexcept_specifyerContext *noexcept_specifyer();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Extern_function_pre_declarationContext* extern_function_pre_declaration();
+
+  class  Exter_function_declaratioContext : public antlr4::ParserRuleContext {
+  public:
+    Exter_function_declaratioContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Extern_specContext *extern_spec();
+    Function_declarationContext *function_declaration();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Exter_function_declaratioContext* exter_function_declaratio();
 
   class  Enum_declarationContext : public antlr4::ParserRuleContext {
   public:
@@ -355,6 +436,7 @@ public:
 
   class  Equality_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Comparison_exprContext *left = nullptr;
     Equality_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<Comparison_exprContext *> comparison_expr();
@@ -375,6 +457,7 @@ public:
 
   class  Comparison_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Bitshift_exprContext *left = nullptr;
     Comparison_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<Bitshift_exprContext *> bitshift_expr();
@@ -399,6 +482,7 @@ public:
 
   class  Bitshift_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Additive_exprContext *left = nullptr;
     Bitshift_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<Additive_exprContext *> additive_expr();
@@ -419,6 +503,7 @@ public:
 
   class  Additive_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Multiplicative_exprContext *left = nullptr;
     Additive_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<Multiplicative_exprContext *> multiplicative_expr();
@@ -439,6 +524,7 @@ public:
 
   class  Multiplicative_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Unary_exprContext *left = nullptr;
     Multiplicative_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<Unary_exprContext *> unary_expr();
@@ -464,8 +550,8 @@ public:
     Unary_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Primary_exprContext *primary_expr();
-    antlr4::tree::TerminalNode *PLUS_OP();
-    antlr4::tree::TerminalNode *MINUS_OP();
+    antlr4::tree::TerminalNode *INCREMENT();
+    antlr4::tree::TerminalNode *DECREMENT();
     antlr4::tree::TerminalNode *NOT();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -482,7 +568,7 @@ public:
     Primary_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Function_callContext *function_call();
-    antlr4::tree::TerminalNode *ID();
+    Id_with_scopeContext *id_with_scope();
     LitteralContext *litteral();
     ExpressionContext *expression();
 
@@ -500,10 +586,8 @@ public:
     Function_callContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *CALL();
-    antlr4::tree::TerminalNode *ID();
-    Scope_ressolutionContext *scope_ressolution();
-    std::vector<ExpressionContext *> expression();
-    ExpressionContext* expression(size_t i);
+    Id_with_scopeContext *id_with_scope();
+    Function_call_parametersContext *function_call_parameters();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -588,11 +672,15 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *BOOL();
     antlr4::tree::TerminalNode *BYTE();
+    antlr4::tree::TerminalNode *UBYTE();
     antlr4::tree::TerminalNode *SHORT();
+    antlr4::tree::TerminalNode *USHORT();
     antlr4::tree::TerminalNode *INT();
+    antlr4::tree::TerminalNode *UINT();
+    antlr4::tree::TerminalNode *LONG();
+    antlr4::tree::TerminalNode *ULONG();
     antlr4::tree::TerminalNode *FLOAT();
     antlr4::tree::TerminalNode *DOUBLE();
-    antlr4::tree::TerminalNode *LONG();
     antlr4::tree::TerminalNode *HASH();
     antlr4::tree::TerminalNode *STRING();
     antlr4::tree::TerminalNode *CHAR();
@@ -610,10 +698,8 @@ public:
   public:
     Integral_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *BYTE();
-    antlr4::tree::TerminalNode *SHORT();
-    antlr4::tree::TerminalNode *INT();
-    antlr4::tree::TerminalNode *SIGNDNES();
+    Signed_inegral_typeContext *signed_inegral_type();
+    Unsigned_integral_typeContext *unsigned_integral_type();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -624,12 +710,49 @@ public:
 
   Integral_typeContext* integral_type();
 
+  class  Signed_inegral_typeContext : public antlr4::ParserRuleContext {
+  public:
+    Signed_inegral_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *BYTE();
+    antlr4::tree::TerminalNode *SHORT();
+    antlr4::tree::TerminalNode *INT();
+    antlr4::tree::TerminalNode *LONG();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Signed_inegral_typeContext* signed_inegral_type();
+
+  class  Unsigned_integral_typeContext : public antlr4::ParserRuleContext {
+  public:
+    Unsigned_integral_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *UBYTE();
+    antlr4::tree::TerminalNode *USHORT();
+    antlr4::tree::TerminalNode *UINT();
+    antlr4::tree::TerminalNode *ULONG();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Unsigned_integral_typeContext* unsigned_integral_type();
+
   class  LitteralContext : public antlr4::ParserRuleContext {
   public:
     LitteralContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *STRING_LITTERAL();
     antlr4::tree::TerminalNode *INT_LITTERAL();
+    antlr4::tree::TerminalNode *UINT_LITTERAL();
     antlr4::tree::TerminalNode *FLOAT_LITTERAL();
     antlr4::tree::TerminalNode *CHAR_LITTERAL();
     antlr4::tree::TerminalNode *BOOL_LITTERAL();
@@ -752,6 +875,104 @@ public:
   };
 
   Scope_ressolutionContext* scope_ressolution();
+
+  class  Atribute_parameterContext : public antlr4::ParserRuleContext {
+  public:
+    Atribute_parameterContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *ID();
+    LitteralContext *litteral();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Atribute_parameterContext* atribute_parameter();
+
+  class  Atribute_parameter_listContext : public antlr4::ParserRuleContext {
+  public:
+    Atribute_parameter_listContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<Atribute_parameterContext *> atribute_parameter();
+    Atribute_parameterContext* atribute_parameter(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Atribute_parameter_listContext* atribute_parameter_list();
+
+  class  Atribute_decoratorsContext : public antlr4::ParserRuleContext {
+  public:
+    Atribute_decoratorsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<antlr4::tree::TerminalNode *> ID();
+    antlr4::tree::TerminalNode* ID(size_t i);
+    std::vector<Atribute_parameter_listContext *> atribute_parameter_list();
+    Atribute_parameter_listContext* atribute_parameter_list(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Atribute_decoratorsContext* atribute_decorators();
+
+  class  Extern_specContext : public antlr4::ParserRuleContext {
+  public:
+    Extern_specContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *EXTERN();
+    antlr4::tree::TerminalNode *STRING_LITTERAL();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Extern_specContext* extern_spec();
+
+  class  Id_with_scopeContext : public antlr4::ParserRuleContext {
+  public:
+    Id_with_scopeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *ID();
+    Scope_ressolutionContext *scope_ressolution();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Id_with_scopeContext* id_with_scope();
+
+  class  Function_call_parametersContext : public antlr4::ParserRuleContext {
+  public:
+    Function_call_parametersContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Function_call_parametersContext* function_call_parameters();
 
 
   // By default the static state used to implement the parser is lazily initialized during the first

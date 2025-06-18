@@ -14,6 +14,7 @@
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_RESOLVER/SYMBOL_RESOLVER.h"
 #include "HEADER/COMPILER/FRONTEND/SEMANTIC_ANALYZER/SEMANTIC_ANALYZER.h"
+#include "HEADER/COMPILER/FRONTEND/ERROR_TABLE/ERROR_TABLE.h"
 import std;
 
 void printAST(antlr4::tree::ParseTree* tree,antlr4::Parser* parser, const std::string& indent = "", bool last = true) {
@@ -56,7 +57,10 @@ int main(int argc, char** argv)
 	parser.addErrorListener(&errorListener); // Add custom error listener
 	auto tree = parser.program();
 	std::cout << "\n\n\n\n";
-
+	if (USL_COMPILER::ErrorTable::hasSyntacticError()) {
+		std::cout << USL_COMPILER::ErrorTable::AllErrorsToString() << '\n';
+		exit(-1);
+	}
 
 	printAST(tree,&parser);
 	std::cout << "\n\n\n\n";
@@ -72,7 +76,21 @@ int main(int argc, char** argv)
 	USL_COMPILER::SymbolResolver resolver;
 	walker.walk(&resolver, tree);
 	USL_COMPILER::SemanticAnalyzer semantinc_analyzer;
-	semantinc_analyzer.visit(tree);
+	std::any semantic_succses =semantinc_analyzer.visit(tree);
+	USL_COMPILER::ExpressionReturnType expr_type{};
+	try{
+		 expr_type = std::any_cast<USL_COMPILER::ExpressionReturnType>(semantic_succses);
+
+	}
+	catch (...) { std::cerr << "empty any return"; };
+
+	if (expr_type.succses) {
+		std::cout << "\n\n\n";
+	}
+	if (USL_COMPILER::ErrorTable::hasSemanticError()) {
+		std::cout << USL_COMPILER::ErrorTable::AllErrorsToString() << '\n';
+		exit(-1);
+	}
 
 	std::cout << "\n\n\n\nSymbol Gathered Successfully" << std::endl;
 	std::cout << USL_COMPILER::SymbolTable::SymbolTableToString() << std::endl;

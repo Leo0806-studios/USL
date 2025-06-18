@@ -57,6 +57,9 @@
     <ClCompile Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -106,6 +109,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HEADER\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VISIT_WRAPPER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VisitorReturnTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

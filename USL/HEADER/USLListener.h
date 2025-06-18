@@ -29,8 +29,8 @@ public:
   virtual void enterBasic_block(USLParser::Basic_blockContext *ctx) = 0;
   virtual void exitBasic_block(USLParser::Basic_blockContext *ctx) = 0;
 
-  virtual void enterClass_delcaratiom(USLParser::Class_delcaratiomContext *ctx) = 0;
-  virtual void exitClass_delcaratiom(USLParser::Class_delcaratiomContext *ctx) = 0;
+  virtual void enterClass_delcaration(USLParser::Class_delcarationContext *ctx) = 0;
+  virtual void exitClass_delcaration(USLParser::Class_delcarationContext *ctx) = 0;
 
   virtual void enterNamespace_declaration(USLParser::Namespace_declarationContext *ctx) = 0;
   virtual void exitNamespace_declaration(USLParser::Namespace_declarationContext *ctx) = 0;
@@ -98,6 +98,12 @@ public:
   virtual void enterIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
   virtual void exitIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
 
+  virtual void enterSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) = 0;
+  virtual void exitSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) = 0;
+
+  virtual void enterUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) = 0;
+  virtual void exitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) = 0;
+
   virtual void enterLitteral(USLParser::LitteralContext *ctx) = 0;
   virtual void exitLitteral(USLParser::LitteralContext *ctx) = 0;
 
@@ -118,6 +124,24 @@ public:
 
   virtual void enterScope_ressolution(USLParser::Scope_ressolutionContext *ctx) = 0;
   virtual void exitScope_ressolution(USLParser::Scope_ressolutionContext *ctx) = 0;
+
+  virtual void enterAtribute_parameter(USLParser::Atribute_parameterContext *ctx) = 0;
+  virtual void exitAtribute_parameter(USLParser::Atribute_parameterContext *ctx) = 0;
+
+  virtual void enterAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) = 0;
+  virtual void exitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) = 0;
+
+  virtual void enterAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) = 0;
+  virtual void exitAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) = 0;
+
+  virtual void enterExtern_spec(USLParser::Extern_specContext *ctx) = 0;
+  virtual void exitExtern_spec(USLParser::Extern_specContext *ctx) = 0;
+
+  virtual void enterId_with_scope(USLParser::Id_with_scopeContext *ctx) = 0;
+  virtual void exitId_with_scope(USLParser::Id_with_scopeContext *ctx) = 0;
+
+  virtual void enterFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
+  virtual void exitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
 
 
 };

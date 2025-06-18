@@ -29,7 +29,7 @@ public:
 
     virtual std::any visitBasic_block(USLParser::Basic_blockContext *context) = 0;
 
-    virtual std::any visitClass_delcaratiom(USLParser::Class_delcaratiomContext *context) = 0;
+    virtual std::any visitClass_delcaration(USLParser::Class_delcarationContext *context) = 0;
 
     virtual std::any visitNamespace_declaration(USLParser::Namespace_declarationContext *context) = 0;
 
@@ -75,6 +75,10 @@ public:
 
     virtual std::any visitIntegral_type(USLParser::Integral_typeContext *context) = 0;
 
+    virtual std::any visitSigned_inegral_type(USLParser::Signed_inegral_typeContext *context) = 0;
+
+    virtual std::any visitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *context) = 0;
+
     virtual std::any visitLitteral(USLParser::LitteralContext *context) = 0;
 
     virtual std::any visitType(USLParser::TypeContext *context) = 0;
@@ -88,6 +92,18 @@ public:
     virtual std::any visitOperator_symbols(USLParser::Operator_symbolsContext *context) = 0;
 
     virtual std::any visitScope_ressolution(USLParser::Scope_ressolutionContext *context) = 0;
+
+    virtual std::any visitAtribute_parameter(USLParser::Atribute_parameterContext *context) = 0;
+
+    virtual std::any visitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *context) = 0;
+
+    virtual std::any visitAtribute_decorators(USLParser::Atribute_decoratorsContext *context) = 0;
+
+    virtual std::any visitExtern_spec(USLParser::Extern_specContext *context) = 0;
+
+    virtual std::any visitId_with_scope(USLParser::Id_with_scopeContext *context) = 0;
+
+    virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *context) = 0;
 
 
 };

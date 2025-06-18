@@ -126,12 +126,14 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableSpecificWarnings>5045;4820;4514;4100;4505</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalBMIDirectories>C:\Users\leo08\source\repos\USL\USL;C:\Users\leo08\source\repos\USL\USL\HEADER;%(AdditionalBMIDirectories)</AdditionalBMIDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\leo08\source\repos\USL\depend;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>antlr4-runtime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <HeapReserveSize>31457280</HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.cpp" />
     <ClCompile Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.cpp" />
     <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.cpp" />
     <ClCompile Include="SRC\COMPILER\COMMAND_LINE\PARSER\PARSER.cpp" />
@@ -186,6 +189,7 @@
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
     <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSER\PARSER.h" />
     <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSSED_ARGS\PARSED_ARGS.h" />
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.h" />
     <ClInclude Include="HEADER\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.h" />
     <ClInclude Include="HEADER\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.h" />
     <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.h" />
@@ -198,6 +202,8 @@
     <ClInclude Include="HEADER\USLLexer.h" />
     <ClInclude Include="HEADER\USLParser.h" />
     <ClInclude Include="HEADER\USLVisitor.h" />
+    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VisitorReturnTypes.h" />
+    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VISIT_WRAPPER.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ANTLR\USL.g4" />

@@ -31,8 +31,8 @@ public:
   virtual void enterBasic_block(USLParser::Basic_blockContext * /*ctx*/) override { }
   virtual void exitBasic_block(USLParser::Basic_blockContext * /*ctx*/) override { }
 
-  virtual void enterClass_delcaratiom(USLParser::Class_delcaratiomContext * /*ctx*/) override { }
-  virtual void exitClass_delcaratiom(USLParser::Class_delcaratiomContext * /*ctx*/) override { }
+  virtual void enterClass_delcaration(USLParser::Class_delcarationContext * /*ctx*/) override { }
+  virtual void exitClass_delcaration(USLParser::Class_delcarationContext * /*ctx*/) override { }
 
   virtual void enterNamespace_declaration(USLParser::Namespace_declarationContext * /*ctx*/) override { }
   virtual void exitNamespace_declaration(USLParser::Namespace_declarationContext * /*ctx*/) override { }
@@ -100,6 +100,12 @@ public:
   virtual void enterIntegral_type(USLParser::Integral_typeContext * /*ctx*/) override { }
   virtual void exitIntegral_type(USLParser::Integral_typeContext * /*ctx*/) override { }
 
+  virtual void enterSigned_inegral_type(USLParser::Signed_inegral_typeContext * /*ctx*/) override { }
+  virtual void exitSigned_inegral_type(USLParser::Signed_inegral_typeContext * /*ctx*/) override { }
+
+  virtual void enterUnsigned_integral_type(USLParser::Unsigned_integral_typeContext * /*ctx*/) override { }
+  virtual void exitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext * /*ctx*/) override { }
+
   virtual void enterLitteral(USLParser::LitteralContext * /*ctx*/) override { }
   virtual void exitLitteral(USLParser::LitteralContext * /*ctx*/) override { }
 
@@ -120,6 +126,24 @@ public:
 
   virtual void enterScope_ressolution(USLParser::Scope_ressolutionContext * /*ctx*/) override { }
   virtual void exitScope_ressolution(USLParser::Scope_ressolutionContext * /*ctx*/) override { }
+
+  virtual void enterAtribute_parameter(USLParser::Atribute_parameterContext * /*ctx*/) override { }
+  virtual void exitAtribute_parameter(USLParser::Atribute_parameterContext * /*ctx*/) override { }
+
+  virtual void enterAtribute_parameter_list(USLParser::Atribute_parameter_listContext * /*ctx*/) override { }
+  virtual void exitAtribute_parameter_list(USLParser::Atribute_parameter_listContext * /*ctx*/) override { }
+
+  virtual void enterAtribute_decorators(USLParser::Atribute_decoratorsContext * /*ctx*/) override { }
+  virtual void exitAtribute_decorators(USLParser::Atribute_decoratorsContext * /*ctx*/) override { }
+
+  virtual void enterExtern_spec(USLParser::Extern_specContext * /*ctx*/) override { }
+  virtual void exitExtern_spec(USLParser::Extern_specContext * /*ctx*/) override { }
+
+  virtual void enterId_with_scope(USLParser::Id_with_scopeContext * /*ctx*/) override { }
+  virtual void exitId_with_scope(USLParser::Id_with_scopeContext * /*ctx*/) override { }
+
+  virtual void enterFunction_call_parameters(USLParser::Function_call_parametersContext * /*ctx*/) override { }
+  virtual void exitFunction_call_parameters(USLParser::Function_call_parametersContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

@@ -10,8 +10,8 @@ namespace USL_COMPILER {
 		void enterNamespace_declaration(USLParser::Namespace_declarationContext* param) override;
 		void exitNamespace_declaration(USLParser::Namespace_declarationContext* param) override;
 
-		 void enterClass_delcaratiom(USLParser::Class_delcaratiomContext* param) override;
-		 void exitClass_delcaratiom(USLParser::Class_delcaratiomContext* param) override;
+		 void enterClass_delcaration(USLParser::Class_delcarationContext* param) override;
+		 void exitClass_delcaration(USLParser::Class_delcarationContext* param) override;
 
 
 		void enterFunction_declaration(USLParser::Function_declarationContext* param) override;
@@ -21,6 +21,8 @@ namespace USL_COMPILER {
 
 		void enterEnum_declaration(USLParser::Enum_declarationContext* param) override;
 			void exitEnum_declaration(USLParser::Enum_declarationContext* param) override;
+			void enterParameter(USLParser::ParameterContext* param) override;
+			void exitParameter(USLParser::ParameterContext* param) override;
 
 	};
 }
