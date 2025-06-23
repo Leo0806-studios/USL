@@ -68,40 +68,41 @@ namespace USL_COMPILER {
 		}
 	}
 
-	void RecursiveSymbolTableWalker(std::string intendent, const SymbolPtr& Symbol, std::string& outText) {
+	void RecursiveSymbolTableWalker(std::string intendent, const SymbolPtr& Symbol, std::stringstream& outText) {
 		switch (Symbol->SymbolType()) {
 		case SymbolType::VARIABLE: {
 			std::shared_ptr<VariableSymbol> varSymbol = std::static_pointer_cast<VariableSymbol>(Symbol);
 			std::string varType = varSymbol->GetVariableType() ? varSymbol->GetVariableType()->Name() : "Unknown";
-			outText += intendent + "Name: " + Symbol->Name() +" Type: "+varType + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			outText << intendent << "Name: " << Symbol->Name() <<" Type: "+varType << " SymbolKind: " << SymbolTypeToString(Symbol->SymbolType()) << "\n";
 
 			break;
 		}
 		case SymbolType::FUNCTION: {
 			std::shared_ptr<FunctionSymbol> funcSymbol = std::static_pointer_cast<FunctionSymbol>(Symbol);
-			std::string parameters = "";
+			std::stringstream parameters ;
+			parameters << funcSymbol->GetParameters()[0]->Name();
 			for (const auto& param : funcSymbol->GetParameters()) {
-				if (!parameters.empty()) {
-					parameters += ", ";
+				if (param == funcSymbol->GetParameters()[0]) {
+					parameters << ", ";
 				}
-				parameters += "parameter type: " + param->Name();
+				parameters <<"parameter type: " << param->Name();
 			}
-			outText += intendent + "Name: " + Symbol->Name() + " Return Type: "+ funcSymbol->GetReturnType()->Name()+ "parameters : "+parameters + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			outText << intendent << "Name: " << Symbol->Name() <<" Return Type: "<< funcSymbol->GetReturnType()->Name()+ "parameters : "<<parameters.str() << " SymbolKind: " << SymbolTypeToString(Symbol->SymbolType()) << "\n";
 
 			break;
 		}
 		case SymbolType::TYPE: {
-			outText += intendent + "Name: " + Symbol->Name() + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			outText << intendent << "Name: " << Symbol->Name() <<" SymbolKind: " << SymbolTypeToString(Symbol->SymbolType())<< "\n";
 
 			break;
 		}
 		case SymbolType::ENUM: {
-			outText += intendent + "Name: " + Symbol->Name() + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			outText << intendent << "Name: " << Symbol->Name() << " SymbolKind: " << SymbolTypeToString(Symbol->SymbolType()) <<"\n";
 
 			break;
 		}
 		case SymbolType::NAMESPACE: {
-			outText += intendent + "Name: " + Symbol->Name() + " SymbolKind: " + SymbolTypeToString(Symbol->SymbolType()) + "\n";
+			outText << intendent << "Name: " << Symbol->Name() << " SymbolKind: " << SymbolTypeToString(Symbol->SymbolType()) << "\n";
 
 			break;
 		}
@@ -167,6 +168,14 @@ namespace USL_COMPILER {
 			tempStack.pop();
 		}
 		return currentScope;
+	}
+
+	ScopePtr SymbolTable::PushScopeStack(ScopePtr Scope)
+	{
+		if (!Scope) { return nullptr; }
+		scopeStack.push(Scope);
+		currentScope = Scope;
+		return Scope;
 	}
 
 
@@ -274,16 +283,17 @@ namespace USL_COMPILER {
 	std::string SymbolTable::SymbolTableToString()
 	{
 		auto root = std::static_pointer_cast<NamespaceSymbol>(rootSymbol);
-		std::string text = "Name:";
-		text += root->Name();
-		text += " Type: ";
-		text += SymbolTypeToString(root->SymbolType());
-		text += "\n";
+		std::stringstream text;
+		text <<"Name:";
+		text << root->Name();
+		text << " Type: ";
+		text << SymbolTypeToString(root->SymbolType());
+		text << "\n";
 		std::string intendent = "  ";
 		for (const auto& Symbols : root->getSymbols()) {
 			RecursiveSymbolTableWalker(intendent, Symbols.second, text);
 		}
-		return text;
+		return text.str();
 	}
 
 	ScopePtr SymbolTable::GetScopeByName(const std::string& name)

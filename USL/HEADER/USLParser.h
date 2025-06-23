@@ -22,30 +22,32 @@ public:
     CUSTOM_KEYWORD = 41, CUSTOM_CONTROL = 42, TYPE_QUALIFYERS = 43, STATIC = 44, 
     VIRTUAL = 45, NOEXCEPT = 46, OVERRIDE = 47, NULLPTR = 48, RETURN = 49, 
     REQUIRES = 50, AUTO = 51, CALL = 52, EXTERN = 53, DECLSPEC = 54, DLLEXPORT = 55, 
-    DLLIMPORT = 56, NEW = 57, UNSAFE_NEW = 58, UNSAFE_DELETE = 59, ASSIGN_OP = 60, 
-    PLUS_OP = 61, MINUS_OP = 62, MULT_OP = 63, DIV_OP = 64, MOD_OP = 65, 
-    HASH_OP = 66, DEREF = 67, INCREMENT = 68, DECREMENT = 69, B_LEFT = 70, 
-    B_RIGHT = 71, EQUALS = 72, LESS = 73, LARGER = 74, NOT = 75, LESS_EQ = 76, 
-    LARGER_EQ = 77, SCOPE_RESSOLUTION_OP = 78, INT_LITTERAL = 79, UINT_LITTERAL = 80, 
-    FLOAT_LITTERAL = 81, CHAR_LITTERAL = 82, STRING_LITTERAL = 83, BOOL_LITTERAL = 84, 
-    COMMENT = 85, WS = 86, ID = 87, CUSTOM_OP_SYMBOLS = 88
+    DLLIMPORT = 56, NEW = 57, UNSAFE_NEW = 58, UNSAFE_DELETE = 59, INTRINSIC = 60, 
+    NORVO = 61, OVERLAPSWITH = 62, JUMPTABLE = 63, UNROLL = 64, VECTORIZE = 65, 
+    ASSIGN_OP = 66, PLUS_OP = 67, MINUS_OP = 68, MULT_OP = 69, DIV_OP = 70, 
+    MOD_OP = 71, HASH_OP = 72, DEREF = 73, INCREMENT = 74, DECREMENT = 75, 
+    B_LEFT = 76, B_RIGHT = 77, EQUALS = 78, LESS = 79, LARGER = 80, NOT = 81, 
+    LESS_EQ = 82, LARGER_EQ = 83, SCOPE_RESSOLUTION_OP = 84, INT_LITTERAL = 85, 
+    UINT_LITTERAL = 86, FLOAT_LITTERAL = 87, CHAR_LITTERAL = 88, STRING_LITTERAL = 89, 
+    BOOL_LITTERAL = 90, COMMENT = 91, WS = 92, ID = 93, CUSTOM_OP_SYMBOLS = 94
   };
 
   enum {
     RuleProgram = 0, RuleGlobal_statement = 1, RuleStatement = 2, RuleExpression = 3, 
     RuleBasic_block = 4, RuleClass_delcaration = 5, RuleNamespace_declaration = 6, 
-    RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleEnum_declaration = 9, 
-    RuleVar_declaration = 10, RuleCustom_opperator_sym = 11, RuleNoexcept_specifyer = 12, 
-    RuleAssignment_expr = 13, RuleEquality_expr = 14, RuleComparison_expr = 15, 
-    RuleBitshift_expr = 16, RuleAdditive_expr = 17, RuleMultiplicative_expr = 18, 
-    RuleUnary_expr = 19, RulePrimary_expr = 20, RuleFunction_call = 21, 
-    RuleAtribute_constructor = 22, RuleAtrribute_requires = 23, RuleImplements_function = 24, 
-    RuleImplements_Var = 25, RulePrimitives = 26, RuleIntegral_type = 27, 
-    RuleSigned_inegral_type = 28, RuleUnsigned_integral_type = 29, RuleLitteral = 30, 
-    RuleType = 31, RuleParameter = 32, RuleParameterList = 33, RuleClassmember_declaration = 34, 
-    RuleOperator_symbols = 35, RuleScope_ressolution = 36, RuleAtribute_parameter = 37, 
-    RuleAtribute_parameter_list = 38, RuleAtribute_decorators = 39, RuleExtern_spec = 40, 
-    RuleId_with_scope = 41, RuleFunction_call_parameters = 42
+    RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleIntrinsic_function_pre_declaration = 9, 
+    RuleExtern_function_pre_declaration = 10, RuleExter_function_declaratio = 11, 
+    RuleEnum_declaration = 12, RuleVar_declaration = 13, RuleCustom_opperator_sym = 14, 
+    RuleNoexcept_specifyer = 15, RuleAssignment_expr = 16, RuleEquality_expr = 17, 
+    RuleComparison_expr = 18, RuleBitshift_expr = 19, RuleAdditive_expr = 20, 
+    RuleMultiplicative_expr = 21, RuleUnary_expr = 22, RulePrimary_expr = 23, 
+    RuleFunction_call = 24, RuleAtribute_constructor = 25, RuleAtrribute_requires = 26, 
+    RuleImplements_function = 27, RuleImplements_Var = 28, RulePrimitives = 29, 
+    RuleIntegral_type = 30, RuleSigned_inegral_type = 31, RuleUnsigned_integral_type = 32, 
+    RuleLitteral = 33, RuleType = 34, RuleParameter = 35, RuleParameterList = 36, 
+    RuleClassmember_declaration = 37, RuleOperator_symbols = 38, RuleScope_ressolution = 39, 
+    RuleAtribute_parameter = 40, RuleAtribute_parameter_list = 41, RuleAtribute_decorators = 42, 
+    RuleExtern_spec = 43, RuleId_with_scope = 44, RuleFunction_call_parameters = 45
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -74,6 +76,9 @@ public:
   class Namespace_declarationContext;
   class Atribute_declarationContext;
   class Function_declarationContext;
+  class Intrinsic_function_pre_declarationContext;
+  class Extern_function_pre_declarationContext;
+  class Exter_function_declaratioContext;
   class Enum_declarationContext;
   class Var_declarationContext;
   class Custom_opperator_symContext;
@@ -134,7 +139,8 @@ public:
     Namespace_declarationContext *namespace_declaration();
     Enum_declarationContext *enum_declaration();
     Atribute_declarationContext *atribute_declaration();
-    StatementContext *statement();
+    Intrinsic_function_pre_declarationContext *intrinsic_function_pre_declaration();
+    Extern_function_pre_declarationContext *extern_function_pre_declaration();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -200,8 +206,8 @@ public:
     antlr4::tree::TerminalNode *CLASS();
     antlr4::tree::TerminalNode *ID();
     Atribute_decoratorsContext *atribute_decorators();
-    std::vector<StatementContext *> statement();
-    StatementContext* statement(size_t i);
+    std::vector<Classmember_declarationContext *> classmember_declaration();
+    Classmember_declarationContext* classmember_declaration(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -274,6 +280,64 @@ public:
 
   Function_declarationContext* function_declaration();
 
+  class  Intrinsic_function_pre_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Intrinsic_function_pre_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *INTRINSIC();
+    antlr4::tree::TerminalNode *ID();
+    antlr4::tree::TerminalNode *VOID();
+    TypeContext *type();
+    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    ParameterListContext *parameterList();
+    Noexcept_specifyerContext *noexcept_specifyer();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Intrinsic_function_pre_declarationContext* intrinsic_function_pre_declaration();
+
+  class  Extern_function_pre_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Extern_function_pre_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Extern_specContext *extern_spec();
+    antlr4::tree::TerminalNode *ID();
+    antlr4::tree::TerminalNode *VOID();
+    TypeContext *type();
+    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    ParameterListContext *parameterList();
+    Noexcept_specifyerContext *noexcept_specifyer();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Extern_function_pre_declarationContext* extern_function_pre_declaration();
+
+  class  Exter_function_declaratioContext : public antlr4::ParserRuleContext {
+  public:
+    Exter_function_declaratioContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Extern_specContext *extern_spec();
+    Function_declarationContext *function_declaration();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Exter_function_declaratioContext* exter_function_declaratio();
+
   class  Enum_declarationContext : public antlr4::ParserRuleContext {
   public:
     Enum_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -298,6 +362,8 @@ public:
 
   class  Var_declarationContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::ExpressionContext *construct = nullptr;
+    USLParser::ExpressionContext *construct_assign = nullptr;
     Var_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     TypeContext *type();
@@ -305,8 +371,7 @@ public:
     antlr4::tree::TerminalNode *STATIC();
     antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
     antlr4::tree::TerminalNode *ASSIGN_OP();
-    std::vector<ExpressionContext *> expression();
-    ExpressionContext* expression(size_t i);
+    ExpressionContext *expression();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -354,6 +419,7 @@ public:
 
   class  Assignment_exprContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Equality_exprContext *left = nullptr;
     Assignment_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Equality_exprContext *equality_expr();

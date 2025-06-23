@@ -1,15 +1,30 @@
+
+
 [TestAttribute]
 class Program{
+int iiiii;
 void Test(byte b, int i, long l, string s,char c, hash h, short sh){
 };
 void Main(int argc, long argv){
-int i ;
-int k;
+i=5;
+long i =1;
+long k(1);
 i=k;
-bool b;
+bool b=true;
+double dd = 1.0;
 b= i==k;
-i==k=b;
 i=(5+3)*2*4+5;
-call Test(1+1,2,3,4,5,6,7);
+i<<10;
+bool bb;
+bb= i==k+1;
+i=1<<10;
+byte byt;
+int in;
+long lng;
+string str;
+char chr;
+hash hsh;
+short shrt;
+call Test(byt,in,lng,"str",'d',hsh,shrt);
 };
 }

@@ -58,6 +58,7 @@ OVERLAPSWITH                        :'__overlapswith';
 JUMPTABLE                           :'__jumptable';
 UNROLL                              :'__unroll';
 VECTORIZE                           :'__vectorize';
+TEST                                :'__test';
 //operators unary
 ASSIGN_OP                           :'=';
 PLUS_OP                             :'+';
@@ -91,7 +92,7 @@ SCOPE_RESSOLUTION_OP                :'::';
 INT_LITTERAL                        :'-'? [0-9]+ ;
 UINT_LITTERAL                       :[0-9]+;
 FLOAT_LITTERAL                      : [0-9]+('.'[0-9]*)? ;
-CHAR_LITTERAL                       : '\'' [^'] '\'';
+CHAR_LITTERAL                       : '\''[A-Za-z0-9-.,_:;\\]'\'';
 STRING_LITTERAL                     : '"' (~["\\] | '\\' .)* '"' ;
 BOOL_LITTERAL                       : 'true' | 'false' ;
         
@@ -102,7 +103,6 @@ WS                                  : [ \t\r\n]+ -> skip ;
 
 ID                                  : [a-zA-Z_][a-zA-Z0-9_]* ;
 CUSTOM_OP_SYMBOLS                   :[~^?$§@€];
-
 //Global Rules
 program                             :global_statement+ EOF;
 global_statement                    :   class_delcaration|
@@ -110,8 +110,8 @@ global_statement                    :   class_delcaration|
                                         enum_declaration|
                                         atribute_declaration|
                                         intrinsic_function_pre_declaration ';'|
-                                        extern_function_pre_declaration ';'|
-                                        statement;
+                                        extern_function_pre_declaration ';'
+                                        ;
 statement                           :(var_declaration|function_declaration|
                                     expression)';';
 
@@ -122,7 +122,7 @@ expression                          :assignment_expr;
 basic_block                         :'{' statement* '}';
 
 //statements
-class_delcaration                   :atribute_decorators? CLASS ID '{'statement*'}';
+class_delcaration                   :atribute_decorators? CLASS ID '{'classmember_declaration*'}';
 
 namespace_declaration               :NAMESPACE ID '{'global_statement*'}';
 atribute_declaration                :ATRIBUTE ID '{'atribute_constructor? atrribute_requires?'}';
@@ -131,15 +131,17 @@ function_declaration                :STATIC? TYPE_QUALIFYERS* VIRTUAL? (VOID|typ
 intrinsic_function_pre_declaration  :INTRINSIC TYPE_QUALIFYERS? (VOID|type) ID '('parameterList?')'noexcept_specifyer?;
 extern_function_pre_declaration     : extern_spec TYPE_QUALIFYERS? (VOID|type) ID '('parameterList?')' noexcept_specifyer?;
 exter_function_declaratio           : extern_spec function_declaration;
+unit_test_declaration               :test function_declaration;
+
 enum_declaration                    :ENUM (':' integral_type)?'{' ID ('=' INT_LITTERAL)? (','ID ('='INT_LITTERAL)?)*'}';
 
-var_declaration                     :STATIC? TYPE_QUALIFYERS? type ID(('('expression*')')|(ASSIGN_OP expression))?;
+var_declaration                     :STATIC? TYPE_QUALIFYERS? type ID(('('construct=expression')')|(ASSIGN_OP construct_assign=expression))?;
 
 custom_opperator_sym                : CUSTOM_OP '('CUSTOM_OP_SYMBOLS')' '('parameterList?')''{'statement*'}';
 
 noexcept_specifyer                  :NOEXCEPT '('BOOL_LITTERAL')';
 //expressions
-assignment_expr                     : equality_expr (ASSIGN_OP assignment_expr)? ;
+assignment_expr                     : left =equality_expr (ASSIGN_OP assignment_expr)? ;
 
 equality_expr                       : left=comparison_expr ((EQUALS | NOT) comparison_expr)* ;
 
@@ -180,7 +182,7 @@ litteral                            :STRING_LITTERAL|INT_LITTERAL|UINT_LITTERAL|
 type                                :primitives|(scope_ressolution?ID);
 parameter                           :TYPE_QUALIFYERS* type ID;
 parameterList                       :parameter(','parameter)*; 
-classmember_declaration             :function_declaration|var_declaration;
+classmember_declaration             :(function_declaration|var_declaration)';';
 operator_symbols                    :CUSTOM_OP_SYMBOLS|EQUALS|LESS|LARGER|NOT|LESS_EQ|LARGER_EQ|B_LEFT|B_RIGHT|INCREMENT|DECREMENT;
 scope_ressolution                   :ID (SCOPE_RESSOLUTION_OP ID)* SCOPE_RESSOLUTION_OP ;
 atribute_parameter                  :ID|litteral;
@@ -189,3 +191,4 @@ atribute_decorators                 :'['ID ('('atribute_parameter_list')')? (','
 extern_spec                         :EXTERN STRING_LITTERAL;
 id_with_scope                       :scope_ressolution? ID;
 function_call_parameters            :expression(','expression)*;
+test                                :TEST ('('name=STRING_LITTERAL ',' fuzzing=BOOL_LITTERAL','repeat_count=INT_LITTERAL ')');

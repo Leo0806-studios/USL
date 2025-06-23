@@ -4,28 +4,81 @@ import std;
 namespace USL_COMPILER
 {
 	static  std::stack<ScopePtr> scopeStrack{};
+
+
+
+
+
+	static void addbyte(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("byte"));
+	}
+	static void addshort(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("short"));
+	}
+	static void addint(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("int"));
+	}
+	static void addlong(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("long"));
+	}
+	static void addfloat(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("float"));
+	}
+	static void adddouble(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("double"));
+	}
+	static void addhash(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("hash"));
+	}
+	static void addstring(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("string"));
+	}
+	static void addchar(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("char"));
+	}
+	static void addvoid(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("void"));
+	}
+	static void addnull(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("null"));
+	}
+	static void addbool(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("bool"));
+	}
+	static void addubyte(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ubyte"));
+	}
+	static void addushort(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ushort"));
+	}
+	static void adduint(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("uint"));
+	}
+	static void addulong(std::shared_ptr<NamespaceSymbol> globalScope) {
+		globalScope->addSymbol(std::make_shared<TypeSymbol>("ulong"));
+	}
 	static void AddPrimitivesToGlobalnamespace()
 	{
 		std::shared_ptr<NamespaceSymbol> globalScope = std::static_pointer_cast<NamespaceSymbol>(SymbolTable::GetRootSymbol());
 		if (globalScope == nullptr)
 			return;
 
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("byte"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("short"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("int"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("long"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("float"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("double"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("hash"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("string"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("char"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("void"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("null"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("bool"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("ubyte"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("ushort"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("uint"));
-		globalScope->addSymbol(std::make_shared<TypeSymbol>("ulong"));
+		addbyte(globalScope);
+		addshort(globalScope);
+		addint(globalScope);
+		addlong(globalScope);
+		addfloat(globalScope);
+		adddouble(globalScope);
+		addhash(globalScope);
+		addstring(globalScope);
+		addchar(globalScope);
+		addvoid(globalScope);
+		addnull(globalScope);
+		addbool(globalScope);
+		addubyte(globalScope);
+		addushort(globalScope);
+		adduint(globalScope);
+		addulong(globalScope);
 	}
 	void SymbolGatherer::enterProgram(USLParser::ProgramContext*)
 	{
@@ -78,7 +131,8 @@ namespace USL_COMPILER
 		func->SetParent(SymbolTable::GetCurrentScope()->getOwnSymbol());
 		func->AddScope(std::make_shared<Scope>(ScopeType::ST_FUNCTION, func, SymbolTable::GetCurrentScope()));
 		SymbolTable::GetCurrentScope()->getOwnSymbol()->addSymbol(func);
-		SymbolTable::SetScope(func->getScope());
+		SymbolTable::PushScopeStack(func->getScope());
+		//SymbolTable::SetScope(func->getScope());
 	}
 	void SymbolGatherer::exitFunction_declaration(USLParser::Function_declarationContext* param)
 	{

@@ -63,6 +63,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitEnum_declaration(USLParser::Enum_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -196,6 +200,10 @@ public:
   }
 
   virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitTest(USLParser::TestContext *ctx) override {
     return visitChildren(ctx);
   }
 

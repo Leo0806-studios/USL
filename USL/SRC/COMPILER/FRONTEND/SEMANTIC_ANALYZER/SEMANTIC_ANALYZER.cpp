@@ -1,11 +1,21 @@
 #include "HEADER/COMPILER/FRONTEND/SEMANTIC_ANALYZER/SEMANTIC_ANALYZER.h"
 #include <HEADER/COMPILER/FRONTEND/ERROR_TABLE/ERROR_TABLE.h>
+
 namespace USL_COMPILER {
 	static void ReportError(const std::string& message, const antlr4::ParserRuleContext* ctx) {
 		ErrorTable::AddError(
 			std::make_shared<SemanticError>(message, ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine()),
 			ErrorType::SEMANTIC_ERROR);
 	}
+
+#define ReturnAndReportIfError(Condition,errortext,Context,passUp) \
+if(Condition){\
+		ReportError(\
+		errortext,Context\
+		);\
+passUp.succses=false;\
+return passUp;\
+}
 	struct TypeAndScope {
 		std::string Type{};
 		std::vector<std::string> scope{};
@@ -75,19 +85,29 @@ namespace USL_COMPILER {
 		TypeAndScope ret{ .Type = symbolType_,.scope = std::move(scopes_) };
 		return ret;
 	}
-	bool isIntegralType(const std::string& type) {
+	bool isIntegralType(const std::string_view& type) {
 		return type == "int" || type == "long" || type == "short" ||
 			type == "byte" || type == "ubyte" || type == "uint" ||
 			type == "ulong" || type == "ushort";
 	}
-	bool isFloatingPointType(const std::string& type) {
+	bool isFloatingPointType(const std::string_view& type) {
 		return type == "float" || type == "double";
+	}
+	bool isBooleanType(const std::string_view& type) {
+		return type == "bool";
 	}
 	std::any SemanticAnalyzer::visitProgram(USLParser::ProgramContext* ctx)
 	{
 		SymbolTable::SetScope(SymbolTable::GetRootSymbol()->GetScope());
 		std::cout << "visiting root\n";
-		auto ret = visitChildren(ctx);
+		auto Statements = ctx->global_statement();
+		for (auto& statement : Statements) {
+			StatementReturn StatRet = std::any_cast<StatementReturn>(visitGlobal_statement(statement));
+			ReturnAndReportIfError(!StatRet.succses,"statment malformed",ctx,StatRet)
+	
+		}
+
+		StatementReturn ret{ .succses = true };
 		SymbolTable::PopScopeStack();
 		return ret;
 	}
@@ -95,16 +115,28 @@ namespace USL_COMPILER {
 	{
 		std::cout << "visiting function: " << ctx->ID()->toString() << '\n';
 		SymbolTable::SetScope(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(ctx->ID()->toString())->GetScope());
-		auto ret = visitChildren(ctx);
+		const auto& Statements = ctx->statement();
+		for (auto& statement : Statements) {
+			StatementReturn statRet = std::any_cast<StatementReturn>(visitStatement(statement));
+			ReturnAndReportIfError(!statRet.succses,"statement errored",statement,statRet)
+		}
+		StatementReturn ret{};
+		ret.succses = true;
 		SymbolTable::PopScopeStack();
 		return ret;
 	}
 	std::any SemanticAnalyzer::visitNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
 	{
 		std::cout << "visiting namespace: " << ctx->ID()->toString() << '\n';
-
+		
 		SymbolTable::SetScope(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(ctx->ID()->toString())->GetScope());
-		auto ret = visitChildren(ctx);
+		const auto& Statements = ctx->global_statement();
+		for (auto& statement : Statements) {
+			StatementReturn StatRet = std::any_cast<StatementReturn>(visitGlobal_statement(statement));
+			ReturnAndReportIfError(!StatRet.succses,"statement error ",ctx,StatRet)
+		}
+		StatementReturn ret{.succses=true};
+	
 		SymbolTable::PopScopeStack();
 		return ret;
 	}
@@ -112,7 +144,12 @@ namespace USL_COMPILER {
 	{
 		std::cout << "visiting class: " << ctx->ID()->toString() << '\n';
 		SymbolTable::SetScope(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(ctx->ID()->toString())->GetScope());
-		auto ret = visitChildren(ctx);
+		const auto& Statements = ctx->classmember_declaration();
+		for (auto& statement : Statements) {
+			StatementReturn StatRet = std::any_cast<StatementReturn>(visitClassmember_declaration(statement));
+			ReturnAndReportIfError(!StatRet.succses,"statement error ", ctx,StatRet)
+		}
+		StatementReturn ret{ .succses = true };
 		SymbolTable::PopScopeStack();
 		return ret;
 	}
@@ -123,48 +160,123 @@ namespace USL_COMPILER {
 
 	std::any SemanticAnalyzer::visitGlobal_statement(USLParser::Global_statementContext* context)
 	{
+		StatementReturn ret{};
+		if (auto ClassPtr=context->class_delcaration()) {
+			StatementReturn classResult = std::any_cast<StatementReturn>(visitClass_delcaration(ClassPtr));
+			ReturnAndReportIfError(!classResult.succses,"class statement malformed", context, classResult)
+		}
+		else if (auto NamespacePtr = context->namespace_declaration()) {
+			StatementReturn NamespaceResult = std::any_cast<StatementReturn>(visitNamespace_declaration(NamespacePtr));
+			ReturnAndReportIfError(!NamespaceResult.succses,"namespac Statement malformed",context,NamespaceResult)
+		}
+		else if (auto EnumPtr = context->enum_declaration()) {
+			StatementReturn EnumResult = std::any_cast<StatementReturn>(visitEnum_declaration(EnumPtr));
+			ReturnAndReportIfError(!EnumResult.succses," enum statment malformed", context,EnumResult)
+		}
+		else if (auto AtributePtr = context->atribute_declaration()) {
+			StatementReturn AtributReslut = std::any_cast<StatementReturn>(visitAtribute_declaration(AtributePtr));
+				ReturnAndReportIfError(!AtributReslut.succses,"atribute statement malformed",context,AtributReslut)
+		}
+		else if (auto intrinsicPtr = context->intrinsic_function_pre_declaration()) {
+			StatementReturn intrinsicResult = std::any_cast<StatementReturn>(visitIntrinsic_function_pre_declaration(intrinsicPtr));
+			ReturnAndReportIfError(!intrinsicResult.succses,"intrinsic statement malformed ",context,intrinsicResult)
+		}
+		else if (auto ExternPtr = context->extern_function_pre_declaration()) {
+			StatementReturn externResult = std::any_cast<StatementReturn>(visitExtern_function_pre_declaration(ExternPtr));
+			ReturnAndReportIfError(!externResult.succses,"extern statement malformed ",context,externResult)
+		}
+		else {
+			ReportError(
+				"unknown statement", context
+			);
+			return ret;
+
+		}
+		ret.succses = true;
 		return visitChildren(context);
 	}
 
 	std::any SemanticAnalyzer::visitStatement(USLParser::StatementContext* context)
 	{
+		StatementReturn ret{};
+		if (auto VarPtr = context->var_declaration()) {
+			StatementReturn VarResult = std::any_cast<StatementReturn>(visitVar_declaration(VarPtr));
+			ReturnAndReportIfError(!VarResult.succses,"Var declaration Malformed",context,ret)
+		}
+		else if (auto FuncPtr = context->function_declaration()) {
+			StatementReturn FuncResult = std::any_cast<StatementReturn>(visitFunction_declaration(FuncPtr));
+				ReturnAndReportIfError(!FuncResult.succses, "function declaration malformed", context, FuncResult)
+		}
+		else if (auto ExpressionPtr = context->expression()) {
+			ExpressionReturnType ExpressionResult = std::any_cast<ExpressionReturnType>(visitExpression(ExpressionPtr));
+			ReturnAndReportIfError(!ExpressionResult.succses,"expression Malformed",context,ret)
+		}
+		else {
+			ReportError(
+				"unknown statement", context
+			);
+			return ret;
+		}
 
 
-		return visitChildren(context);
+		ret.succses = true;
+		return ret;
 	}
 
 	std::any SemanticAnalyzer::visitExpression(USLParser::ExpressionContext* context)
 	{
-		return visitChildren(context);
+
+		return visitAssignment_expr(context->assignment_expr());
 	}
 
 	std::any SemanticAnalyzer::visitBasic_block(USLParser::Basic_blockContext* context)
 	{
+
+
 		return visitChildren(context);
 	}
 
 	std::any SemanticAnalyzer::visitAtribute_declaration(USLParser::Atribute_declarationContext* context)
 	{
+
 		return visitChildren(context);
 	}
 
 	std::any SemanticAnalyzer::visitEnum_declaration(USLParser::Enum_declarationContext* context)
 	{
+
 		return visitChildren(context);
 	}
 
 	std::any SemanticAnalyzer::visitVar_declaration(USLParser::Var_declarationContext* context)
 	{
-		return visitChildren(context);
+		std::shared_ptr<VariableSymbol> self = std::static_pointer_cast<VariableSymbol>(SymbolTable::GetSymbolByName(context->ID()->toString()));
+
+		StatementReturn ret{};
+		if (context->construct) {
+			ExpressionReturnType Construct = std::any_cast<ExpressionReturnType>(visitExpression(context->construct));
+			ReturnAndReportIfError(!(self->GetVariableType()==Construct.ReturnType)," can only assign to var of same type",context,ret)
+		}
+		else if (context->construct_assign) {
+			ExpressionReturnType Construct = std::any_cast<ExpressionReturnType>(visitExpression(context->construct_assign));
+			ReturnAndReportIfError(!(self->GetVariableType() == Construct.ReturnType), " can only assign to var of same type", context, ret)
+		}
+		else {
+			//nothing to do if no assign on default construction
+		}
+		ret.succses = true;
+		return ret;
 	}
 
 	std::any SemanticAnalyzer::visitCustom_opperator_sym(USLParser::Custom_opperator_symContext* context)
 	{
+
 		return visitChildren(context);
 	}
 
 	std::any SemanticAnalyzer::visitNoexcept_specifyer(USLParser::Noexcept_specifyerContext* context)
 	{
+
 		return visitChildren(context);
 	}
 
@@ -197,6 +309,12 @@ namespace USL_COMPILER {
 
 	std::any SemanticAnalyzer::visitClassmember_declaration(USLParser::Classmember_declarationContext* context)
 	{
+		if (auto VarPtr = context->var_declaration()) {
+			return visitVar_declaration(VarPtr);
+		}
+		else if (auto FuncPtr = context->function_declaration()) {
+			return visitFunction_declaration(FuncPtr);
+		}
 		return visitChildren(context);
 	}
 
@@ -211,31 +329,150 @@ namespace USL_COMPILER {
 
 	std::any SemanticAnalyzer::visitAssignment_expr(USLParser::Assignment_exprContext* ctx)
 	{
-		if (ctx->children.size() == 1) {
-			std::cout << "no assigment expression\n";
+		if (ctx->ASSIGN_OP()) {
+			std::cout << ' ';
+		}
+		auto left = ctx->left;
+		ExpressionReturnType ret{};
+		ExpressionReturnType LeftResult = std::any_cast<ExpressionReturnType>(visitEquality_expr(left));
+		if (!LeftResult.succses) {
+			ReportError(
+				"left expression failed " + ctx->left->toString(),
+				ctx
+			);
+			return LeftResult;
+		}
+		if (ctx->ASSIGN_OP()) {
+			if (!LeftResult.isLValue) {
+				ReportError(
+					"can only asign to an lvalue. lfet was not an lvalue",
+					ctx
+				);
+				ret.succses = false;
+				return ret;
+			}
+			auto RightSide = ctx->assignment_expr();
+			ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitAssignment_expr(RightSide));
+			if (!RightResult.succses) {
+				ReportError(
+					"right expression failed.",
+					ctx
+				);
+				return RightResult;
+			}
+			if (!(LeftResult.ReturnType == RightResult.ReturnType)) {
+				ReportError(
+					"can only asign to variable of the same type. left was " + LeftResult.ReturnType->Name() + " right was " + RightResult.ReturnType->Name(),
+					ctx
+				);
+				ret.succses = false;
+				return ret;
+			}
+			ret.ReturnType = LeftResult.ReturnType;
+			ret.isConst = false;
+			ret.isLValue = true;
+			ret.succses = true;
 		}
 		else {
-			std::cout << "assigment expression\n";
-
+			ret = LeftResult;//just pass it up if no asigment
 		}
-		return visitChildren(ctx);
+		return ret;
 	}
 	std::any SemanticAnalyzer::visitEquality_expr(USLParser::Equality_exprContext* context)
 	{
-		return visitChildren(context);
+		auto left = context->left;
+		ExpressionReturnType ret{};
+		ExpressionReturnType LeftResult = std::any_cast<ExpressionReturnType>(visitComparison_expr(left));
+		ReturnAndReportIfError(!LeftResult.succses, "left expression failed " + context->left->toString(),context, LeftResult)
+
+		if (context->children.size()>1) {
+			if (!(isIntegralType(LeftResult.ReturnType->Name()) || isFloatingPointType(LeftResult.ReturnType->Name()) || isBooleanType(LeftResult.ReturnType->Name()))) {
+				ReportError(
+					"can only do equality expressions on integral ,floating point or on boolean types. left was: " + LeftResult.ReturnType->Name(),
+					context
+				);
+				ret.succses = false;
+				return ret;
+
+			}
+			auto Rightside = context->comparison_expr();
+			// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
+			std::erase_if(Rightside, [left](const USLParser::Comparison_exprContext* expr) { return expr == left; });
+
+
+			for (auto& expr : Rightside) {
+				ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitComparison_expr(expr));
+				if (!(isIntegralType(RightResult.ReturnType->Name()) || isFloatingPointType(RightResult.ReturnType->Name()) || isBooleanType(RightResult.ReturnType->Name()))) {
+					ReportError(
+						"can only do comparisions on integral ,floatingpoito r on boolean types. right was: " + RightResult.ReturnType->Name(),
+						context
+					);
+					ret.succses = false;
+					return ret;
+				}
+			}
+			ret.ReturnType = SymbolTable::GetRootSymbol()->GetChildSymbols().at("bool");
+			ret.succses = true;
+		}
+		else {
+			ret = LeftResult;//if it has only one child its no equality check so juts pass te return up
+		}
+		return ret;
 	}
 
 	std::any SemanticAnalyzer::visitComparison_expr(USLParser::Comparison_exprContext* context)
 	{
-		
-		return visitChildren(context);
+		auto left = context->left;
+		ExpressionReturnType ret{};
+		ExpressionReturnType LeftResult = std::any_cast<ExpressionReturnType>(visitBitshift_expr(left));
+		ReturnAndReportIfError(!LeftResult.succses, "left expression failed " + context->left->toString(), context, LeftResult)
+		if (context->children.size() > 1) {
+			std::string LeftReturnName = LeftResult.ReturnType->Name();
+			ReturnAndReportIfError(!(isIntegralType(LeftReturnName)||isFloatingPointType(LeftReturnName)||isBooleanType(LeftReturnName)),
+				"can only do comparisions on integral ,floating point or on boolean types. left was: "+LeftReturnName,context,ret)
+			auto Rightside = context->bitshift_expr();
+			// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
+			std::erase_if(Rightside, [left](const USLParser::Bitshift_exprContext* expr) { return expr == left; });
+			for (auto& expr : Rightside) {
+				ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitBitshift_expr(expr));
+				std::string RightReturnName = RightResult.ReturnType->Name();
+				ReturnAndReportIfError(!(isIntegralType(RightReturnName) || isFloatingPointType(RightReturnName) || isBooleanType(RightReturnName)),
+					"can only do comparisions on integral ,floating point or on boolean types. right was: " + RightReturnName, context, ret)
+			}
+			ret.ReturnType = SymbolTable::GetRootSymbol()->GetChildSymbols().at("bool");
+			ret.succses = true;
+		}
+		else {
+			ret = LeftResult;// if children.size ==1 it is no compariosion so just pas the result up
+		}
+		return ret;
 	}
 
 	std::any SemanticAnalyzer::visitBitshift_expr(USLParser::Bitshift_exprContext* context)
 	{
 		auto left = context->left;
+		ExpressionReturnType ret{};
 		ExpressionReturnType LefRsult = std::any_cast<ExpressionReturnType>(visitAdditive_expr(left));
-		return visitChildren(context);
+		ReturnAndReportIfError(!LefRsult.succses, "left expression failed " + context->left->toString(),context,LefRsult)
+		if (context->children.size() > 1) {
+			std::string LeftresultName = LefRsult.ReturnType->Name();
+			ReturnAndReportIfError(!isIntegralType(LeftresultName), "can only do bitshifts on integral types. left was: " + LeftresultName,context,ret)
+			auto Rightside = context->additive_expr();
+			// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
+			std::erase_if(Rightside, [left](const USLParser::Additive_exprContext* expr) { return expr == left; });
+			for (auto& expr : Rightside) {
+				ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitAdditive_expr(expr));
+				std::string RightResultName = RightResult.ReturnType->Name();
+				ReturnAndReportIfError(!(RightResult.succses || !isIntegralType(RightResultName)), 
+					"can only do bitshifts on integral types. right was: " + RightResultName,context,ret)
+			}
+			ret.ReturnType = LefRsult.ReturnType;//caries the returntype of the left side of the expression;
+			ret.succses = true;
+		}
+		else {
+			ret = LefRsult;// if children.size == 1 it is no bitshift so just pass te result up;
+		}
+		return ret;
 	}
 
 	std::any SemanticAnalyzer::visitAdditive_expr(USLParser::Additive_exprContext* context)
@@ -249,56 +486,62 @@ namespace USL_COMPILER {
 				context);
 			return LefRsult; //pass the error up
 		}
-		if(!isIntegralType(LefRsult.ReturnType->Name()) && !isFloatingPointType(LefRsult.ReturnType->Name())) {
-			ReportError(
-				"additive expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
-				context);
-			ret.succses = false; 
-			return ret; //returning the error
-		}
-		auto Rightside = context->multiplicative_expr();
-		// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
-		std::erase_if(Rightside, [left](const USLParser::Multiplicative_exprContext* expr) { return expr == left; });
-		bool hasInvalidType = false;
-		bool containsFloating = false;
-		for (auto* expr : Rightside) {
-			ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitMultiplicative_expr(expr));
-			if (!RightResult.succses ||
-				(!isIntegralType(RightResult.ReturnType->Name()) &&
-					!isFloatingPointType(RightResult.ReturnType->Name()))) {
-				hasInvalidType = true;
-				ReportError(
-					"additive expression can only be used on integral or floating point types: " +
-					LefRsult.ReturnType->Name(), context);
-				ret.succses = false;
-				return ret;
-			}
-			if (RightResult.ReturnType->Name() == "float") {
-				containsFloating = true;
-			}
-		}
-		if(hasInvalidType) {
-			ReportError(
-				"additive expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
-				context);
-			ret.succses = false; //if any of the right side expressions are not valid, override succses to false
-			return ret; //returning the error
-		}
-		//promoting to floating point if any of the operands are floating point
-		if (containsFloating || (LefRsult.ReturnType->Name() == "float" || LefRsult.ReturnType->Name() == "double")) {
+		if (context->children.size() > 1) {
 
-			ret.ReturnType = SymbolTable::GetSymbolByName("double"); //promoting to double if any of the operands are floating point
-			ret.succses = true; //this will be overridden if the function call fails, this is only done to reduce if else clutter
-			ret.isLValue = false; //multiplicative expressions are not lvalues
-			ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
-			ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			if (!isIntegralType(LefRsult.ReturnType->Name()) && !isFloatingPointType(LefRsult.ReturnType->Name())) {
+				ReportError(
+					"additive expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
+					context);
+				ret.succses = false;
+				return ret; //returning the error
+			}
+			auto Rightside = context->multiplicative_expr();
+			// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
+			std::erase_if(Rightside, [left](const USLParser::Multiplicative_exprContext* expr) { return expr == left; });
+			bool hasInvalidType = false;
+			bool containsFloating = false;
+			for (auto* expr : Rightside) {
+				ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitMultiplicative_expr(expr));
+				if (!RightResult.succses ||
+					(!isIntegralType(RightResult.ReturnType->Name()) &&
+						!isFloatingPointType(RightResult.ReturnType->Name()))) {
+					hasInvalidType = true;
+					ReportError(
+						"additive expression can only be used on integral or floating point types: " +
+						LefRsult.ReturnType->Name(), context);
+					ret.succses = false;
+					return ret;
+				}
+				if (RightResult.ReturnType->Name() == "float") {
+					containsFloating = true;
+				}
+			}
+			if (hasInvalidType) {
+				ReportError(
+					"additive expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
+					context);
+				ret.succses = false; //if any of the right side expressions are not valid, override succses to false
+				return ret; //returning the error
+			}
+			//promoting to floating point if any of the operands are floating point
+			if (containsFloating || (LefRsult.ReturnType->Name() == "float" || LefRsult.ReturnType->Name() == "double")) {
+
+				ret.ReturnType = SymbolTable::GetSymbolByName("double"); //promoting to double if any of the operands are floating point
+				ret.succses = true; //this will be overridden if the function call fails, this is only done to reduce if else clutter
+				ret.isLValue = false; //multiplicative expressions are not lvalues
+				ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
+				ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			}
+			else {
+				ret.ReturnType = LefRsult.ReturnType; //if no floating point types, the return type is the same as the left side expression
+				ret.succses = true;
+				ret.isLValue = false; //multiplicative expressions are not lvalues
+				ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
+				ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			}
 		}
 		else {
-			ret.ReturnType = LefRsult.ReturnType; //if no floating point types, the return type is the same as the left side expression
-			ret.succses = true;
-			ret.isLValue = false; //multiplicative expressions are not lvalues
-			ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
-			ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			ret = LefRsult;//if children.size == 1 its no additive expression so just pas the result up;
 		}
 		return ret;
 	}
@@ -314,64 +557,69 @@ namespace USL_COMPILER {
 				context);
 			return LefRsult; //pass the error up
 		}
-		if(!isIntegralType(LefRsult.ReturnType->Name()) && !isFloatingPointType(LefRsult.ReturnType->Name())) {
-			ReportError(
-				"multiplicative expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
-				context);
-			ret.succses = false; 
-			return ret; //returning the error
-		}
+		if (context->children.size() > 1) {
 
-		auto Rightside = context->unary_expr();
-		// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
-		std::erase_if(Rightside, [left](const USLParser::Unary_exprContext* expr) { return expr == left; });
-		bool hasInvalidType = false;
-		bool containsFloating = false;
-		for (auto* expr : Rightside) {
-			ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitUnary_expr(expr));
-
-			if (!RightResult.succses ||
-				(!isIntegralType(RightResult.ReturnType->Name()) &&
-					!isFloatingPointType(RightResult.ReturnType->Name()))) {
-				hasInvalidType = true;
-
+			if (!isIntegralType(LefRsult.ReturnType->Name()) && !isFloatingPointType(LefRsult.ReturnType->Name())) {
 				ReportError(
-					"multiplicative expression can only be used on integral or floating point types: " +
-					LefRsult.ReturnType->Name(), context);
-
+					"multiplicative expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
+					context);
 				ret.succses = false;
-				return ret;
+				return ret; //returning the error
 			}
 
-			if (RightResult.ReturnType->Name() == "float") {
-				containsFloating = true;
-			}
-		}
-		
-		if(hasInvalidType) {
-			ReportError(
-				"multiplicative expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
-				context);
-			ret.succses = false; //if any of the right side expressions are not valid, override succses to false
-			return ret; //returning the error
-		}
-		//promoting to floating point if any of the operands are floating point
-		if (containsFloating || (LefRsult.ReturnType->Name() == "float"|| LefRsult.ReturnType->Name() == "double")) {
+			auto Rightside = context->unary_expr();
+			// should not be neccesary (hopefully) but just to be sure it removes left from the vector to avoid working on it twice
+			std::erase_if(Rightside, [left](const USLParser::Unary_exprContext* expr) { return expr == left; });
+			bool hasInvalidType = false;
+			bool containsFloating = false;
+			for (auto* expr : Rightside) {
+				ExpressionReturnType RightResult = std::any_cast<ExpressionReturnType>(visitUnary_expr(expr));
 
-			ret.ReturnType = SymbolTable::GetSymbolByName("double"); //promoting to double if any of the operands are floating point
-			ret.succses = true; //this will be overridden if the function call fails, this is only done to reduce if else clutter
-			ret.isLValue = false; //multiplicative expressions are not lvalues
-			ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
-			ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+				if (!RightResult.succses ||
+					(!isIntegralType(RightResult.ReturnType->Name()) &&
+						!isFloatingPointType(RightResult.ReturnType->Name()))) {
+					hasInvalidType = true;
+
+					ReportError(
+						"multiplicative expression can only be used on integral or floating point types: " +
+						LefRsult.ReturnType->Name(), context);
+
+					ret.succses = false;
+					return ret;
+				}
+
+				if (RightResult.ReturnType->Name() == "float") {
+					containsFloating = true;
+				}
+			}
+
+			if (hasInvalidType) {
+				ReportError(
+					"multiplicative expression can only be used on integral or floating point types: " + LefRsult.ReturnType->Name(),
+					context);
+				ret.succses = false; //if any of the right side expressions are not valid, override succses to false
+				return ret; //returning the error
+			}
+			//promoting to floating point if any of the operands are floating point
+			if (containsFloating || (LefRsult.ReturnType->Name() == "float" || LefRsult.ReturnType->Name() == "double")) {
+
+				ret.ReturnType = SymbolTable::GetSymbolByName("double"); //promoting to double if any of the operands are floating point
+				ret.succses = true; //this will be overridden if the function call fails, this is only done to reduce if else clutter
+				ret.isLValue = false; //multiplicative expressions are not lvalues
+				ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
+				ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			}
+			else {
+				ret.ReturnType = LefRsult.ReturnType; //if no floating point types, the return type is the same as the left side expression
+				ret.succses = true;
+				ret.isLValue = false; //multiplicative expressions are not lvalues
+				ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
+				ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			}
 		}
 		else {
-			ret.ReturnType = LefRsult.ReturnType; //if no floating point types, the return type is the same as the left side expression
-			ret.succses = true;
-			ret.isLValue = false; //multiplicative expressions are not lvalues
-			ret.isConst = false; //multiplicative expressions are not const, as they can change the value of the variable
-			ret.isLiteral = false; //multiplicative expressions are not literals, as they can change the value of the variable
+			ret = LefRsult;//if children.sizze ==1 its no multiplicative expression s just pas the result up
 		}
-
 		return ret;
 	}
 	static bool isAllowedForDecrementOrIncrement(SymbolPtr symbol) {
@@ -519,9 +767,21 @@ namespace USL_COMPILER {
 		std::vector<SymbolPtr> ret;
 		ret.reserve(parameters.size()); //reserve space for the parameters to avoid reallocations
 		for (auto& param : parameters) {
-			ret.push_back(std::any_cast<SymbolPtr>(visitExpression(param)));
+			ret.push_back(std::any_cast<ExpressionReturnType>(visitExpression(param)).ReturnType);
 		}
 		return ret;
+	}
+	std::any SemanticAnalyzer::visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext* context)
+	{
+		return std::any();
+	}
+	std::any SemanticAnalyzer::visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext* context)
+	{
+		return std::any();
+	}
+	std::any SemanticAnalyzer::visitExter_function_declaratio(USLParser::Exter_function_declaratioContext* context)
+	{
+		return std::any();
 	}
 	std::any SemanticAnalyzer::visitFunction_call(USLParser::Function_callContext* context)
 	{
@@ -813,7 +1073,16 @@ namespace USL_COMPILER {
 		}
 		TypeandScope.Type = context->ID()->toString();
 		//resolve symbol
-		ret.ReturnType = SymbolTable::GetSymbolByName(TypeandScope.Type, TypeandScope.scope);
+		auto symbol = SymbolTable::GetSymbolByName(TypeandScope.Type, TypeandScope.scope);
+		if (symbol->SymbolType() == SymbolType::VARIABLE) {
+			auto asVar = std::static_pointer_cast<VariableSymbol>(symbol);
+			ret.ReturnType = asVar->GetVariableType();
+			ret.isLValue = true;
+		}
+		else {
+			ret.ReturnType = SymbolTable::GetSymbolByName(TypeandScope.Type, TypeandScope.scope);
+
+		}
 		ret.succses = true; // this will be overridden if the symbol is not found. this is only done to reduce if else clutter
 	
 

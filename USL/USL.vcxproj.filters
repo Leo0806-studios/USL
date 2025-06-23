@@ -60,6 +60,12 @@
     <ClCompile Include="SRC\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\METADATA_GENERATOR\METADATA_GENERATOR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\COMPILER\FRONTEND\IR_GENERATOR\IR_GENERATOR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -118,6 +124,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VisitorReturnTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\METADATA_GENERATOR\METADATA_GENERATOR.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\COMPILER\FRONTEND\IR_GENERATOR\IR_GENERATOR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

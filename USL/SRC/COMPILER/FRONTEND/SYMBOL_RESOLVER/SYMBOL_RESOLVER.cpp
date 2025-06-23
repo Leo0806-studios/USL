@@ -189,7 +189,6 @@ namespace USL_COMPILER {
 	void USL_COMPILER::SymbolResolver::enterVar_declaration(USLParser::Var_declarationContext* param)
 	{
 		std::shared_ptr<VariableSymbol> varSymbol = std::static_pointer_cast<VariableSymbol>(SymbolTable::GetCurrentScope()->getOwnSymbol()->GetChildSymbols().at(param->ID()->toString()));
-		std::cout << "Var declaration: " << param->ID()->toString() <<"   ";
 		TypeAndScope typeAndScope = TypeToString(param->type());
 	
 

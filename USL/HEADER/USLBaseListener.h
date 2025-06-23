@@ -43,6 +43,15 @@ public:
   virtual void enterFunction_declaration(USLParser::Function_declarationContext * /*ctx*/) override { }
   virtual void exitFunction_declaration(USLParser::Function_declarationContext * /*ctx*/) override { }
 
+  virtual void enterIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext * /*ctx*/) override { }
+  virtual void exitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext * /*ctx*/) override { }
+
+  virtual void enterExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext * /*ctx*/) override { }
+  virtual void exitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext * /*ctx*/) override { }
+
+  virtual void enterExter_function_declaratio(USLParser::Exter_function_declaratioContext * /*ctx*/) override { }
+  virtual void exitExter_function_declaratio(USLParser::Exter_function_declaratioContext * /*ctx*/) override { }
+
   virtual void enterEnum_declaration(USLParser::Enum_declarationContext * /*ctx*/) override { }
   virtual void exitEnum_declaration(USLParser::Enum_declarationContext * /*ctx*/) override { }
 

@@ -51,6 +51,18 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitEnum_declaration(USLParser::Enum_declarationContext *ctx) override {
     return visitChildren(ctx);
   }

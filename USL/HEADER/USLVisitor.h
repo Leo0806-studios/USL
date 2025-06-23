@@ -37,6 +37,12 @@ public:
 
     virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *context) = 0;
 
+    virtual std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *context) = 0;
+
+    virtual std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *context) = 0;
+
+    virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *context) = 0;
+
     virtual std::any visitEnum_declaration(USLParser::Enum_declarationContext *context) = 0;
 
     virtual std::any visitVar_declaration(USLParser::Var_declarationContext *context) = 0;

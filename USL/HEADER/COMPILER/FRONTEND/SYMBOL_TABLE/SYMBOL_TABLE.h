@@ -2,6 +2,11 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 import std;
+
+namespace llvm {
+	class Type;
+	class Function;
+}
 namespace USL_COMPILER {
 	class Scope;
 	enum class  ScopeType {
@@ -76,6 +81,7 @@ namespace USL_COMPILER {
 	class FunctionSymbol : public Symbol {
 	private:
 		SymbolPtr parent = nullptr;
+		llvm::Function* llvmFunction = nullptr;
 	private:
 		std::unordered_map<std::string, SymbolPtr> symbols;
 		std::shared_ptr<Scope> ownScope = nullptr;
@@ -89,17 +95,15 @@ namespace USL_COMPILER {
 		void SetReturnType(SymbolPtr  ptr);
 		void AddParameter(SymbolPtr parameter);
 		const std::vector<SymbolPtr>& GetParameters() const { return parameters; }
+
+
+
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
 		std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() override;
-
-		// Inherited via Symbol
 		void SetParent(std::shared_ptr<Symbol> parent) override;
 		void addSymbol(SymbolPtr symbol)override;
-
-		// Inherited via Symbol
 		bool IsScope() const override;
-
 		std::shared_ptr<Scope> GetScope() const override;
 		SymbolPtr GetReturnType();
 
@@ -110,6 +114,7 @@ namespace USL_COMPILER {
 		SymbolPtr parent = nullptr;
 		std::unordered_map<std::string, SymbolPtr> symbols;
 		std::shared_ptr<Scope> ownScope = nullptr;
+		llvm::Type* llvmType = nullptr;
 
 	public:
 		TypeSymbol() :Symbol(SymbolType::TYPE) {}
@@ -235,6 +240,7 @@ namespace USL_COMPILER {
 		/// <param name="Scope"></param>
 		/// <returns></returns>
 		static	ScopePtr SetScope(ScopePtr Scope);
+		static ScopePtr PushScopeStack(ScopePtr Scope);
 		/// <summary>
 		/// Resolves the provided symbol by searching each scope in the current scope stack from the top down.
 		/// returns false if the symbol was not found

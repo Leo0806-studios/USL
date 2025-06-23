@@ -41,6 +41,15 @@ public:
   virtual void enterFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
   virtual void exitFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
 
+  virtual void enterIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) = 0;
+  virtual void exitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) = 0;
+
+  virtual void enterExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) = 0;
+  virtual void exitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) = 0;
+
+  virtual void enterExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
+  virtual void exitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
+
   virtual void enterEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
   virtual void exitEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
 

@@ -364,3 +364,12 @@ FodyWeavers.xsd
 /vcpkg_installed
 /USL/HEADER/HEADER.rar
 /USL/SRC/SRC.rar
+/USL/Intel® VTune™ Profiler Results/USL
+/USL/ANTLR/.antlr/USL.interp
+/USL/ANTLR/.antlr/USL.tokens
+/USL/ANTLR/.antlr/USLBaseListener.java
+/USL/ANTLR/.antlr/USLLexer.interp
+/USL/ANTLR/.antlr/USLLexer.java
+/USL/ANTLR/.antlr/USLLexer.tokens
+/USL/ANTLR/.antlr/USLListener.java
+/USL/ANTLR/.antlr/USLParser.java

@@ -43,6 +43,8 @@ public:
 
     virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *context) = 0;
 
+    virtual std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext *context) = 0;
+
     virtual std::any visitEnum_declaration(USLParser::Enum_declarationContext *context) = 0;
 
     virtual std::any visitVar_declaration(USLParser::Var_declarationContext *context) = 0;
@@ -110,6 +112,8 @@ public:
     virtual std::any visitId_with_scope(USLParser::Id_with_scopeContext *context) = 0;
 
     virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *context) = 0;
+
+    virtual std::any visitTest(USLParser::TestContext *context) = 0;
 
 
 };
