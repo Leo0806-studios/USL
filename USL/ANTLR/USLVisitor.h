@@ -115,6 +115,8 @@ public:
 
     virtual std::any visitTest(USLParser::TestContext *context) = 0;
 
+    virtual std::any visitDecorated_name(USLParser::Decorated_nameContext *context) = 0;
+
 
 };
 

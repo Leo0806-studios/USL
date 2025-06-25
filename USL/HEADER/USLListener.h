@@ -50,6 +50,9 @@ public:
   virtual void enterExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
   virtual void exitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
 
+  virtual void enterUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) = 0;
+  virtual void exitUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) = 0;
+
   virtual void enterEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
   virtual void exitEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
 
@@ -151,6 +154,12 @@ public:
 
   virtual void enterFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
   virtual void exitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
+
+  virtual void enterTest(USLParser::TestContext *ctx) = 0;
+  virtual void exitTest(USLParser::TestContext *ctx) = 0;
+
+  virtual void enterDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
+  virtual void exitDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
 
 
 };

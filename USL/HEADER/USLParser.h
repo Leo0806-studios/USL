@@ -24,12 +24,12 @@ public:
     REQUIRES = 50, AUTO = 51, CALL = 52, EXTERN = 53, DECLSPEC = 54, DLLEXPORT = 55, 
     DLLIMPORT = 56, NEW = 57, UNSAFE_NEW = 58, UNSAFE_DELETE = 59, INTRINSIC = 60, 
     NORVO = 61, OVERLAPSWITH = 62, JUMPTABLE = 63, UNROLL = 64, VECTORIZE = 65, 
-    ASSIGN_OP = 66, PLUS_OP = 67, MINUS_OP = 68, MULT_OP = 69, DIV_OP = 70, 
-    MOD_OP = 71, HASH_OP = 72, DEREF = 73, INCREMENT = 74, DECREMENT = 75, 
-    B_LEFT = 76, B_RIGHT = 77, EQUALS = 78, LESS = 79, LARGER = 80, NOT = 81, 
-    LESS_EQ = 82, LARGER_EQ = 83, SCOPE_RESSOLUTION_OP = 84, INT_LITTERAL = 85, 
-    UINT_LITTERAL = 86, FLOAT_LITTERAL = 87, CHAR_LITTERAL = 88, STRING_LITTERAL = 89, 
-    BOOL_LITTERAL = 90, COMMENT = 91, WS = 92, ID = 93, CUSTOM_OP_SYMBOLS = 94
+    TEST = 66, ASSIGN_OP = 67, PLUS_OP = 68, MINUS_OP = 69, MULT_OP = 70, 
+    DIV_OP = 71, MOD_OP = 72, HASH_OP = 73, DEREF = 74, INCREMENT = 75, 
+    DECREMENT = 76, B_LEFT = 77, B_RIGHT = 78, EQUALS = 79, LESS = 80, LARGER = 81, 
+    NOT = 82, LESS_EQ = 83, LARGER_EQ = 84, SCOPE_RESSOLUTION_OP = 85, INT_LITTERAL = 86, 
+    UINT_LITTERAL = 87, FLOAT_LITTERAL = 88, CHAR_LITTERAL = 89, STRING_LITTERAL = 90, 
+    BOOL_LITTERAL = 91, COMMENT = 92, WS = 93, ID = 94, CUSTOM_OP_SYMBOLS = 95
   };
 
   enum {
@@ -37,17 +37,18 @@ public:
     RuleBasic_block = 4, RuleClass_delcaration = 5, RuleNamespace_declaration = 6, 
     RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleIntrinsic_function_pre_declaration = 9, 
     RuleExtern_function_pre_declaration = 10, RuleExter_function_declaratio = 11, 
-    RuleEnum_declaration = 12, RuleVar_declaration = 13, RuleCustom_opperator_sym = 14, 
-    RuleNoexcept_specifyer = 15, RuleAssignment_expr = 16, RuleEquality_expr = 17, 
-    RuleComparison_expr = 18, RuleBitshift_expr = 19, RuleAdditive_expr = 20, 
-    RuleMultiplicative_expr = 21, RuleUnary_expr = 22, RulePrimary_expr = 23, 
-    RuleFunction_call = 24, RuleAtribute_constructor = 25, RuleAtrribute_requires = 26, 
-    RuleImplements_function = 27, RuleImplements_Var = 28, RulePrimitives = 29, 
-    RuleIntegral_type = 30, RuleSigned_inegral_type = 31, RuleUnsigned_integral_type = 32, 
-    RuleLitteral = 33, RuleType = 34, RuleParameter = 35, RuleParameterList = 36, 
-    RuleClassmember_declaration = 37, RuleOperator_symbols = 38, RuleScope_ressolution = 39, 
-    RuleAtribute_parameter = 40, RuleAtribute_parameter_list = 41, RuleAtribute_decorators = 42, 
-    RuleExtern_spec = 43, RuleId_with_scope = 44, RuleFunction_call_parameters = 45
+    RuleUnit_test_declaration = 12, RuleEnum_declaration = 13, RuleVar_declaration = 14, 
+    RuleCustom_opperator_sym = 15, RuleNoexcept_specifyer = 16, RuleAssignment_expr = 17, 
+    RuleEquality_expr = 18, RuleComparison_expr = 19, RuleBitshift_expr = 20, 
+    RuleAdditive_expr = 21, RuleMultiplicative_expr = 22, RuleUnary_expr = 23, 
+    RulePrimary_expr = 24, RuleFunction_call = 25, RuleAtribute_constructor = 26, 
+    RuleAtrribute_requires = 27, RuleImplements_function = 28, RuleImplements_Var = 29, 
+    RulePrimitives = 30, RuleIntegral_type = 31, RuleSigned_inegral_type = 32, 
+    RuleUnsigned_integral_type = 33, RuleLitteral = 34, RuleType = 35, RuleParameter = 36, 
+    RuleParameterList = 37, RuleClassmember_declaration = 38, RuleOperator_symbols = 39, 
+    RuleScope_ressolution = 40, RuleAtribute_parameter = 41, RuleAtribute_parameter_list = 42, 
+    RuleAtribute_decorators = 43, RuleExtern_spec = 44, RuleId_with_scope = 45, 
+    RuleFunction_call_parameters = 46, RuleTest = 47, RuleDecorated_name = 48
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -79,6 +80,7 @@ public:
   class Intrinsic_function_pre_declarationContext;
   class Extern_function_pre_declarationContext;
   class Exter_function_declaratioContext;
+  class Unit_test_declarationContext;
   class Enum_declarationContext;
   class Var_declarationContext;
   class Custom_opperator_symContext;
@@ -112,7 +114,9 @@ public:
   class Atribute_decoratorsContext;
   class Extern_specContext;
   class Id_with_scopeContext;
-  class Function_call_parametersContext; 
+  class Function_call_parametersContext;
+  class TestContext;
+  class Decorated_nameContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -337,6 +341,22 @@ public:
   };
 
   Exter_function_declaratioContext* exter_function_declaratio();
+
+  class  Unit_test_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Unit_test_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    TestContext *test();
+    Function_declarationContext *function_declaration();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Unit_test_declarationContext* unit_test_declaration();
 
   class  Enum_declarationContext : public antlr4::ParserRuleContext {
   public:
@@ -772,6 +792,7 @@ public:
     TypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PrimitivesContext *primitives();
+    Decorated_nameContext *decorated_name();
     antlr4::tree::TerminalNode *ID();
     Scope_ressolutionContext *scope_ressolution();
 
@@ -974,6 +995,41 @@ public:
   };
 
   Function_call_parametersContext* function_call_parameters();
+
+  class  TestContext : public antlr4::ParserRuleContext {
+  public:
+    antlr4::Token *name = nullptr;
+    antlr4::Token *fuzzing = nullptr;
+    antlr4::Token *repeat_count = nullptr;
+    TestContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *TEST();
+    antlr4::tree::TerminalNode *STRING_LITTERAL();
+    antlr4::tree::TerminalNode *BOOL_LITTERAL();
+    antlr4::tree::TerminalNode *INT_LITTERAL();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  TestContext* test();
+
+  class  Decorated_nameContext : public antlr4::ParserRuleContext {
+  public:
+    Decorated_nameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Decorated_nameContext* decorated_name();
 
 
   // By default the static state used to implement the parser is lazily initialized during the first

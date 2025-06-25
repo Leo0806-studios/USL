@@ -16,6 +16,7 @@
 #include <USLBaseListener.h>
 #include <USLBaseVisitor.h>
 #include "HEADER/COMPILER/FRONTEND/METADATA_GENERATOR/METADATA_GENERATOR.h"
+#include "HEADER/COMPILER/FRONTEND/IR_GENERATOR/IR_GENERATOR.h"
 import std;
 
 void printAST(antlr4::tree::ParseTree* tree, antlr4::Parser* parser, std::stringstream& ret, const std::string& indent = "", bool last = true) {
@@ -95,6 +96,8 @@ int main(int argc, char** argv)
 	}
 	USL_COMPILER::MetadataGenerator MetadataGen;
 	MetadataGen.visit(tree);
+	USL_COMPILER::IrBuilder irGen;
+	irGen.visit(tree);
 	
 	auto symfile_path = std::filesystem::path(argv[0]).parent_path().string();
 	symfile_path += "\\sym_dmp.txt";

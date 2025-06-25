@@ -207,6 +207,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitDecorated_name(USLParser::Decorated_nameContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
 
 };
 

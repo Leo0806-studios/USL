@@ -19,8 +19,11 @@ namespace USL_COMPILER {
 		IrBuilderContent& operator=(const IrBuilderContent& other) = delete;
 		IrBuilderContent& operator=(IrBuilderContent&& other) = delete;
 	};
-	IrBuilder::IrBuilder() :m_internals(std::make_unique<IrBuilderContent>("USL_Module"))
+	IrBuilder::IrBuilder() :m_internals(new IrBuilderContent("USL_Module"))
 	{
+	}
+	 IrBuilder::~IrBuilder() {
+//never delete m_internals. it has to be treated as a normal member of the class and will be freed after program exit. this is not a leak as there is only ever one instacne of this class
 	}
 	IrBuilder::IrBuilder(IrBuilder&& other) :m_internals(std::move(other.m_internals))
 	{
@@ -32,62 +35,96 @@ namespace USL_COMPILER {
 	}
 
 
-	static void addLLVMTypeTobyte(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTobyte(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("byte"))->SetLLVMType(llvm::Type::getInt8Ty(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeToshort(SymbolPtr RootSymbol) {
+	static void addLLVMTypeToshort(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("short"))->SetLLVMType(llvm::Type::getInt16Ty(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeToint(SymbolPtr RootSymbol) {
+	static void addLLVMTypeToint(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("int"))->SetLLVMType(llvm::Type::getInt32Ty(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTolong(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTolong(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("long"))->SetLLVMType(llvm::Type::getInt64Ty(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTofloat(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTofloat(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("float"))->SetLLVMType(llvm::Type::getFloatTy(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTodouble(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTodouble(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("double"))->SetLLVMType(llvm::Type::getDoubleTy(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTohash(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTohash(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		//hash is a struct so ill implement this later
+		//TODO : implement hash type
 	};
-	static void addLLVMTypeTostring(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTostring(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		//string is a struct so ill implement this later
+		//TODO : implement string type
 	};
-	static void addLLVMTypeTochar(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTochar(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("char"))->SetLLVMType(llvm::Type::getInt8Ty(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTovoid(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTovoid(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("void"))->SetLLVMType(llvm::Type::getVoidTy(thisptr->m_internals->TheContext));
 	};
-	static void addLLVMTypeTonull(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTonull(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		//null is a pointer to void so we set it to int8* (char*)
 	};
-	static void addLLVMTypeTobool(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTobool(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("bool"))->SetLLVMType(llvm::Type::getInt1Ty(thisptr->m_internals->TheContext));
+		//bool is a 1 bit integer
 	};
-	static void addLLVMTypeToubyte(SymbolPtr RootSymbol) {
+	static void addLLVMTypeToubyte(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("ubyte"))->SetLLVMType(llvm::Type::getInt8Ty(thisptr->m_internals->TheContext));
+		//ubyte is an unsigned 8 bit integer
 	};
-	static void addLLVMTypeToushort(SymbolPtr RootSymbol) {
+	static void addLLVMTypeToushort(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("ushort"))->SetLLVMType(llvm::Type::getInt16Ty(thisptr->m_internals->TheContext));
+		//ushort is an unsigned 16 bit integer
 	};
-	static void addLLVMTypeTouint(SymbolPtr RootSymbol) {
+	static void addLLVMTypeTouint(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("uint"))->SetLLVMType(llvm::Type::getInt32Ty(thisptr->m_internals->TheContext));
+		//uint is an unsigned 32 bit integer
 	};
-	static void addLLVMTypeToulong(SymbolPtr RootSymbol) {
+	static void addLLVMTypeToulong(SymbolPtr RootSymbol, IrBuilder* thisptr) {
+		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("ulong"))->SetLLVMType(llvm::Type::getInt64Ty(thisptr->m_internals->TheContext));
+		//ulong is an unsigned 64 bit integer
 	};
-	void AddLLVMTypesToPrimitives(SymbolPtr RootSymbol) {
+	void AddLLVMTypesToPrimitives(SymbolPtr RootSymbol,IrBuilder* thisptr) {
 
-		addLLVMTypeTobyte(RootSymbol);
-		addLLVMTypeToshort(RootSymbol);
-		addLLVMTypeToint(RootSymbol);
-		addLLVMTypeTolong(RootSymbol);
-		addLLVMTypeTofloat(RootSymbol);
-		addLLVMTypeTodouble(RootSymbol);
-		addLLVMTypeTohash(RootSymbol);
-		addLLVMTypeTostring(RootSymbol);
-		addLLVMTypeTochar(RootSymbol);
-		addLLVMTypeTovoid(RootSymbol);
-		addLLVMTypeTonull(RootSymbol);
-		addLLVMTypeTobool(RootSymbol);
-		addLLVMTypeToubyte(RootSymbol);
-		addLLVMTypeToushort(RootSymbol);
-		addLLVMTypeTouint(RootSymbol);
-		addLLVMTypeToulong(RootSymbol);
+		addLLVMTypeTobyte(RootSymbol, thisptr);
+		addLLVMTypeToshort(RootSymbol, thisptr);
+		addLLVMTypeToint(RootSymbol, thisptr);
+		addLLVMTypeTolong(RootSymbol, thisptr);
+		addLLVMTypeTofloat(RootSymbol, thisptr);
+		addLLVMTypeTodouble(RootSymbol, thisptr);
+		addLLVMTypeTohash(RootSymbol, thisptr);
+		addLLVMTypeTostring(RootSymbol, thisptr);
+		addLLVMTypeTochar(RootSymbol, thisptr);
+		addLLVMTypeTovoid(RootSymbol, thisptr);
+		addLLVMTypeTonull(RootSymbol, thisptr);
+		addLLVMTypeTobool(RootSymbol, thisptr);
+		addLLVMTypeToubyte(RootSymbol, thisptr);
+		addLLVMTypeToushort(RootSymbol, thisptr);
+		addLLVMTypeTouint(RootSymbol, thisptr);
+		addLLVMTypeToulong(RootSymbol, thisptr);
+	}
+
+	std::string NameDecorator(const SymbolPtr Symbol) {
+		// first 
+		std::string name = Symbol->Name();
+		SymbolPtr WorkingSymbol = Symbol;
+		std::stringstream DecoratedName={};
+		while (SymbolPtr Parrent = WorkingSymbol->GetParent()) {
+
+		}
+		return "";
 	}
 	std::any USL_COMPILER::IrBuilder::visitProgram(USLParser::ProgramContext* context)
 	{
 		SymbolPtr Root = SymbolTable::GetRootSymbol();
 		SymbolTable::SetScope(Root->GetScope());
-		AddLLVMTypesToPrimitives(Root);
+		AddLLVMTypesToPrimitives(Root,this);
 		auto ret = visitChildren(context);
 		SymbolTable::PopScopeStack();
 		return ret;
@@ -155,6 +192,7 @@ namespace USL_COMPILER {
 
 	std::any USL_COMPILER::IrBuilder::visitVar_declaration(USLParser::Var_declarationContext* context)
 	{
+		
 		return std::any();
 	}
 

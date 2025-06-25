@@ -111,6 +111,7 @@ namespace USL_COMPILER
 	}
 
 	void USL_COMPILER::SymbolGatherer::enterClass_delcaration(USLParser::Class_delcarationContext* param) {
+		
 		std::cout << "entering class " << param->ID()->toString() << '\n';
 		std::shared_ptr<TypeSymbol> cls = std::make_shared<TypeSymbol>(param->ID()->toString());
 		cls->SetParent(SymbolTable::GetCurrentScope()->getOwnSymbol());

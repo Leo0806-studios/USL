@@ -6,7 +6,6 @@
 namespace USL_COMPILER {
 	struct IrBuilderContent;
 	class IrBuilder :public USLVisitor {
-		std::unique_ptr<IrBuilderContent> m_internals = nullptr;
 		// Inherited via USLVisitor
 		std::any visitProgram(USLParser::ProgramContext* context) override;
 		std::any visitGlobal_statement(USLParser::Global_statementContext* context) override;
@@ -57,7 +56,10 @@ namespace USL_COMPILER {
 
 
 	public:
+		 IrBuilderContent* m_internals = nullptr;
+
 		IrBuilder();
+		~IrBuilder() final;
 		IrBuilder(const IrBuilder& other) = delete;
 		IrBuilder( IrBuilder&& other);
 		IrBuilder& operator=(const IrBuilder& other) = delete;

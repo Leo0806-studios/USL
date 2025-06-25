@@ -47,6 +47,7 @@ namespace USL_COMPILER {
 		virtual bool HasChildSymbols()const = 0;
 		virtual std::unordered_map<std::string, std::shared_ptr<Symbol>>& GetChildSymbols() = 0;
 		virtual void SetParent(std::shared_ptr<Symbol> parent) = 0;
+		virtual std::shared_ptr<Symbol> GetParent()const = 0;
 		virtual void addSymbol(std::shared_ptr<Symbol> symbol) {
 			throw std::runtime_error("This symbol does not support adding child symbols.");
 		}
@@ -76,6 +77,7 @@ namespace USL_COMPILER {
 		std::shared_ptr<Scope> GetScope() const override;
 		void SetType(SymbolPtr variableType) { this->type = variableType; }
 		SymbolPtr GetVariableType() const { return type; }
+		std::shared_ptr<Symbol> GetParent() const override { return parent; }
 	};
 
 	class FunctionSymbol : public Symbol {
@@ -106,6 +108,7 @@ namespace USL_COMPILER {
 		bool IsScope() const override;
 		std::shared_ptr<Scope> GetScope() const override;
 		SymbolPtr GetReturnType();
+		std::shared_ptr<Symbol> GetParent() const override { return parent; }
 
 	};
 
@@ -135,6 +138,9 @@ namespace USL_COMPILER {
 		// Inherited via Symbol
 		bool IsScope() const override;
 		std::shared_ptr<Scope> GetScope() const override;
+		void SetLLVMType(llvm::Type* LLVMType) { this->llvmType = LLVMType; }
+		std::shared_ptr<Symbol> GetParent() const override { return parent; }
+
 	};
 
 
@@ -162,6 +168,9 @@ namespace USL_COMPILER {
 		// Inherited via Symbol
 		bool IsScope() const override;
 		std::shared_ptr<Scope> GetScope() const override;
+
+		// Inherited via Symbol
+		std::shared_ptr<Symbol> GetParent() const override;
 	};
 	class AttributeSymbol : public Symbol {
 		SymbolPtr parent = nullptr;
@@ -175,6 +184,8 @@ namespace USL_COMPILER {
 		void SetParent(std::shared_ptr<Symbol> parent_) override;
 		bool IsScope() const override;
 		std::shared_ptr<Scope> GetScope() const override;
+		std::shared_ptr<Symbol> GetParent() const override { return parent; }
+
 	};
 
 
@@ -281,8 +292,36 @@ namespace USL_COMPILER {
 			}
 		}
 	};
+	class DecoratedName {
+		friend struct std::hash<DecoratedName>;
+		std::string name;
+		std::vector<std::string> scopeResolution;
+	public:
+		bool operator==(const DecoratedName& other) const {
+			return name == other.name && scopeResolution == other.scopeResolution;
+		}
+	};
+	class SimplifyedSymbolTable {
+		std::unordered_map<DecoratedName, SymbolPtr> symbols;// with the new Decorated names all symbols ae unique
+	};
 }
+namespace std {
+	template<>
+	struct hash<USL_COMPILER::DecoratedName> {
+		size_t operator()(const USL_COMPILER::DecoratedName& name) const noexcept {
+			std::hash<std::string> hashFn;
+			size_t seed = 0;
+			size_t nameHash = hashFn(name.name);
+			seed ^= nameHash + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Combine the hash of the name
+			for(const auto& scope : name.scopeResolution) {
+				size_t scopeHash = hashFn(scope);
+				seed ^= scopeHash + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Combine the hash of each scope
+			}
+			return seed;
 
+		}
+	};
+}
 //
 // Globla root
 // |

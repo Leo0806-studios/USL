@@ -52,6 +52,9 @@ public:
   virtual void enterExter_function_declaratio(USLParser::Exter_function_declaratioContext * /*ctx*/) override { }
   virtual void exitExter_function_declaratio(USLParser::Exter_function_declaratioContext * /*ctx*/) override { }
 
+  virtual void enterUnit_test_declaration(USLParser::Unit_test_declarationContext * /*ctx*/) override { }
+  virtual void exitUnit_test_declaration(USLParser::Unit_test_declarationContext * /*ctx*/) override { }
+
   virtual void enterEnum_declaration(USLParser::Enum_declarationContext * /*ctx*/) override { }
   virtual void exitEnum_declaration(USLParser::Enum_declarationContext * /*ctx*/) override { }
 
@@ -153,6 +156,12 @@ public:
 
   virtual void enterFunction_call_parameters(USLParser::Function_call_parametersContext * /*ctx*/) override { }
   virtual void exitFunction_call_parameters(USLParser::Function_call_parametersContext * /*ctx*/) override { }
+
+  virtual void enterTest(USLParser::TestContext * /*ctx*/) override { }
+  virtual void exitTest(USLParser::TestContext * /*ctx*/) override { }
+
+  virtual void enterDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
+  virtual void exitDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

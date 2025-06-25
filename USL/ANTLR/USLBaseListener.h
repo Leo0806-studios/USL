@@ -160,6 +160,9 @@ public:
   virtual void enterTest(USLParser::TestContext * /*ctx*/) override { }
   virtual void exitTest(USLParser::TestContext * /*ctx*/) override { }
 
+  virtual void enterDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
+  virtual void exitDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
+
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
   virtual void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

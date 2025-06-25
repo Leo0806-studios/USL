@@ -363,6 +363,10 @@ namespace USL_COMPILER {
 	{
 		return ownScope;
 	}
+	std::shared_ptr<Symbol> NamespaceSymbol::GetParent() const
+	{
+		return parent;
+	}
 #pragma endregion
 
 

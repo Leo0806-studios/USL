@@ -48,7 +48,7 @@ public:
     RuleParameterList = 37, RuleClassmember_declaration = 38, RuleOperator_symbols = 39, 
     RuleScope_ressolution = 40, RuleAtribute_parameter = 41, RuleAtribute_parameter_list = 42, 
     RuleAtribute_decorators = 43, RuleExtern_spec = 44, RuleId_with_scope = 45, 
-    RuleFunction_call_parameters = 46, RuleTest = 47
+    RuleFunction_call_parameters = 46, RuleTest = 47, RuleDecorated_name = 48
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -115,7 +115,8 @@ public:
   class Extern_specContext;
   class Id_with_scopeContext;
   class Function_call_parametersContext;
-  class TestContext; 
+  class TestContext;
+  class Decorated_nameContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -791,6 +792,7 @@ public:
     TypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PrimitivesContext *primitives();
+    Decorated_nameContext *decorated_name();
     antlr4::tree::TerminalNode *ID();
     Scope_ressolutionContext *scope_ressolution();
 
@@ -1014,6 +1016,20 @@ public:
   };
 
   TestContext* test();
+
+  class  Decorated_nameContext : public antlr4::ParserRuleContext {
+  public:
+    Decorated_nameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Decorated_nameContext* decorated_name();
 
 
   // By default the static state used to implement the parser is lazily initialized during the first

@@ -179,7 +179,7 @@ integral_type                       :signed_inegral_type|unsigned_integral_type;
 signed_inegral_type                 :(BYTE|SHORT|INT|LONG);
 unsigned_integral_type              :UBYTE|USHORT|UINT|ULONG;
 litteral                            :STRING_LITTERAL|INT_LITTERAL|UINT_LITTERAL|FLOAT_LITTERAL|CHAR_LITTERAL|BOOL_LITTERAL ;
-type                                :primitives|(scope_ressolution?ID);
+type                                :primitives|((scope_ressolution?ID)|decorated_name);
 parameter                           :TYPE_QUALIFYERS* type ID;
 parameterList                       :parameter(','parameter)*; 
 classmember_declaration             :(function_declaration|var_declaration)';';
@@ -192,3 +192,7 @@ extern_spec                         :EXTERN STRING_LITTERAL;
 id_with_scope                       :scope_ressolution? ID;
 function_call_parameters            :expression(','expression)*;
 test                                :TEST ('('name=STRING_LITTERAL ',' fuzzing=BOOL_LITTERAL','repeat_count=INT_LITTERAL ')');
+
+//semantic helper rules
+//these rule are not included anywhere and are just to be able to inject semantic information safely
+decorated_name                      :;
