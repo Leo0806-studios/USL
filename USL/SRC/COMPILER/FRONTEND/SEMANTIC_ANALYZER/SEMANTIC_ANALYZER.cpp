@@ -783,6 +783,18 @@ return passUp;\
 	{
 		return std::any();
 	}
+	std::any SemanticAnalyzer::visitUnit_test_declaration(USLParser::Unit_test_declarationContext* context)
+	{
+		return std::any();
+	}
+	std::any SemanticAnalyzer::visitTest(USLParser::TestContext* context)
+	{
+		return std::any();
+	}
+	std::any SemanticAnalyzer::visitDecorated_name(USLParser::Decorated_nameContext* context)
+	{
+		return std::any();
+	}
 	std::any SemanticAnalyzer::visitFunction_call(USLParser::Function_callContext* context)
 	{
 		ExpressionReturnType id = std::any_cast<ExpressionReturnType>(visitId_with_scope(context->id_with_scope()));

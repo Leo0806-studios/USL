@@ -90,5 +90,10 @@ namespace USL_COMPILER {
 		std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext* context) override;
 		std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext* context) override;
 		std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext* context) override;
+
+		// Inherited via USLVisitor
+		std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext* context) override;
+		std::any visitTest(USLParser::TestContext* context) override;
+		std::any visitDecorated_name(USLParser::Decorated_nameContext* context) override;
 	};
 }

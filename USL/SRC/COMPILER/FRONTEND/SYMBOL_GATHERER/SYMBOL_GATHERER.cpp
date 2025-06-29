@@ -3,8 +3,7 @@
 import std;
 namespace USL_COMPILER
 {
-	static  std::stack<ScopePtr> scopeStrack{};
-
+	
 
 
 

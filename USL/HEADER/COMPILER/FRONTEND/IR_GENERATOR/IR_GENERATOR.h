@@ -64,6 +64,11 @@ namespace USL_COMPILER {
 		IrBuilder( IrBuilder&& other);
 		IrBuilder& operator=(const IrBuilder& other) = delete;
 		IrBuilder& operator=(IrBuilder&& other);
+
+		// Inherited via USLVisitor
+		std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext* context) override;
+		std::any visitTest(USLParser::TestContext* context) override;
+		std::any visitDecorated_name(USLParser::Decorated_nameContext* context) override;
 	};
 }
 #endif // !IR_GENERATOR_H

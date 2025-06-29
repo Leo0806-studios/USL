@@ -792,7 +792,6 @@ public:
     TypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PrimitivesContext *primitives();
-    Decorated_nameContext *decorated_name();
     antlr4::tree::TerminalNode *ID();
     Scope_ressolutionContext *scope_ressolution();
 

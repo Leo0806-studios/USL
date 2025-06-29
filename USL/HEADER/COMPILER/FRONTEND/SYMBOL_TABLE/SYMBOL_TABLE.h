@@ -91,7 +91,7 @@ namespace USL_COMPILER {
 		SymbolPtr returnType;
 	public:
 		FunctionSymbol() :Symbol(SymbolType::FUNCTION) {}
-	explicit	FunctionSymbol(const std::string& name, SymbolPtr parent = nullptr);
+		explicit	FunctionSymbol(const std::string& name, SymbolPtr parent = nullptr);
 		void AddScope(std::shared_ptr<Scope> scope);
 		std::shared_ptr<Scope> getScope() const { return ownScope; }
 		void SetReturnType(SymbolPtr  ptr);
@@ -156,7 +156,7 @@ namespace USL_COMPILER {
 		void addScope(std::shared_ptr<Scope> scope);
 		std::shared_ptr<Scope> getScope() const { return ownScope; }
 		std::shared_ptr<NamespaceSymbol> getParent() const { return parent; }
-		const std::unordered_map<std::string,SymbolPtr>& getSymbols();
+		const std::unordered_map<std::string, SymbolPtr>& getSymbols();
 		void addSymbol(SymbolPtr symbol);
 		// Inherited via Symbol
 		bool HasChildSymbols() const override;
@@ -283,45 +283,130 @@ namespace USL_COMPILER {
 		static ScopePtr GetCurrentScope() { return currentScope; }
 		static SymbolPtr GetRootSymbol() { return rootSymbol; }
 		static ScopePtr GetScopeByName(const std::string& name);
-		static SymbolPtr GetSymbolByName(const std::string& name, const std::vector<std::string> scopeResolution= {}) {
-			if (scopeResolution.empty()) {
-				return ResolveSymbol(name);
+		static SymbolPtr GetSymbolByName(const std::string& name, const std::vector<std::string> scopeResolution = {});
+	};
+	//the format of the mangled names is as follows:
+	//Prefix @ Scope1 @ Scope2 @ ... @ ScopeN @ Name 
+	// where name is thhe following:
+	//for functions:
+	// ~DecoratedNameOfFunctionReturnType ~ FunctionName ~§FunctionModifyers§~ DecoratedNameOfFunctionParameter1 ~ DecoratedNameOfFunctionParameter2 ~ ... ~ DecoratedNameOfFunctionParameterN
+	// where DecoratedNameOfFunctionParameterN is the mangled name of the parameter type and the clear text name of the parameter
+	// where FunctionModifyers is a string of characters that modify the function, such as 'c' for const, 'v' for volatile, etc.
+	//for variables:
+	//~§VariableModifyers§~VariableName~DecoratedNameOfVariableType
+	// where VariableModifyers is a string of characters that modify the variable, such as 'c' for const, 'v' for volatile, etc.
+	//for Types:
+	//~§TypeModifyers§~TypeName
+	//where TypeModifyers is a string of characters that modify the type, such as if its a class or struct, if its default on the heap, if polymorphic, etc.
+	enum DecorateorSeperators : char {
+		CONSTRUCTOR_PREFIX = '?',
+		DESTRUCTOR_PREFIX = '!',
+		ATTRIBUTE_PREFIX = '$',
+		SCOPE_SEPERATOR = '@',
+		SEPERATOR = '~',
+		SPECIAL_SEPERATOR = '§',
+		STRUCT_SIGNAL = 'E',
+		CLASS_SIGNAL = 'R'
+	};
+	enum class DecoratedNameType {
+		FUNCTION,
+		VARIABLE,
+		TYPE,
+		ATTRIBUTE
+	};
+	class DecoratedName;
+
+	class DecoratedFunction {
+		std::string m_modifiers = ""; // function modifiers like const, volatile, etc.
+		std::weak_ptr<DecoratedName> m_returnType = {}; // weak pointer to avoid circular references
+		std::vector<std::weak_ptr<DecoratedName>> m_parameters; // weak pointers to avoid circular references
+		std::string m_ClearName; // clear text name of the function without modifiers or return type (eg int main(int argc, char** argv) is main)
+	public:
+		bool operator==(const DecoratedFunction& other) const {
+			if (m_parameters.size() != other.m_parameters.size()) return false;//short circuit if the number of parameters is different
+			for (size_t i = 0; i != m_parameters.size(); i++) {
+				if (m_parameters[i].lock() != other.m_parameters[i].lock()) return false;
 			}
-			else {
-				return ResolveSymbol(name, scopeResolution);
-			}
+			return m_modifiers == other.m_modifiers &&
+				m_returnType.lock() == other.m_returnType.lock() &&
+				m_ClearName == other.m_ClearName;
 		}
+		bool operator!=(const DecoratedFunction& other) const {
+			return !(*this == other);
+		}
+		size_t Hash() const noexcept;
+		std::string& GetSetClearName(const std::string& NewName = {});
+		std::string toString()const noexcept;
+	};
+	class DecoratedVariable {
+		std::string m_modifiers = ""; // variable modifiers like const, volatile, etc.
+		std::weak_ptr<DecoratedName> m_type = {}; // weak pointer to avoid circular references
+		std::string m_ClearName; // clear text name of the variable without modifiers or type (eg int x is x)
+	public:
+		bool operator==(const DecoratedVariable& other) const {
+			return m_modifiers == other.m_modifiers &&
+				m_type.lock() == other.m_type.lock() &&
+				m_ClearName == other.m_ClearName;
+		}
+		bool operator!=(const DecoratedVariable& other) const {
+			return !(*this == other);
+		}
+		size_t Hash()const  noexcept;
+	};
+	class DecoratedType {
+		std::string m_clearName = "";
+
+	public:
+		bool operator== (const DecoratedType& other)const noexcept {
+			return m_clearName == other.m_clearName;
+		}
+		bool operator!=(const DecoratedType& other)const noexcept {
+			return!(*this == other);
+		}
+		size_t Hash()const  noexcept;
+	};
+	class DecoratedAttribute {
+		std::string m_clearName = "";
+	public:
+		bool operator==(const DecoratedAttribute& other)const noexcept {
+			return m_clearName == other.m_clearName;
+		}
+		bool operator!=(const DecoratedAttribute& other)const noexcept {
+			return!(*this == other);
+		}
+		size_t Hash()const  noexcept;
 	};
 	class DecoratedName {
-		friend struct std::hash<DecoratedName>;
-		std::string name;
+		friend class DecoratorHasher;
+		std::variant< DecoratedFunction, DecoratedVariable, DecoratedType, DecoratedAttribute> m_decorated; // the name of the symbol, can be a string or a decorated function/variable/type/attribute
+
+
+		DecoratedNameType type;
 		std::vector<std::string> scopeResolution;
+		std::string Prefixes;
+	private:
 	public:
-		bool operator==(const DecoratedName& other) const {
-			return name == other.name && scopeResolution == other.scopeResolution;
+
+		std::string ToString() ;
+		bool operator==(const DecoratedName& other) const noexcept;
+		bool operator!=(const DecoratedName& other)const noexcept { 
+			return !(*this == other);
 		}
+	};
+	class DecoratorHasher {
+	public:
+		size_t operator()(const DecoratedName& decoratedName) const;
 	};
 	class SimplifyedSymbolTable {
-		std::unordered_map<DecoratedName, SymbolPtr> symbols;// with the new Decorated names all symbols ae unique
-	};
-}
-namespace std {
-	template<>
-	struct hash<USL_COMPILER::DecoratedName> {
-		size_t operator()(const USL_COMPILER::DecoratedName& name) const noexcept {
-			std::hash<std::string> hashFn;
-			size_t seed = 0;
-			size_t nameHash = hashFn(name.name);
-			seed ^= nameHash + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Combine the hash of the name
-			for(const auto& scope : name.scopeResolution) {
-				size_t scopeHash = hashFn(scope);
-				seed ^= scopeHash + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Combine the hash of each scope
-			}
-			return seed;
+		std::stack<std::string> ScopeStack{};
 
-		}
+		std::unordered_map<DecoratedName, SymbolPtr, DecoratorHasher> symbols;// with the new Decorated names all symbols ae unique
+
+
 	};
+
 }
+
 //
 // Globla root
 // |

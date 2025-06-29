@@ -34,6 +34,21 @@ namespace USL_COMPILER {
 		return *this;
 	}
 
+	std::any IrBuilder::visitUnit_test_declaration(USLParser::Unit_test_declarationContext* context)
+	{
+		return std::any();
+	}
+
+	std::any IrBuilder::visitTest(USLParser::TestContext* context)
+	{
+		return std::any();
+	}
+
+	std::any IrBuilder::visitDecorated_name(USLParser::Decorated_nameContext* context)
+	{
+		return std::any();
+	}
+
 
 	static void addLLVMTypeTobyte(SymbolPtr RootSymbol, IrBuilder* thisptr) {
 		std::static_pointer_cast<TypeSymbol>(RootSymbol->GetChildSymbols().at("byte"))->SetLLVMType(llvm::Type::getInt8Ty(thisptr->m_internals->TheContext));

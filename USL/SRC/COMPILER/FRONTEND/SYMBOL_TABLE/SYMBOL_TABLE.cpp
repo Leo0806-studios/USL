@@ -302,6 +302,15 @@ namespace USL_COMPILER {
 		return scopes.at(name);
 	}
 
+	 SymbolPtr SymbolTable::GetSymbolByName(const std::string& name, const std::vector<std::string> scopeResolution) {
+		if (scopeResolution.empty()) {
+			return ResolveSymbol(name);
+		}
+		else {
+			return ResolveSymbol(name, scopeResolution);
+		}
+	}
+
 #pragma endregion
 
 #pragma region Symbol
@@ -531,6 +540,177 @@ namespace USL_COMPILER {
 	std::shared_ptr<Scope> AttributeSymbol::GetScope() const
 	{
 		return ownScope;
+	}
+
+
+	//SimplifyedSymbolTable SimplifyedSymbolTable::GlobalInst;
+
+	 size_t DecoratedFunction::Hash() const noexcept {
+		std::hash<std::string> hashFn;
+		size_t seed = 0;
+		std::hash<decltype(m_returnType.lock())> hs;
+
+		seed ^= hashFn(m_modifiers) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		seed ^= hs(m_returnType.lock()) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		for (const auto& param : m_parameters) {
+
+			seed ^= (hs(param.lock())) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
+		seed ^= hashFn(m_ClearName) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		return seed;
+	}
+
+	 std::string& DecoratedFunction::GetSetClearName(const std::string& NewName) {
+		if (NewName.empty()) { return m_ClearName; }
+		else { m_ClearName = NewName; } return m_ClearName;
+	}
+
+	 std::string DecoratedFunction::toString() const noexcept {
+		std::stringstream out;
+		out << DecorateorSeperators::SEPERATOR;
+		out << m_returnType.lock()->ToString();
+		out << DecorateorSeperators::SEPERATOR;
+		out << m_ClearName << SEPERATOR;
+		size_t currlengt = out.str().length();
+		for (auto& param : m_parameters) {
+			if (out.str().length() == currlengt) {
+				out << param.lock()->ToString();
+				continue;
+
+			}
+			out << SEPERATOR;
+			out << param.lock()->ToString();
+		}
+		return out.str();
+	}
+
+	 size_t DecoratedVariable::Hash() const noexcept {
+		std::hash<std::string> hashFn;
+		size_t seed = 0;
+		std::hash<decltype(m_type.lock())> hs;
+		seed ^= hashFn(m_modifiers) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		seed ^= hashFn(m_ClearName) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		seed ^= hs(m_type.lock()) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		return seed;
+	}
+
+	 size_t DecoratedType::Hash() const noexcept {
+		std::hash<std::string> hashFn;
+		size_t seed = 0;
+		seed ^= hashFn(m_clearName) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		return seed;
+	}
+
+	 size_t DecoratedAttribute::Hash() const noexcept {
+		std::hash<std::string> hashFn;
+		size_t seed = 0;
+		seed ^= hashFn(m_clearName) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		return seed;
+	}
+
+	 std::string DecoratedName::ToString()  {
+		std::stringstream Out;
+		Out << Prefixes;
+
+		for (auto& scope : scopeResolution) {
+			if (Out.str().length() == Prefixes.length()) {
+				Out << scope;
+				continue;
+			}
+			Out << DecorateorSeperators::SCOPE_SEPERATOR << scope;
+		}
+		switch (type) {
+		case DecoratedNameType::FUNCTION: {
+			
+			Out << std::get<DecoratedFunction>(m_decorated).toString();
+			break;
+		}
+		case DecoratedNameType::VARIABLE: {
+			break;
+		}
+		case DecoratedNameType::TYPE: {
+
+			break;
+		}
+		case DecoratedNameType::ATTRIBUTE: {
+
+			break;
+		}
+
+		}
+		return Out.str();
+	}
+
+	bool DecoratedName::operator==(const DecoratedName& other) const noexcept
+	{
+		if (type != other.type) return false;
+		if (m_decorated.valueless_by_exception() || other.m_decorated.valueless_by_exception()) return false;
+		if (scopeResolution.size() != other.scopeResolution.size()) return false;
+		if (scopeResolution != other.scopeResolution) return false;
+		if (Prefixes != other.Prefixes) return false;
+		switch (type) {
+			//if intellisense complains that the std::get returns void dont trust it. its lying it will (should^) compile
+		case DecoratedNameType::FUNCTION: {
+			if (std::get<DecoratedFunction>(m_decorated) != std::get<DecoratedFunction>(other.m_decorated)) return false;
+			break;
+		}
+		case DecoratedNameType::VARIABLE: {
+			if (std::get<DecoratedVariable>(m_decorated) != std::get<DecoratedVariable>(other.m_decorated)) return false;
+			break;
+		}
+		case DecoratedNameType::TYPE: {
+			if (std::get<DecoratedType>(m_decorated) != std::get<DecoratedType>(other.m_decorated)) return false;
+
+			break;
+		} 
+		case DecoratedNameType::ATTRIBUTE: {
+		auto issame = std::get<DecoratedAttribute>(m_decorated) != std::get<DecoratedAttribute>(other.m_decorated);
+		
+			if (issame) return false;
+
+			break;
+		}
+
+		}
+		return  true;
+	}
+
+	size_t DecoratorHasher::operator()(const DecoratedName& decoratedName) const
+	{
+		std::hash<std::string> hashFn;
+		size_t seed = 0;
+		for (const auto& scope : decoratedName.scopeResolution) {
+			size_t scopeHash = hashFn(scope);
+			seed ^= scopeHash + 0x9e3779b9 + (seed << 6) + (seed >> 2); // Combine the hash of each scope
+		}
+		seed ^= hashFn(decoratedName.Prefixes) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		size_t internalHash = 0;
+		switch (decoratedName.type) {
+		case DecoratedNameType::FUNCTION: {
+			internalHash = std::get<DecoratedFunction>(decoratedName.m_decorated).Hash();
+			break;
+		}
+		case DecoratedNameType::VARIABLE: {
+			internalHash = std::get<DecoratedVariable>(decoratedName.m_decorated).Hash();
+
+			break;
+		}
+		case DecoratedNameType::TYPE: {
+			internalHash = std::get<DecoratedType>(decoratedName.m_decorated).Hash();
+
+			break;
+		}
+		case DecoratedNameType::ATTRIBUTE: {
+			internalHash = std::get<DecoratedAttribute>(decoratedName.m_decorated).Hash();
+
+			break;
+		}
+		default: {
+			__assume(false);
+		}
+		}
+		seed ^= internalHash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		return seed;
 	}
 
 }

@@ -179,7 +179,7 @@ integral_type                       :signed_inegral_type|unsigned_integral_type;
 signed_inegral_type                 :(BYTE|SHORT|INT|LONG);
 unsigned_integral_type              :UBYTE|USHORT|UINT|ULONG;
 litteral                            :STRING_LITTERAL|INT_LITTERAL|UINT_LITTERAL|FLOAT_LITTERAL|CHAR_LITTERAL|BOOL_LITTERAL ;
-type                                :primitives|((scope_ressolution?ID)|decorated_name);
+type                                :primitives|((scope_ressolution?ID));
 parameter                           :TYPE_QUALIFYERS* type ID;
 parameterList                       :parameter(','parameter)*; 
 classmember_declaration             :(function_declaration|var_declaration)';';
