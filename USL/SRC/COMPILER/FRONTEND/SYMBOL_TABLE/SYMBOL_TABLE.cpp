@@ -1,5 +1,6 @@
 #include "HEADER/COMPILER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 namespace USL_COMPILER {
+
 #pragma region Static_Vars
 
 	std::unordered_map<std::string, ScopePtr> SymbolTable::scopes{};
@@ -261,7 +262,7 @@ namespace USL_COMPILER {
 #pragma endregion
 
 
-	//SimplifyedSymbolTable SimplifyedSymbolTable::GlobalInst;
+	SimplifyedSymbolTable SimplifyedSymbolTable::GlobalInst;
 
 	 size_t DecoratedFunction::Hash() const noexcept {
 		std::hash<std::string> hashFn;
@@ -383,6 +384,7 @@ namespace USL_COMPILER {
 		} 
 		case DecoratedNameType::ATTRIBUTE: {
 		auto issame = std::get<DecoratedAttribute>(m_decorated) != std::get<DecoratedAttribute>(other.m_decorated);
+
 		
 			if (issame) return false;
 
@@ -429,6 +431,13 @@ namespace USL_COMPILER {
 		}
 		seed ^= internalHash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		return seed;
+	}
+
+	USL_NODISCARD std::optional<SimplifyedSymbolTable::TableIterator> SimplifyedSymbolTable::DoEsSymExist(const DecoratedName& name) noexcept
+	{
+		
+		if (!name.isValid()) return;
+		return GlobalInst.m_findInTable(name);
 	}
 
 }

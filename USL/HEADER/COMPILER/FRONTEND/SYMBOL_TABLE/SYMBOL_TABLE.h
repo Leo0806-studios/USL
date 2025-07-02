@@ -3,7 +3,7 @@
 #define SYMBOL_TABLE_H
 #include "SYMBOLS/SYMBOLS.h"
 import std;
-
+#define USL_NODISCARD [[nodiscard]]
 namespace llvm {
 	class Type;
 	class Function;
@@ -197,16 +197,109 @@ namespace USL_COMPILER {
 		bool operator!=(const DecoratedName& other)const noexcept { 
 			return !(*this == other);
 		}
+		/// <summary>
+		/// returns if the decorated name is valid
+		/// might be unreliable 
+		/// </summary>
+		/// <returns></returns>
+		USL_NODISCARD bool isValid()const noexcept;
 	};
 	class DecoratorHasher {
 	public:
 		size_t operator()(const DecoratedName& decoratedName) const;
 	};
+	/// <summary>
+	/// thread safe SymbolTable
+	/// stores in a hashmap to reduce compleity
+	/// Decorated names are keys
+	/// 
+	/// 
+	/// static funcs naming reading guides
+	///		*_CN	searches by clear name
+	///		*_N		searches by
+	/// </summary>
 	class SimplifyedSymbolTable {
 		std::stack<std::string> ScopeStack{};
 
 		std::unordered_map<DecoratedName, SymbolPtr, DecoratorHasher> symbols;// with the new Decorated names all symbols ae unique
 
+
+		USL_NODISCARD SimplifyedSymbolTable()noexcept;
+		~SimplifyedSymbolTable()noexcept;
+
+		/// <summary>
+		/// constructs a decoratedName from the prvided name and the current scope
+		/// </summary>
+		/// <param name="type">			= the type of the symbol to be added</param>
+		/// <param name="specialData">	= optional, contains special data(like attributes or cv qualifiers)</param>
+		/// <param name="ClearName">	= the name of the symbol</param>
+		/// <returns></returns>
+		DecoratedName m_ConstructNameFromCurrentScope(const std::string_view& ClearName, SymbolType type, std::string_view specialData = {})const noexcept;
+		/// <summary>
+		/// searches the table for the prvided Key ( name)
+		/// returns the itterator to the element or end() on error or if not found
+		/// </summary>
+		/// <param name="name">key to be searched for</param>
+		/// <returns> itterator to symbol or end()</returns>
+		USL_NODISCARD auto m_findInTable(const DecoratedName& name)noexcept;
+
+
+
+
+		//statics
+
+		static SimplifyedSymbolTable GlobalInst;
+
+		using table = decltype(GlobalInst.symbols);
+		using TableIterator = table::iterator;
+
+	public:
+		static void CreateTable()noexcept;
+		/// <summary>
+		/// searches for the symbol in the table
+		/// returns an optional containing the itterator on succses
+		/// </summary>
+		/// <param name="name">the decorated name to search </param>
+		/// <returns>an itterator to the symbol or an emppty optional found</returns>
+		USL_NODISCARD static std::optional<TableIterator> DoEsSymExist(const DecoratedName& name)noexcept;
+		/// <summary>
+		/// searches for the symbol in the table
+		///	searches only in current and parrent scopes
+		/// constructs a decoratedname for searching internaly (might be costly bc it can involve heap alloc)
+		/// returns end() if not found or on error
+		/// </summary>
+		/// <param name="name">the clear name to search</param>
+		/// <param name="type"> the type of the symbol to be added</param>
+		/// <param name="specialData">optional, contains special data(like attributes or cv qualifiers)</param>
+		/// <returns>an itterator the the symbol or end() if not found</returns>
+		USL_NODISCARD static auto DoesSymExist(const std::string_view& name,SymbolType type, std::string_view specialData = {})noexcept;
+		/// <summary>
+		/// adds a symbol to the current scope
+		/// will construct a Decorated name internaly and insert it into the table
+		/// returns an itterator to the symbol or end() on error
+		/// </summary>
+		/// <param name="Symbol">the symbol to be added</param>
+		/// <returns>itterator to the symbol or end()</returns>
+		USL_NODISCARD static auto AddSymbol(const SymbolPtr Symbol) noexcept;
+		/// <summary>
+		/// adds a symbol at the specified scope
+		/// more performant as it can directly insert into the table.
+		/// returns an itterator to the symbol or end() on error
+		/// </summary>
+		/// <param name="name">decorated name of the object</param>
+		/// <param name="Symbol">the symbol to be added</param>
+		/// <returns>ittertor to the symbol or end()</returns>
+		USL_NODISCARD static auto AddSymbol(const DecoratedName& name, const SymbolPtr Symbol)noexcept;
+		/// <summary>
+		/// locks the internal mutex of the table
+		/// </summary>
+		/// <returns></returns>
+		USL_NODISCARD static auto Lock()noexcept;
+		/// <summary>
+		/// unlocks the internal mutex
+		/// </summary>
+		/// <returns></returns>
+		USL_NODISCARD static auto UnLock()noexcept;
 
 	};
 
