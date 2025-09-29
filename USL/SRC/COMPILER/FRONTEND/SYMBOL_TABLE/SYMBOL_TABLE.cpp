@@ -370,6 +370,7 @@ namespace USL_COMPILER {
 		switch (type) {
 			//if intellisense complains that the std::get returns void dont trust it. its lying it will (should^) compile
 		case DecoratedNameType::FUNCTION: {
+			
 			if (std::get<DecoratedFunction>(m_decorated) != std::get<DecoratedFunction>(other.m_decorated)) return false;
 			break;
 		}
@@ -421,7 +422,7 @@ namespace USL_COMPILER {
 			break;
 		}
 		case DecoratedNameType::ATTRIBUTE: {
-			internalHash = std::get<DecoratedAttribute>(decoratedName.m_decorated).Hash();
+			internalHash = std::get<decoratedName.indexAttribute>(decoratedName.m_decorated).Hash();
 
 			break;
 		}

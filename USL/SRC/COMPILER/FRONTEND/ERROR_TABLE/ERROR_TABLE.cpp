@@ -23,6 +23,7 @@ namespace USL_COMPILER
 
 	bool ErrorTable::ResetErrorTable() noexcept
 	{
+	
 		if (errors.empty()) {
 			return true;
 		}

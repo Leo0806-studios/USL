@@ -183,8 +183,20 @@ namespace USL_COMPILER {
 	};
 	class DecoratedName {
 		friend class DecoratorHasher;
+
 		std::variant< DecoratedFunction, DecoratedVariable, DecoratedType, DecoratedAttribute> m_decorated; // the name of the symbol, can be a string or a decorated function/variable/type/attribute
 
+		inline static constexpr size_t indexFunc = 0ULL;
+		inline static constexpr size_t indexVar = 1ULL;
+		inline static constexpr size_t indexType = 2ULL;
+		inline static constexpr size_t indexAttribute = 3ULL;
+		consteval void SanityCheckIndexes() {
+			static_assert(std::is_same_v<std::variant_alternative_t<indexFunc, decltype(m_decorated)>, DecoratedFunction>, "DecoratedFunction is not at index 0");
+			static_assert(std::is_same_v<std::variant_alternative_t<indexVar, decltype(m_decorated)>, DecoratedVariable>, "DecoratedVariable is not at index 1");
+			static_assert(std::is_same_v<std::variant_alternative_t<indexType, decltype(m_decorated)>, DecoratedType>, "DecoratedType is not at index 2");
+			static_assert(std::is_same_v<std::variant_alternative_t<indexAttribute, decltype(m_decorated)>, DecoratedAttribute>, "DecoratedAttribute is not at index 3");
+
+		}
 
 		DecoratedNameType type;
 		std::vector<std::string> scopeResolution;
@@ -204,6 +216,7 @@ namespace USL_COMPILER {
 		/// <returns></returns>
 		USL_NODISCARD bool isValid()const noexcept;
 	};
+
 	class DecoratorHasher {
 	public:
 		size_t operator()(const DecoratedName& decoratedName) const;
@@ -302,6 +315,8 @@ namespace USL_COMPILER {
 		USL_NODISCARD static auto UnLock()noexcept;
 
 	};
+
+
 
 }
 #endif // !SYMBOL_TABLE_H

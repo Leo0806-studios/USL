@@ -1,0 +1,72 @@
+calling convention:
+	register ussage:
+		function parameters (these are all caller saved if needed):
+			r8-r15:integer arguments
+			rax: this ptr
+			rbx: return value
+			xmm0-xmm7: float arguments
+			xmm8-xmm15: large structs
+			xmm0 : float return value
+			xmm8 large struct return value
+		rcx,rdx,rsi,rbp are all nonvolatile.
+
+
+	registers are assinged from right to left.
+	the last integer parameter is passed in r15, the next in r14, etc.
+	for floats, the last float parameter is passed in xmm7, the next in xmm6, etc.
+	for large structs, the last struct parameter is passed in xmm15, the next in xmm14, etc.
+	if there are more than 8 integer parameters, the rest are passed on the stack.
+	if there are more than 8 float parameters, the rest are passed on the stack.
+	if there are more than 8 large struct parameters, the rest are passed on the stack.
+	the argument the furthes left is at rsp+8 (the return address is at rsp).
+
+using [[ABI(RegisterMerge(param,registers))]] you can assign multiple registers to a parameter if tis an exact multiple of the size of a register.
+for example:
+struct S{char pad[16]}; // size is 16, which is 2*8]};
+[[ABI(RegisterMerge(Param1,r15,r14))]] void func(S Param1); 
+thsi will pass Param1 in r15 and r14.
+
+teh smae exists for splitting a register for multiple parameters:
+[[ABI(RegisterSplit(r15,Param1,Param2))]] void func(int Param1,int Param2);
+this will merge both parameters into r15.
+
+all of this also applies to large structs passed in xmm registers.
+the stack is alligned to 16 bytes.
+
+
+
+Inline VLA's:
+	types with unkown sizes are allowed.
+	these types are only allowed  to be heap allocated or with ad direct initializer with a constant as size for the variable fields. 
+	these can be achived using the followng syntax inside a type:
+	[[IntegerType Length]]TypeName fieldName[];
+	this will create a field named fieldName of type TypeName with Length elements.
+	this is allowed as anon last element inside a type.
+	 thefields afetrwards are accsesed with this+ofsetof(fieldname)+sizeof(Typename)*Length (this si done by teh compiler internaly . in code you stil lacces tehm with obj.name).
+	 the user is responsible to keep length and fieldname elemnt count consistent.desyncing the m is UB.
+	 the type of Lenght must be integral or a type marked witn [[USL::IntegerType]] and implement the necessary operators.
+	example:
+	struct vartype{
+		[some stuff]
+		[int length]]float data[];
+		[some other stuff]];
+	};
+
+	stack creation must look like this:
+	void f(){
+	vartype v ={
+	[stuff]
+	.data={1.0f,2.0f,3.0f} // length is 3 here
+	[other stuff]
+	};
+	}
+	or
+	void f(){
+	vartype v ={
+	[stuff]
+	.data={}[10] // length is 10 here
+	[other stuff]
+	};
+	}
+	'
+	'
