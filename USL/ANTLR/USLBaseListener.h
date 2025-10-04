@@ -160,6 +160,9 @@ public:
   virtual void enterTest(USLParser::TestContext * /*ctx*/) override { }
   virtual void exitTest(USLParser::TestContext * /*ctx*/) override { }
 
+  virtual void enterVariable_decorator(USLParser::Variable_decoratorContext * /*ctx*/) override { }
+  virtual void exitVariable_decorator(USLParser::Variable_decoratorContext * /*ctx*/) override { }
+
   virtual void enterDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
   virtual void exitDecorated_name(USLParser::Decorated_nameContext * /*ctx*/) override { }
 

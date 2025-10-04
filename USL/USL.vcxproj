@@ -222,17 +222,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SRC\COMPILER\FRONTEND\IR_GENERATOR\IR_GENERATOR.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\METADATA_GENERATOR\METADATA_GENERATOR.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.cpp" />
-    <ClCompile Include="SRC\COMPILER\COMMAND_LINE\PARSER\PARSER.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOLS\SYMBOLS.cpp" />
-    <ClCompile Include="SRC\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.cpp" />
-    <ClCompile Include="SRC\GLOBAL_STORAGE\GLOBAL_STORAGE.cpp" />
     <ClCompile Include="SRC\USLBaseListener.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug_noDeubuger|x64'">TurnOffAllWarnings</WarningLevel>
@@ -265,26 +254,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
-    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSER\PARSER.h" />
-    <ClInclude Include="HEADER\COMPILER\COMMAND_LINE\PARSSED_ARGS\PARSED_ARGS.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\ERROR_TABLE\ERROR_TABLE.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\IR_GENERATOR\IR_GENERATOR.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\METADATA_GENERATOR\METADATA_GENERATOR.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\PARSING_ERROR_LISTENER\PARSING_ERROR_LISTENER.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\SEMANTIC_ANALYZER\SEMANTIC_ANALYZER.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOLS\SYMBOLS.h" />
-    <ClInclude Include="HEADER\COMPILER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h" />
-    <ClInclude Include="HEADER\COMPILER\PRINT_HELP\PRINT_HELP.h" />
     <ClInclude Include="HEADER\USLBaseListener.h" />
     <ClInclude Include="HEADER\USLBaseVisitor.h" />
     <ClInclude Include="HEADER\USLListener.h" />
     <ClInclude Include="HEADER\USLLexer.h" />
     <ClInclude Include="HEADER\USLParser.h" />
     <ClInclude Include="HEADER\USLVisitor.h" />
-    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VisitorReturnTypes.h" />
-    <ClInclude Include="SRC\COMPILER\FRONTEND\SEMANTIC_ANALYZER\VISIT_WRAPPERS\VISIT_WRAPPER.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ANTLR\USL.g4" />

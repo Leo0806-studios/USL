@@ -158,6 +158,9 @@ public:
   virtual void enterTest(USLParser::TestContext *ctx) = 0;
   virtual void exitTest(USLParser::TestContext *ctx) = 0;
 
+  virtual void enterVariable_decorator(USLParser::Variable_decoratorContext *ctx) = 0;
+  virtual void exitVariable_decorator(USLParser::Variable_decoratorContext *ctx) = 0;
+
   virtual void enterDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
   virtual void exitDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
 

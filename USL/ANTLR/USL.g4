@@ -2,49 +2,87 @@ grammar USL;
 
 //Lexer
 //Keywords
+
+//scopes
 NAMESPACE                           :'namespace';
 CLASS                               :'class';
 ENUM                                :'enum';
 ATRIBUTE                            :'atribute';
+
+//inbuild types
 BYTE                                :'byte';
-UBYTE                               :'ubyte';
 SHORT                               :'short';
-USHORT                              :'ushort';
 INT                                 :'int';
-UINT                                :'uint';
 LONG                                :'long';
-ULONG                               :'ulong';
 FLOAT                               :'float';
 DOUBLE                              :'double';
+LONGDOUBLE                          :'w_double';
 HASH                                :'hash';
 STRING                              :'string';
 CHAR                                :'char';
 VOID                                :'void';
-NULL                                :'null';
+NULLPTR_T                           :'nullptr_t';
 BOOL                                :'bool';
+M128                                :'m128';
+M128I                               :'m128i';
+M128D                               :'m128d';
+M256                                :'m256';
+M256I                               :'m256i';
+M256D                               :'m256d';
+M512                                :'m512';
+M512I                               :'m512i';
+M512D                               :'m512d';
+//litteral keywprds
+NULL                                :'null';
+NULLPTR                             :'nullptr';
+BOOL_LITTERAL                       : 'true' | 'false' ;
+
+//templates
 TEMPLATE                            :'template';
+
+//concurency
 ASYNC                               :'async';
 SYNC                                :'sync';
+
+//intrinsics
 INTERNAL                            :'__internal';
+
+//opperators
 OPPERATOR                           :'operator';
-UNSAFE                              :'unsafe';
+
+//misc
 STACK_ALLOC                         :'stack_alloc';
+UNSAFE                              :'unsafe';
+
+//casts
 REINTERPRET_CAST                    :'reinterpret_cast';
 STATIC_CAST                         :'static_cast';
 UNSAFE_CAST                         :'unsafe_cast';
+CONST_CAST                          :'const_cast';
+
+//exceptions
+THROWS                              :'throws';
+MAYBE                               :'maybe';
+//controll flow
+RETURN                              :'return';
+CALL                                :'call';
+
+//varialbe decorators
+STATIC                              :'static';
+UNSIGNED                            :'unsigned';
+VOLATILE                            :'volatile';
+CONST                               :'const';
+
+//polymorphism
+VIRTUAL                             :'virtual';
+OVERRIDE                            :'override';
+
 CUSTOM_OP                           :'def_operator';
 CUSTOM_KEYWORD                      :'def_keyword';
 CUSTOM_CONTROL                      :'def_flow';
-TYPE_QUALIFYERS                     :'volatile'|'const';
-STATIC                              :'static';
-VIRTUAL                             :'virtual';
 NOEXCEPT                            :'noexcept';
-OVERRIDE                            :'override';
-NULLPTR                             :'nullptr';
-RETURN                              :'return';
 REQUIRES                            :'requires';
 AUTO                                :'auto';
-CALL                                :'call';
 EXTERN                              :'extern';
 DECLSPEC                            :'__declspec';
 DLLEXPORT                           :'dllexport';
@@ -68,6 +106,8 @@ DIV_OP                              :'/';
 MOD_OP                              :'%';
 HASH_OP                             :'#';
 
+//vector operators
+FMA_OP                              :'*+';
 //dereff
 DEREF                               :'->';
 
@@ -94,7 +134,6 @@ UINT_LITTERAL                       :[0-9]+;
 FLOAT_LITTERAL                      : [0-9]+('.'[0-9]*)? ;
 CHAR_LITTERAL                       : '\''[A-Za-z0-9-.,_:;\\]'\'';
 STRING_LITTERAL                     : '"' (~["\\] | '\\' .)* '"' ;
-BOOL_LITTERAL                       : 'true' | 'false' ;
         
         
 COMMENT                             : '//' ~[\r\n]* -> skip ;
@@ -127,15 +166,15 @@ class_delcaration                   :atribute_decorators? CLASS ID '{'classmembe
 namespace_declaration               :NAMESPACE ID '{'global_statement*'}';
 atribute_declaration                :ATRIBUTE ID '{'atribute_constructor? atrribute_requires?'}';
 
-function_declaration                :STATIC? TYPE_QUALIFYERS* VIRTUAL? (VOID|type) ID'('parameterList?')' noexcept_specifyer? OVERRIDE? '{'statement*'}' ;
-intrinsic_function_pre_declaration  :INTRINSIC TYPE_QUALIFYERS? (VOID|type) ID '('parameterList?')'noexcept_specifyer?;
-extern_function_pre_declaration     : extern_spec TYPE_QUALIFYERS? (VOID|type) ID '('parameterList?')' noexcept_specifyer?;
+function_declaration                :STATIC? variable_decorator* VIRTUAL? (VOID|type) ID'('parameterList?')' noexcept_specifyer? OVERRIDE? '{'statement*'}' ;
+intrinsic_function_pre_declaration  :INTRINSIC variable_decorator* (VOID|type) ID '('parameterList?')'noexcept_specifyer?;
+extern_function_pre_declaration     : extern_spec variable_decorator* (VOID|type) ID '('parameterList?')' noexcept_specifyer?;
 exter_function_declaratio           : extern_spec function_declaration;
 unit_test_declaration               :test function_declaration;
 
 enum_declaration                    :ENUM (':' integral_type)?'{' ID ('=' INT_LITTERAL)? (','ID ('='INT_LITTERAL)?)*'}';
 
-var_declaration                     :STATIC? TYPE_QUALIFYERS? type ID(('('construct=expression')')|(ASSIGN_OP construct_assign=expression))?;
+var_declaration                     :STATIC? variable_decorator? type ID(('('construct=expression')')|(ASSIGN_OP construct_assign=expression))?;
 
 custom_opperator_sym                : CUSTOM_OP '('CUSTOM_OP_SYMBOLS')' '('parameterList?')''{'statement*'}';
 
@@ -174,13 +213,13 @@ implements_function                 :(type ID'('parameterList')');
 implements_Var                      :type ID;
 
 //helper rules
-primitives                          :BOOL|BYTE|UBYTE|SHORT|USHORT|INT|UINT|LONG|ULONG|FLOAT|DOUBLE|HASH|STRING|CHAR;
+primitives                          :BOOL|BYTE|SHORT|INT|LONG|FLOAT|DOUBLE|HASH|STRING|CHAR;
 integral_type                       :signed_inegral_type|unsigned_integral_type;
 signed_inegral_type                 :(BYTE|SHORT|INT|LONG);
-unsigned_integral_type              :UBYTE|USHORT|UINT|ULONG;
+unsigned_integral_type              :UNSIGNED (BYTE|SHORT|INT|LONG);
 litteral                            :STRING_LITTERAL|INT_LITTERAL|UINT_LITTERAL|FLOAT_LITTERAL|CHAR_LITTERAL|BOOL_LITTERAL ;
 type                                :primitives|((scope_ressolution?ID)|magledName=decorated_name);
-parameter                           :TYPE_QUALIFYERS* type ID;
+parameter                           :variable_decorator* type ID;
 parameterList                       :parameter(','parameter)*; 
 classmember_declaration             :(function_declaration|var_declaration)';';
 operator_symbols                    :CUSTOM_OP_SYMBOLS|EQUALS|LESS|LARGER|NOT|LESS_EQ|LARGER_EQ|B_LEFT|B_RIGHT|INCREMENT|DECREMENT;
@@ -192,7 +231,7 @@ extern_spec                         :EXTERN STRING_LITTERAL;
 id_with_scope                       :scope_ressolution? ID;
 function_call_parameters            :expression(','expression)*;
 test                                :TEST ('('name=STRING_LITTERAL ',' fuzzing=BOOL_LITTERAL','repeat_count=INT_LITTERAL ')');
-
+variable_decorator                 : VOLATILE| CONST| UNSAFE;
 //semantic helper rules
 //these rule are not included anywhere and are just to be able to inject semantic information safely
 decorated_name                      :'®';//use normaly untypable symbol to make rul not match empty string 

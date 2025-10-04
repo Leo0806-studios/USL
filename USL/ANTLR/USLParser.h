@@ -14,22 +14,24 @@ public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
     T__7 = 8, T__8 = 9, T__9 = 10, NAMESPACE = 11, CLASS = 12, ENUM = 13, 
-    ATRIBUTE = 14, BYTE = 15, UBYTE = 16, SHORT = 17, USHORT = 18, INT = 19, 
-    UINT = 20, LONG = 21, ULONG = 22, FLOAT = 23, DOUBLE = 24, HASH = 25, 
-    STRING = 26, CHAR = 27, VOID = 28, NULL_ = 29, BOOL = 30, TEMPLATE = 31, 
-    ASYNC = 32, SYNC = 33, INTERNAL = 34, OPPERATOR = 35, UNSAFE = 36, STACK_ALLOC = 37, 
-    REINTERPRET_CAST = 38, STATIC_CAST = 39, UNSAFE_CAST = 40, CUSTOM_OP = 41, 
-    CUSTOM_KEYWORD = 42, CUSTOM_CONTROL = 43, TYPE_QUALIFYERS = 44, STATIC = 45, 
-    VIRTUAL = 46, NOEXCEPT = 47, OVERRIDE = 48, NULLPTR = 49, RETURN = 50, 
-    REQUIRES = 51, AUTO = 52, CALL = 53, EXTERN = 54, DECLSPEC = 55, DLLEXPORT = 56, 
-    DLLIMPORT = 57, NEW = 58, UNSAFE_NEW = 59, UNSAFE_DELETE = 60, INTRINSIC = 61, 
-    NORVO = 62, OVERLAPSWITH = 63, JUMPTABLE = 64, UNROLL = 65, VECTORIZE = 66, 
-    TEST = 67, ASSIGN_OP = 68, PLUS_OP = 69, MINUS_OP = 70, MULT_OP = 71, 
-    DIV_OP = 72, MOD_OP = 73, HASH_OP = 74, DEREF = 75, INCREMENT = 76, 
-    DECREMENT = 77, B_LEFT = 78, B_RIGHT = 79, EQUALS = 80, LESS = 81, LARGER = 82, 
-    NOT = 83, LESS_EQ = 84, LARGER_EQ = 85, SCOPE_RESSOLUTION_OP = 86, INT_LITTERAL = 87, 
-    UINT_LITTERAL = 88, FLOAT_LITTERAL = 89, CHAR_LITTERAL = 90, STRING_LITTERAL = 91, 
-    BOOL_LITTERAL = 92, COMMENT = 93, WS = 94, ID = 95, CUSTOM_OP_SYMBOLS = 96
+    ATRIBUTE = 14, BYTE = 15, SHORT = 16, INT = 17, LONG = 18, FLOAT = 19, 
+    DOUBLE = 20, LONGDOUBLE = 21, HASH = 22, STRING = 23, CHAR = 24, VOID = 25, 
+    NULLPTR_T = 26, BOOL = 27, M128 = 28, M128I = 29, M128D = 30, M256 = 31, 
+    M256I = 32, M256D = 33, M512 = 34, M512I = 35, M512D = 36, NULL_ = 37, 
+    NULLPTR = 38, BOOL_LITTERAL = 39, TEMPLATE = 40, ASYNC = 41, SYNC = 42, 
+    INTERNAL = 43, OPPERATOR = 44, STACK_ALLOC = 45, UNSAFE = 46, REINTERPRET_CAST = 47, 
+    STATIC_CAST = 48, UNSAFE_CAST = 49, CONST_CAST = 50, THROWS = 51, MAYBE = 52, 
+    RETURN = 53, CALL = 54, STATIC = 55, UNSIGNED = 56, VOLATILE = 57, CONST = 58, 
+    VIRTUAL = 59, OVERRIDE = 60, CUSTOM_OP = 61, CUSTOM_KEYWORD = 62, CUSTOM_CONTROL = 63, 
+    NOEXCEPT = 64, REQUIRES = 65, AUTO = 66, EXTERN = 67, DECLSPEC = 68, 
+    DLLEXPORT = 69, DLLIMPORT = 70, NEW = 71, UNSAFE_NEW = 72, UNSAFE_DELETE = 73, 
+    INTRINSIC = 74, NORVO = 75, OVERLAPSWITH = 76, JUMPTABLE = 77, UNROLL = 78, 
+    VECTORIZE = 79, TEST = 80, ASSIGN_OP = 81, PLUS_OP = 82, MINUS_OP = 83, 
+    MULT_OP = 84, DIV_OP = 85, MOD_OP = 86, HASH_OP = 87, FMA_OP = 88, DEREF = 89, 
+    INCREMENT = 90, DECREMENT = 91, B_LEFT = 92, B_RIGHT = 93, EQUALS = 94, 
+    LESS = 95, LARGER = 96, NOT = 97, LESS_EQ = 98, LARGER_EQ = 99, SCOPE_RESSOLUTION_OP = 100, 
+    INT_LITTERAL = 101, UINT_LITTERAL = 102, FLOAT_LITTERAL = 103, CHAR_LITTERAL = 104, 
+    STRING_LITTERAL = 105, COMMENT = 106, WS = 107, ID = 108, CUSTOM_OP_SYMBOLS = 109
   };
 
   enum {
@@ -48,7 +50,8 @@ public:
     RuleParameterList = 37, RuleClassmember_declaration = 38, RuleOperator_symbols = 39, 
     RuleScope_ressolution = 40, RuleAtribute_parameter = 41, RuleAtribute_parameter_list = 42, 
     RuleAtribute_decorators = 43, RuleExtern_spec = 44, RuleId_with_scope = 45, 
-    RuleFunction_call_parameters = 46, RuleTest = 47, RuleDecorated_name = 48
+    RuleFunction_call_parameters = 46, RuleTest = 47, RuleVariable_decorator = 48, 
+    RuleDecorated_name = 49
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -116,6 +119,7 @@ public:
   class Id_with_scopeContext;
   class Function_call_parametersContext;
   class TestContext;
+  class Variable_decoratorContext;
   class Decorated_nameContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
@@ -266,8 +270,8 @@ public:
     antlr4::tree::TerminalNode *VOID();
     TypeContext *type();
     antlr4::tree::TerminalNode *STATIC();
-    std::vector<antlr4::tree::TerminalNode *> TYPE_QUALIFYERS();
-    antlr4::tree::TerminalNode* TYPE_QUALIFYERS(size_t i);
+    std::vector<Variable_decoratorContext *> variable_decorator();
+    Variable_decoratorContext* variable_decorator(size_t i);
     antlr4::tree::TerminalNode *VIRTUAL();
     ParameterListContext *parameterList();
     Noexcept_specifyerContext *noexcept_specifyer();
@@ -292,7 +296,8 @@ public:
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *VOID();
     TypeContext *type();
-    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    std::vector<Variable_decoratorContext *> variable_decorator();
+    Variable_decoratorContext* variable_decorator(size_t i);
     ParameterListContext *parameterList();
     Noexcept_specifyerContext *noexcept_specifyer();
 
@@ -313,7 +318,8 @@ public:
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *VOID();
     TypeContext *type();
-    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    std::vector<Variable_decoratorContext *> variable_decorator();
+    Variable_decoratorContext* variable_decorator(size_t i);
     ParameterListContext *parameterList();
     Noexcept_specifyerContext *noexcept_specifyer();
 
@@ -389,7 +395,7 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *STATIC();
-    antlr4::tree::TerminalNode *TYPE_QUALIFYERS();
+    Variable_decoratorContext *variable_decorator();
     antlr4::tree::TerminalNode *ASSIGN_OP();
     ExpressionContext *expression();
 
@@ -693,13 +699,9 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *BOOL();
     antlr4::tree::TerminalNode *BYTE();
-    antlr4::tree::TerminalNode *UBYTE();
     antlr4::tree::TerminalNode *SHORT();
-    antlr4::tree::TerminalNode *USHORT();
     antlr4::tree::TerminalNode *INT();
-    antlr4::tree::TerminalNode *UINT();
     antlr4::tree::TerminalNode *LONG();
-    antlr4::tree::TerminalNode *ULONG();
     antlr4::tree::TerminalNode *FLOAT();
     antlr4::tree::TerminalNode *DOUBLE();
     antlr4::tree::TerminalNode *HASH();
@@ -753,10 +755,11 @@ public:
   public:
     Unsigned_integral_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *UBYTE();
-    antlr4::tree::TerminalNode *USHORT();
-    antlr4::tree::TerminalNode *UINT();
-    antlr4::tree::TerminalNode *ULONG();
+    antlr4::tree::TerminalNode *UNSIGNED();
+    antlr4::tree::TerminalNode *BYTE();
+    antlr4::tree::TerminalNode *SHORT();
+    antlr4::tree::TerminalNode *INT();
+    antlr4::tree::TerminalNode *LONG();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -812,8 +815,8 @@ public:
     virtual size_t getRuleIndex() const override;
     TypeContext *type();
     antlr4::tree::TerminalNode *ID();
-    std::vector<antlr4::tree::TerminalNode *> TYPE_QUALIFYERS();
-    antlr4::tree::TerminalNode* TYPE_QUALIFYERS(size_t i);
+    std::vector<Variable_decoratorContext *> variable_decorator();
+    Variable_decoratorContext* variable_decorator(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1017,6 +1020,23 @@ public:
   };
 
   TestContext* test();
+
+  class  Variable_decoratorContext : public antlr4::ParserRuleContext {
+  public:
+    Variable_decoratorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *VOLATILE();
+    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *UNSAFE();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Variable_decoratorContext* variable_decorator();
 
   class  Decorated_nameContext : public antlr4::ParserRuleContext {
   public:
