@@ -47,9 +47,9 @@ Inline VLA's:
 	 the type of Lenght must be integral or a type marked witn [[USL::IntegerType]] and implement the necessary operators.
 	example:
 	struct vartype{
-		[some stuff]
+		int stuff;//offset 0
 		[int length]]float data[];
-		[some other stuff]];
+		int otherstuff;//offset 4+sizeof(float)*length
 	};
 
 	stack creation must look like this:
