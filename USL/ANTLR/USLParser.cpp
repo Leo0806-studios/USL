@@ -70,8 +70,8 @@ void uslParserInitialize() {
     },
     std::vector<std::string>{
       "", "';'", "'{'", "'}'", "'('", "')'", "':'", "','", "'['", "']'", 
-      "'\\u00C2\\u00AE'", "'namespace'", "'class'", "'enum'", "'atribute'", 
-      "'byte'", "'short'", "'int'", "'long'", "'float'", "'double'", "'w_double'", 
+      "'\\u00AE'", "'namespace'", "'class'", "'enum'", "'atribute'", "'byte'", 
+      "'short'", "'int'", "'long'", "'float'", "'double'", "'w_double'", 
       "'hash'", "'string'", "'char'", "'void'", "'nullptr_t'", "'bool'", 
       "'m128'", "'m128i'", "'m128d'", "'m256'", "'m256i'", "'m256d'", "'m512'", 
       "'m512i'", "'m512d'", "'null'", "'nullptr'", "", "'template'", "'async'", 
