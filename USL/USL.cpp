@@ -46,75 +46,8 @@ void printAST(antlr4::tree::ParseTree* tree, antlr4::Parser* parser, std::string
 int main(int argc, char** argv)
 {
 	std::ios::sync_with_stdio(false);
-	auto a = USL_COMPILER::CmdArgsParser::ParseCmd(argc, argv);
-
-	std::ifstream stream(a.InputFiles[0]);
 
 
-
-	antlr4::ANTLRInputStream input(stream);
-	USLLexer lexer(&input);
-	antlr4::CommonTokenStream tokens(&lexer);
-	USLParser parser(&tokens);
-	USL_COMPILER::ParsingErrorListener errorListener;
-	parser.removeErrorListeners(); // Remove default error listeners
-	parser.addErrorListener(&errorListener); // Add custom error listener
-	auto tree = parser.program();
-	std::cout << "\n\n\n\n";
-	if (USL_COMPILER::ErrorTable::hasSyntacticError()) {
-		std::cout << USL_COMPILER::ErrorTable::AllErrorsToString() << '\n';
-		exit(-1);
-	}
-	std::stringstream treestream{};
-	printAST(tree, &parser, treestream);
-	std::cout << treestream.str() << '\n';
-	std::cout << "\n\n\n\n";
-
-
-	std::cout << tree->toStringTree(&parser) << std::endl;
-	if (errorListener.hasErrorOccurred()) {
-		exit(-1);
-	}
-	antlr4::tree::ParseTreeWalker walker;
-	USL_COMPILER::SymbolGatherer gatherer;
-	walker.walk(&gatherer, tree);
-	USL_COMPILER::SymbolResolver resolver;
-	walker.walk(&resolver, tree);
-	std::cout << "\n\n\n\nSymbol Gathered Successfully" << std::endl;
-	std::cout << USL_COMPILER::SymbolTable::SymbolTableToString() << std::endl;
-	USL_COMPILER::SemanticAnalyzer semantinc_analyzer;
-	USL_COMPILER::StatementReturn expr_type{};
-	std::any semantic_succses = semantinc_analyzer.visit(tree);
-	expr_type = std::any_cast<USL_COMPILER::StatementReturn>(semantic_succses);
-
-
-	if (expr_type.succses) {
-		std::cout << "\n\n\n";
-	}
-	if (USL_COMPILER::ErrorTable::hasSemanticError()) {
-		std::cout << USL_COMPILER::ErrorTable::AllErrorsToString() << '\n';
-		exit(-1);
-	}
-	USL_COMPILER::MetadataGenerator MetadataGen;
-	MetadataGen.visit(tree);
-	USL_COMPILER::IrBuilder irGen;
-	irGen.visit(tree);
-	
-	auto symfile_path = std::filesystem::path(argv[0]).parent_path().string();
-	symfile_path += "\\sym_dmp.txt";
-	if (std::filesystem::exists(symfile_path)) {
-		std::filesystem::remove(symfile_path);
-	}
-	std::fstream symfile;
-	symfile.open(symfile_path, std::ios::out);
-
-	if (!symfile.is_open()) {
-		std::cerr << "Failed to open symbol dump file: " << symfile_path << std::endl;
-		return -1;
-	}
-	symfile << USL_COMPILER::SymbolTable::SymbolTableToString();
-	symfile.flush();
-	symfile.close();
 
 
 
