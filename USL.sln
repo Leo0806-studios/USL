@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "USL_STD", "USL_STD\USL_STD.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "USL_LINKER", "USL_LINKER\USL_LINKER.vcxproj", "{168B39F7-B904-4E83-80D4-4EFBDB53F36E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "USL_ANTLR_PARSER", "USL_ANTLR_PARSER\USL_ANTLR_PARSER.vcxproj", "{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_noDeubuger|x64 = Debug_noDeubuger|x64
@@ -75,6 +77,18 @@ Global
 		{168B39F7-B904-4E83-80D4-4EFBDB53F36E}.Release|x64.Build.0 = Release|x64
 		{168B39F7-B904-4E83-80D4-4EFBDB53F36E}.Release|x86.ActiveCfg = Release|Win32
 		{168B39F7-B904-4E83-80D4-4EFBDB53F36E}.Release|x86.Build.0 = Release|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug_noDeubuger|x64.ActiveCfg = Debug|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug_noDeubuger|x64.Build.0 = Debug|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug_noDeubuger|x86.ActiveCfg = Debug|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug_noDeubuger|x86.Build.0 = Debug|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug|x64.ActiveCfg = Debug|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug|x64.Build.0 = Debug|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug|x86.ActiveCfg = Debug|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Debug|x86.Build.0 = Debug|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Release|x64.ActiveCfg = Release|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Release|x64.Build.0 = Release|x64
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Release|x86.ActiveCfg = Release|Win32
+		{35EC4D10-47B9-4ACB-9A2C-F7832C9AE78F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

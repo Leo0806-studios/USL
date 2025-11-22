@@ -15,37 +15,43 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="USL.cpp">
+    <ClInclude Include="USLBaseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USLBaseVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USLLexer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USLListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USLVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="USLBaseListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SRC\FRONTEND\MANGLED_NAME\MANGLED_NAME.cpp">
+    <ClCompile Include="USLBaseVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="TextFile1.txt" />
-    <Text Include="_____DEFS\def.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MACROS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HEADER\FRONTEND\MANGLED_NAME\MANGLED_NAME.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HEADER\FRONTEND\SYMBOL\SYMBOL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HEADER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ANTLR\USL.g4" />
-    <None Include=".clang-tidy" />
-    <None Include="cpp.hint" />
+    <ClCompile Include="USLLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="USLListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="USLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="USLVisitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
