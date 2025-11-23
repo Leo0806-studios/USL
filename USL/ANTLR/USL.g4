@@ -2,7 +2,7 @@ grammar USL;
 
 //Lexer
 //Keywords
-
+ //
 //scopes
 NAMESPACE                           :'namespace';
 CLASS                               :'class';
