@@ -17,7 +17,14 @@ import std;
 namespace USL::FRONTEND {
 
 	class SymbolTable {
-
-
+	private:
+		ScopePtr globalScop = DEFAULTINIT;
+		std::unordered_map<DecoratedName, WeakSymbolPtr> FastMap;
+	public:
+		/// <summary>
+		/// builds the fastmap from the hearchical table that can be indexed by the decorated name in O(1) time
+		/// </summary>
+		void BuildFastMap();
+		WeakSymbolPtr
 	};
 }

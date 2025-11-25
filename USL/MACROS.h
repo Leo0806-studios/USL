@@ -6,3 +6,6 @@
 	TypeName(TypeName&& other) noexcept = default; \
 	TypeName& operator=(TypeName&& other) noexcept = default; \
 	~TypeName() = default;
+
+
+#define DEFAULTINIT {}
