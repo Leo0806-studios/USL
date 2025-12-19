@@ -31,7 +31,7 @@ public:
     INCREMENT = 90, DECREMENT = 91, B_LEFT = 92, B_RIGHT = 93, EQUALS = 94, 
     LESS = 95, LARGER = 96, NOT = 97, LESS_EQ = 98, LARGER_EQ = 99, SCOPE_RESSOLUTION_OP = 100, 
     INT_LITTERAL = 101, UINT_LITTERAL = 102, FLOAT_LITTERAL = 103, CHAR_LITTERAL = 104, 
-    STRING_LITTERAL = 105, COMMENT = 106, WS = 107, ID = 108, CUSTOM_OP_SYMBOLS = 109
+    STRING_LITTERAL = 105, COMMENT = 106, WS = 107, ID = 108
   };
 
   enum {
@@ -40,18 +40,17 @@ public:
     RuleAtribute_declaration = 7, RuleFunction_declaration = 8, RuleIntrinsic_function_pre_declaration = 9, 
     RuleExtern_function_pre_declaration = 10, RuleExter_function_declaratio = 11, 
     RuleUnit_test_declaration = 12, RuleEnum_declaration = 13, RuleVar_declaration = 14, 
-    RuleCustom_opperator_sym = 15, RuleNoexcept_specifyer = 16, RuleAssignment_expr = 17, 
-    RuleEquality_expr = 18, RuleComparison_expr = 19, RuleBitshift_expr = 20, 
-    RuleAdditive_expr = 21, RuleMultiplicative_expr = 22, RuleUnary_expr = 23, 
-    RulePrimary_expr = 24, RuleFunction_call = 25, RuleAtribute_constructor = 26, 
-    RuleAtrribute_requires = 27, RuleImplements_function = 28, RuleImplements_Var = 29, 
-    RulePrimitives = 30, RuleIntegral_type = 31, RuleSigned_inegral_type = 32, 
-    RuleUnsigned_integral_type = 33, RuleLitteral = 34, RuleType = 35, RuleParameter = 36, 
-    RuleParameterList = 37, RuleClassmember_declaration = 38, RuleOperator_symbols = 39, 
-    RuleScope_ressolution = 40, RuleAtribute_parameter = 41, RuleAtribute_parameter_list = 42, 
-    RuleAtribute_decorators = 43, RuleExtern_spec = 44, RuleId_with_scope = 45, 
-    RuleFunction_call_parameters = 46, RuleTest = 47, RuleVariable_decorator = 48, 
-    RuleDecorated_name = 49
+    RuleNoexcept_specifyer = 15, RuleAssignment_expr = 16, RuleEquality_expr = 17, 
+    RuleComparison_expr = 18, RuleBitshift_expr = 19, RuleAdditive_expr = 20, 
+    RuleMultiplicative_expr = 21, RuleUnary_expr = 22, RulePrimary_expr = 23, 
+    RuleFunction_call = 24, RuleAtribute_constructor = 25, RuleAtrribute_requires = 26, 
+    RuleImplements_function = 27, RuleImplements_Var = 28, RulePrimitives = 29, 
+    RuleIntegral_type = 30, RuleSigned_inegral_type = 31, RuleUnsigned_integral_type = 32, 
+    RuleLitteral = 33, RuleType = 34, RuleParameter = 35, RuleParameterList = 36, 
+    RuleClassmember_declaration = 37, RuleOperator_symbols = 38, RuleScope_ressolution = 39, 
+    RuleAtribute_parameter = 40, RuleAtribute_parameter_list = 41, RuleAtribute_decorators = 42, 
+    RuleExtern_spec = 43, RuleId_with_scope = 44, RuleFunction_call_parameters = 45, 
+    RuleTest = 46, RuleVariable_decorator = 47, RuleDecorated_name = 48
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -86,7 +85,6 @@ public:
   class Unit_test_declarationContext;
   class Enum_declarationContext;
   class Var_declarationContext;
-  class Custom_opperator_symContext;
   class Noexcept_specifyerContext;
   class Assignment_exprContext;
   class Equality_exprContext;
@@ -407,25 +405,6 @@ public:
   };
 
   Var_declarationContext* var_declaration();
-
-  class  Custom_opperator_symContext : public antlr4::ParserRuleContext {
-  public:
-    Custom_opperator_symContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CUSTOM_OP();
-    antlr4::tree::TerminalNode *CUSTOM_OP_SYMBOLS();
-    ParameterListContext *parameterList();
-    std::vector<StatementContext *> statement();
-    StatementContext* statement(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Custom_opperator_symContext* custom_opperator_sym();
 
   class  Noexcept_specifyerContext : public antlr4::ParserRuleContext {
   public:
@@ -863,7 +842,6 @@ public:
   public:
     Operator_symbolsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CUSTOM_OP_SYMBOLS();
     antlr4::tree::TerminalNode *EQUALS();
     antlr4::tree::TerminalNode *LESS();
     antlr4::tree::TerminalNode *LARGER();

@@ -1,3 +1,19 @@
-Checks: '-*,cppcoreguidelines-*'
-HeaderFilterRegex: '.*'
+Checks: '*,-llvmlibc-implementation-in-namespace,
+-modernize-use-trailing-return-type, 
+-clang-diagnostic-pragma-once-outside-header, 
+-clang-diagnostic-unused-macro,
+-clang-diagnostic-c++98-compat,
+-llvmlibc-callee-namespace,
+-misc-include-cleaner,
+-altera-unroll-loops,
+-cppcoreguidelines-pro-type-union-access,
+-hicpp-move-const-arg,performance-move-const-arg,
+-performance-move-const-arg,
+-clang-diagnostic-pre-c++20-compat,
+-clang-diagnostic-pre-c++17-compat,
+-llvm-include-order,
+-clang-diagnostic-c++98-compat-pedantic,
+-readability-convert-member-functions-to-static'
+
+HeaderFilterRegex: 'C:\Users\leo08\source\repos\\USL\*'
 

@@ -1,13 +1,14 @@
+#pragma once
 #include "MACROS.h"
-#if   defined(__clang__)  || defined(__INTELLISENSE__)
-#include <string>
-#include <vector>
-#include <utility>
-#else
-import<string>;
-import<vector>;
-import <utility>;
-#endif //  __clang__ || __INTELLISENSE__
+	#if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
+	#include <vector>
+	#include <string>
+	#include <utility>
+	#else
+	import<vector>;
+	import<string>;
+	import <utility>;
+	#endif //  __clang__ || __INTELLISENSE__
 namespace USL::FRONTEND
 {
 	class InvalidDecoratedNameException : public std::exception {
@@ -35,28 +36,32 @@ namespace USL::FRONTEND
 	enum class Postfix :char {
 		invalid = '\0',
 	};
-	class VariableSymbol {
+	class VariableSymbol_ {
 	public:
-		VariableSymbol() = default; VariableSymbol(const VariableSymbol& other) = default; VariableSymbol& operator=(const VariableSymbol& other) = default; VariableSymbol(VariableSymbol&& other) noexcept = default; VariableSymbol& operator=(VariableSymbol&& other) noexcept = default; ~VariableSymbol() = default;
+		RuleOfFive(VariableSymbol_)
+			bool operator==(const VariableSymbol_& other) const noexcept = default;
 		std::string to_string() const;
 	};
-	class TypeSymbol {
+	class TypeSymbol_ {
 	public:
-		RuleOfFive(TypeSymbol)
+		RuleOfFive(TypeSymbol_)
+			bool operator==(const TypeSymbol_& other) const noexcept = default;
 			std::string to_string() const;
 	};
-	class FunctionSymbol {
-		friend struct std::hash<FunctionSymbol>;
+	class FunctionSymbol_ {
+		friend struct std::hash<FunctionSymbol_>;
 		using ScopeList = std::vector<std::string >;
 		std::vector<ScopeList> Parameters = {};
 		ScopeList ReturnType = {};
 	public:
-		RuleOfFive(FunctionSymbol)
+		RuleOfFive(FunctionSymbol_)
+			bool operator==(const FunctionSymbol_& other) const noexcept = default;
 			std::string to_string() const;
 	};
-	class AttributeSymbol {
+	class AttributeSymbol_ {
 	public:
-		RuleOfFive(AttributeSymbol)
+		RuleOfFive(AttributeSymbol_)
+			bool operator==(const AttributeSymbol_& other) const noexcept = default;
 			std::string to_string() const;
 	};
 	/// <summary>
@@ -69,36 +74,36 @@ namespace USL::FRONTEND
 		std::vector<std::string> scope = {};
 		size_t PrecomputedHash = 0;
 		union {
-			VariableSymbol variable_symbol;
-			TypeSymbol type_symbol;
-			FunctionSymbol function_symbol;
-			AttributeSymbol attribute_symbol;
+			VariableSymbol_ variable_symbol;
+			TypeSymbol_ type_symbol;
+			FunctionSymbol_ function_symbol;
+			AttributeSymbol_ attribute_symbol;
 		};
 		SymbolType symbol_type = SymbolType::invalid_type;
 	public:
 		DecoratedName() : function_symbol{} {}
 		~DecoratedName() {};
 		template<typename SymbolKind,typename = std::enable_if<
-			std::is_same_v<SymbolKind, VariableSymbol> ||
-			std::is_same_v<SymbolKind, TypeSymbol> ||
-			std::is_same_v<SymbolKind, FunctionSymbol> ||
-			std::is_same_v<SymbolKind, AttributeSymbol>>>
+			std::is_same_v<SymbolKind, VariableSymbol_> ||
+			std::is_same_v<SymbolKind, TypeSymbol_> ||
+			std::is_same_v<SymbolKind, FunctionSymbol_> ||
+			std::is_same_v<SymbolKind, AttributeSymbol_>>>
 		DecoratedName(std::vector<std::string> scopes,SymbolKind symbolKind)
 		{
 			scope = std::move(scopes);
-			if constexpr (std::is_same_v<SymbolKind, VariableSymbol>) {
+			if constexpr (std::is_same_v<SymbolKind, VariableSymbol_>) {
 				symbol_type = SymbolType::variable;
 				variable_symbol =std::move(symbolKind);
 			}
-			else if constexpr (std::is_same_v<SymbolKind, TypeSymbol>) {
+			else if constexpr (std::is_same_v<SymbolKind, TypeSymbol_>) {
 				symbol_type = SymbolType::type;
 				type_symbol=std::move(symbolKind);
 			}
-			else if constexpr (std::is_same_v<SymbolKind, FunctionSymbol>) {
+			else if constexpr (std::is_same_v<SymbolKind, FunctionSymbol_>) {
 				symbol_type = SymbolType::function;
 				function_symbol =std::move(symbolKind);
 			}
-			else if constexpr (std::is_same_v<SymbolKind, AttributeSymbol>) {
+			else if constexpr (std::is_same_v<SymbolKind, AttributeSymbol_>) {
 				symbol_type = SymbolType::attribute;
 				attribute_symbol =std::move(symbolKind);
 			}
@@ -110,6 +115,7 @@ namespace USL::FRONTEND
 
 		DecoratedName(DecoratedName&& other);
 		DecoratedName& operator=(DecoratedName&& other);
+		bool operator==(const DecoratedName& other) const noexcept;
 		void SetPrecomputedHash(size_t hash) noexcept {
 			PrecomputedHash = hash;
 		}
@@ -120,31 +126,30 @@ namespace USL::FRONTEND
 	};
 } // namespace USL::FRONTEND
 
-static size_t hash_combine(size_t lhs, size_t rhs) noexcept {
-	lhs ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
-	return lhs;
-}
+
+	size_t hash_combine(size_t lhs, size_t rhs) noexcept;
+
  namespace std {
 	template<>
-	struct hash<USL::FRONTEND::VariableSymbol> {
+	struct hash<USL::FRONTEND::VariableSymbol_> {
 	public:
-		size_t operator()(const USL::FRONTEND::VariableSymbol& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::VariableSymbol_& symbol) const noexcept {
 
 			return 0;
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::TypeSymbol> {
+	struct hash<USL::FRONTEND::TypeSymbol_> {
 	public:
-		size_t operator()(const USL::FRONTEND::TypeSymbol& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::TypeSymbol_& symbol) const noexcept {
 
 			return 0;
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::FunctionSymbol> {
+	struct hash<USL::FRONTEND::FunctionSymbol_> {
 	public:
-		size_t operator()(const USL::FRONTEND::FunctionSymbol& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::FunctionSymbol_& symbol) const noexcept {
 
 			size_t hash = 0;
 			for (const auto& paramList : symbol.Parameters) {
@@ -159,9 +164,9 @@ static size_t hash_combine(size_t lhs, size_t rhs) noexcept {
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::AttributeSymbol> {
+	struct hash<USL::FRONTEND::AttributeSymbol_> {
 	public:
-		size_t operator()(const USL::FRONTEND::AttributeSymbol& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::AttributeSymbol_& symbol) const noexcept {
 
 			return 0;
 		}

@@ -25,33 +25,43 @@ public:
 
     virtual std::any visitStatement(USLParser::StatementContext *context) = 0;
 
-    virtual std::any visitExpression(USLParser::ExpressionContext *context) = 0;
-
-    virtual std::any visitBasic_block(USLParser::Basic_blockContext *context) = 0;
-
-    virtual std::any visitClass_delcaration(USLParser::Class_delcarationContext *context) = 0;
-
     virtual std::any visitNamespace_declaration(USLParser::Namespace_declarationContext *context) = 0;
 
-    virtual std::any visitAtribute_declaration(USLParser::Atribute_declarationContext *context) = 0;
-
-    virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *context) = 0;
-
-    virtual std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *context) = 0;
-
-    virtual std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *context) = 0;
-
-    virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *context) = 0;
-
-    virtual std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext *context) = 0;
+    virtual std::any visitClass_declaration(USLParser::Class_declarationContext *context) = 0;
 
     virtual std::any visitEnum_declaration(USLParser::Enum_declarationContext *context) = 0;
 
-    virtual std::any visitVar_declaration(USLParser::Var_declarationContext *context) = 0;
+    virtual std::any visitAttribute_declaration(USLParser::Attribute_declarationContext *context) = 0;
 
-    virtual std::any visitCustom_opperator_sym(USLParser::Custom_opperator_symContext *context) = 0;
+    virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *context) = 0;
 
-    virtual std::any visitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *context) = 0;
+    virtual std::any visitBasic_block(USLParser::Basic_blockContext *context) = 0;
+
+    virtual std::any visitVariable_declaration(USLParser::Variable_declarationContext *context) = 0;
+
+    virtual std::any visitIf_statement(USLParser::If_statementContext *context) = 0;
+
+    virtual std::any visitElse_statement(USLParser::Else_statementContext *context) = 0;
+
+    virtual std::any visitWhile_statement(USLParser::While_statementContext *context) = 0;
+
+    virtual std::any visitDo_statement(USLParser::Do_statementContext *context) = 0;
+
+    virtual std::any visitFor_statement(USLParser::For_statementContext *context) = 0;
+
+    virtual std::any visitSwitch_statement(USLParser::Switch_statementContext *context) = 0;
+
+    virtual std::any visitCase_statement(USLParser::Case_statementContext *context) = 0;
+
+    virtual std::any visitGoto_statement(USLParser::Goto_statementContext *context) = 0;
+
+    virtual std::any visitLable_statement(USLParser::Lable_statementContext *context) = 0;
+
+    virtual std::any visitThrow_statement(USLParser::Throw_statementContext *context) = 0;
+
+    virtual std::any visitExpression_statement(USLParser::Expression_statementContext *context) = 0;
+
+    virtual std::any visitExpression(USLParser::ExpressionContext *context) = 0;
 
     virtual std::any visitAssignment_expr(USLParser::Assignment_exprContext *context) = 0;
 
@@ -65,57 +75,63 @@ public:
 
     virtual std::any visitMultiplicative_expr(USLParser::Multiplicative_exprContext *context) = 0;
 
-    virtual std::any visitUnary_expr(USLParser::Unary_exprContext *context) = 0;
+    virtual std::any visitPostfix_expr(USLParser::Postfix_exprContext *context) = 0;
+
+    virtual std::any visitPrefix_expr(USLParser::Prefix_exprContext *context) = 0;
 
     virtual std::any visitPrimary_expr(USLParser::Primary_exprContext *context) = 0;
 
-    virtual std::any visitFunction_call(USLParser::Function_callContext *context) = 0;
+    virtual std::any visitAcces_modifiers(USLParser::Acces_modifiersContext *context) = 0;
 
-    virtual std::any visitAtribute_constructor(USLParser::Atribute_constructorContext *context) = 0;
+    virtual std::any visitThrows_postfix(USLParser::Throws_postfixContext *context) = 0;
 
-    virtual std::any visitAtrribute_requires(USLParser::Atrribute_requiresContext *context) = 0;
+    virtual std::any visitQuailified_name(USLParser::Quailified_nameContext *context) = 0;
 
-    virtual std::any visitImplements_function(USLParser::Implements_functionContext *context) = 0;
+    virtual std::any visitAttribute_addition(USLParser::Attribute_additionContext *context) = 0;
 
-    virtual std::any visitImplements_Var(USLParser::Implements_VarContext *context) = 0;
+    virtual std::any visitAttribute(USLParser::AttributeContext *context) = 0;
 
-    virtual std::any visitPrimitives(USLParser::PrimitivesContext *context) = 0;
+    virtual std::any visitComparision_operator(USLParser::Comparision_operatorContext *context) = 0;
 
-    virtual std::any visitIntegral_type(USLParser::Integral_typeContext *context) = 0;
+    virtual std::any visitBitshift_operator(USLParser::Bitshift_operatorContext *context) = 0;
 
-    virtual std::any visitSigned_inegral_type(USLParser::Signed_inegral_typeContext *context) = 0;
+    virtual std::any visitAdditive_operator(USLParser::Additive_operatorContext *context) = 0;
 
-    virtual std::any visitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *context) = 0;
+    virtual std::any visitMultiplicative_operator(USLParser::Multiplicative_operatorContext *context) = 0;
 
-    virtual std::any visitLitteral(USLParser::LitteralContext *context) = 0;
+    virtual std::any visitPrefix_operator(USLParser::Prefix_operatorContext *context) = 0;
+
+    virtual std::any visitPostfix_operator(USLParser::Postfix_operatorContext *context) = 0;
+
+    virtual std::any visitCall_operator(USLParser::Call_operatorContext *context) = 0;
+
+    virtual std::any visitIndex_operator(USLParser::Index_operatorContext *context) = 0;
+
+    virtual std::any visitCvu_type(USLParser::Cvu_typeContext *context) = 0;
 
     virtual std::any visitType(USLParser::TypeContext *context) = 0;
 
+    virtual std::any visitPrimitive(USLParser::PrimitiveContext *context) = 0;
+
+    virtual std::any visitIntegral_type(USLParser::Integral_typeContext *context) = 0;
+
+    virtual std::any visitFloating_type(USLParser::Floating_typeContext *context) = 0;
+
+    virtual std::any visitVector_type(USLParser::Vector_typeContext *context) = 0;
+
+    virtual std::any visitParemeter_list(USLParser::Paremeter_listContext *context) = 0;
+
     virtual std::any visitParameter(USLParser::ParameterContext *context) = 0;
 
-    virtual std::any visitParameterList(USLParser::ParameterListContext *context) = 0;
+    virtual std::any visitLitteral(USLParser::LitteralContext *context) = 0;
 
-    virtual std::any visitClassmember_declaration(USLParser::Classmember_declarationContext *context) = 0;
+    virtual std::any visitBool_litteral(USLParser::Bool_litteralContext *context) = 0;
 
-    virtual std::any visitOperator_symbols(USLParser::Operator_symbolsContext *context) = 0;
+    virtual std::any visitCvu_decorators(USLParser::Cvu_decoratorsContext *context) = 0;
 
-    virtual std::any visitScope_ressolution(USLParser::Scope_ressolutionContext *context) = 0;
+    virtual std::any visitScoperesolution_list(USLParser::Scoperesolution_listContext *context) = 0;
 
-    virtual std::any visitAtribute_parameter(USLParser::Atribute_parameterContext *context) = 0;
-
-    virtual std::any visitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *context) = 0;
-
-    virtual std::any visitAtribute_decorators(USLParser::Atribute_decoratorsContext *context) = 0;
-
-    virtual std::any visitExtern_spec(USLParser::Extern_specContext *context) = 0;
-
-    virtual std::any visitId_with_scope(USLParser::Id_with_scopeContext *context) = 0;
-
-    virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *context) = 0;
-
-    virtual std::any visitTest(USLParser::TestContext *context) = 0;
-
-    virtual std::any visitDecorated_name(USLParser::Decorated_nameContext *context) = 0;
+    virtual std::any visitError_recovery(USLParser::Error_recoveryContext *context) = 0;
 
 
 };

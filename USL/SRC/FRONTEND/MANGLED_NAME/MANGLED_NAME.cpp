@@ -1,54 +1,56 @@
-#include "FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
-#if   defined(__clang__)  || defined(__INTELLISENSE__)
+#if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
 #include <vector>
 #include <string>
 #include <utility>
 #include <sstream>
+#include "FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
 #else
 import<string>;
 import<vector>;
 import <utility>;
 import<sstream>;
+import <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
 #endif //  __clang__ || __INTELLISENSE__
 
 
 namespace USL::FRONTEND 
 {
-	inline std::string USL::FRONTEND::FunctionSymbol::to_string() const {
-		std::stringstream ss = {};
-		ss << "$";
+	 std::string USL::FRONTEND::FunctionSymbol_::to_string() const {
+		std::stringstream returnStream = {};
+		returnStream << "$";
 		for (const std::string_view param : ReturnType) {
-			ss << param << '@';
+			returnStream << param << '@'; 
 		}
-		ss << '@';
-		for (auto& paramList : Parameters) {
-			ss << '$';
+
+		returnStream << '@';
+		for (const auto&  paramList : Parameters) {
+			returnStream << '$';
 			for (const std::string_view param : paramList) {
-				ss << param << '@';
+				returnStream << param << '@';
 			}
-			ss << '@';
+			returnStream << '@';
 		}
-		ss << '@';
-		return ss.str();
+		returnStream << '@';
+		return returnStream.str();
 	}
-	inline std::string TypeSymbol::to_string() const {
+	 std::string TypeSymbol_::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
-	inline std::string VariableSymbol::to_string() const {
+	 std::string VariableSymbol_::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
-	inline std::string AttributeSymbol::to_string() const {
+	 std::string AttributeSymbol_::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
 	DecoratedName::DecoratedName(const std::string& mangled_name)
 	{
 		std::vector<std::string> parts = {};
-		parts.push_back(mangled_name.substr(0, mangled_name.find_first_of('$')));
+		parts.push_back(mangled_name.substr(0, mangled_name.find_first_of('$',0ULL)));
 	}
-	inline DecoratedName::DecoratedName(const DecoratedName& other) :scope(other.scope), PrecomputedHash(other.PrecomputedHash), symbol_type(other.symbol_type)
+	 DecoratedName::DecoratedName(const DecoratedName& other) :scope(other.scope), PrecomputedHash(other.PrecomputedHash), symbol_type(other.symbol_type)
 	{
 		switch (symbol_type)
 		{
@@ -70,7 +72,7 @@ namespace USL::FRONTEND
 			break;
 		}
 		case  SymbolType::invalid_type: {
-			[[fallthrough]];
+			[[fallthrough]]; 
 		}
 		[[unlikely]] default:
 			throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for copying");
@@ -117,7 +119,7 @@ namespace USL::FRONTEND
 		return *this;
 	}
 
-	inline DecoratedName::DecoratedName(DecoratedName&& other) : scope(std::move(other.scope)),symbol_type(other.symbol_type)
+	 DecoratedName::DecoratedName(DecoratedName&& other) : scope(std::move(other.scope)),symbol_type(other.symbol_type)
 	{
 		this->PrecomputedHash = other.PrecomputedHash;
 		other.PrecomputedHash = 0;
@@ -162,7 +164,7 @@ namespace USL::FRONTEND
 			{
 			using enum USL::FRONTEND::SymbolType;
 			case SymbolType::variable: {
-				variable_symbol = std::move(other.variable_symbol);
+				variable_symbol = std::move(other.variable_symbol); 
 				break;
 			}
 			case SymbolType::type: {
@@ -188,7 +190,56 @@ namespace USL::FRONTEND
 		return *this;
 	}
 
-	inline std::string DecoratedName::to_string() const {
+	bool DecoratedName::operator==(const DecoratedName& other) const noexcept
+	{
+		if (this->PrecomputedHash != 0 && other.PrecomputedHash != 0 )
+		{
+			if (this->PrecomputedHash == other.PrecomputedHash)
+			{
+				return  true;
+			}
+		}
+		if (this->scope != other.scope)
+		{
+			return false;
+		}
+
+
+		if (this->symbol_type != other.symbol_type)
+		{
+			return false;
+		}
+		else {
+			switch (symbol_type)
+			{
+			using enum USL::FRONTEND::SymbolType;
+			case SymbolType::variable: {
+				return this->variable_symbol == other.variable_symbol;
+				break;
+			}
+			case SymbolType::type: {
+				return this->type_symbol == other.type_symbol;
+				break;
+			}
+			case SymbolType::function: {
+				return this->function_symbol == other.function_symbol;
+				break;
+			}
+			case SymbolType::attribute: {
+				return this->attribute_symbol == other.attribute_symbol;
+				break;
+			}
+			case  SymbolType::invalid_type: {
+				[[fallthrough]];
+			}
+			[[unlikely]] default:
+				return false;
+			}
+		}
+
+	}
+
+	 std::string DecoratedName::to_string() const {
 		std::stringstream ss = {};
 		
 		for (const std::string& str : scope) {
@@ -201,6 +252,7 @@ namespace USL::FRONTEND
 
 		switch (symbol_type)
 		{
+			
 			using enum USL::FRONTEND::SymbolType;
 			using SymbolType = USL::FRONTEND::SymbolType;
 		case SymbolType::variable: {
@@ -252,22 +304,22 @@ namespace std {
 		switch (name.symbol_type)
 		{
 		case SymbolType::variable: {
-			std::hash<USL::FRONTEND::VariableSymbol> hasher{};
+			const std::hash<USL::FRONTEND::VariableSymbol_> hasher{};
 			hash = hash_combine(hash, hasher.operator()((name.variable_symbol)));
 			break;
 		}
 		case SymbolType::type: {
-			std::hash<USL::FRONTEND::TypeSymbol>hasher{};
+			const std::hash<USL::FRONTEND::TypeSymbol_>hasher{};
 			hash = hash_combine(hash, hasher.operator()(name.type_symbol));
 			break;
 		}
 		case SymbolType::function: {
-			std::hash<USL::FRONTEND::FunctionSymbol>hasher{};
+			const std::hash<USL::FRONTEND::FunctionSymbol_>hasher{};
 			hash = hash_combine(hash, hasher.operator() (name.function_symbol));
 			break;
 		}
 		case SymbolType::attribute: {
-			std::hash<USL::FRONTEND::AttributeSymbol>hasher{};
+			const std::hash<USL::FRONTEND::AttributeSymbol_>hasher{};
 			hash = hash_combine(hash, hasher.operator()(name.attribute_symbol));
 			break;
 		}
@@ -281,3 +333,8 @@ namespace std {
 		return hash;
 	}
 } // namespace std
+
+size_t hash_combine(size_t lhs, size_t rhs) noexcept {
+	lhs ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);//NOLINT
+	return lhs;
+}

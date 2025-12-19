@@ -49,8 +49,6 @@ public:
 
     virtual std::any visitVar_declaration(USLParser::Var_declarationContext *context) = 0;
 
-    virtual std::any visitCustom_opperator_sym(USLParser::Custom_opperator_symContext *context) = 0;
-
     virtual std::any visitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *context) = 0;
 
     virtual std::any visitAssignment_expr(USLParser::Assignment_exprContext *context) = 0;

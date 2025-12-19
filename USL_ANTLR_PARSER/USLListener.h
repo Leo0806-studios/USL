@@ -23,47 +23,62 @@ public:
   virtual void enterStatement(USLParser::StatementContext *ctx) = 0;
   virtual void exitStatement(USLParser::StatementContext *ctx) = 0;
 
-  virtual void enterExpression(USLParser::ExpressionContext *ctx) = 0;
-  virtual void exitExpression(USLParser::ExpressionContext *ctx) = 0;
-
-  virtual void enterBasic_block(USLParser::Basic_blockContext *ctx) = 0;
-  virtual void exitBasic_block(USLParser::Basic_blockContext *ctx) = 0;
-
-  virtual void enterClass_delcaration(USLParser::Class_delcarationContext *ctx) = 0;
-  virtual void exitClass_delcaration(USLParser::Class_delcarationContext *ctx) = 0;
-
   virtual void enterNamespace_declaration(USLParser::Namespace_declarationContext *ctx) = 0;
   virtual void exitNamespace_declaration(USLParser::Namespace_declarationContext *ctx) = 0;
 
-  virtual void enterAtribute_declaration(USLParser::Atribute_declarationContext *ctx) = 0;
-  virtual void exitAtribute_declaration(USLParser::Atribute_declarationContext *ctx) = 0;
-
-  virtual void enterFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
-  virtual void exitFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
-
-  virtual void enterIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) = 0;
-  virtual void exitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) = 0;
-
-  virtual void enterExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) = 0;
-  virtual void exitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) = 0;
-
-  virtual void enterExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
-  virtual void exitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) = 0;
-
-  virtual void enterUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) = 0;
-  virtual void exitUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) = 0;
+  virtual void enterClass_declaration(USLParser::Class_declarationContext *ctx) = 0;
+  virtual void exitClass_declaration(USLParser::Class_declarationContext *ctx) = 0;
 
   virtual void enterEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
   virtual void exitEnum_declaration(USLParser::Enum_declarationContext *ctx) = 0;
 
-  virtual void enterVar_declaration(USLParser::Var_declarationContext *ctx) = 0;
-  virtual void exitVar_declaration(USLParser::Var_declarationContext *ctx) = 0;
+  virtual void enterAttribute_declaration(USLParser::Attribute_declarationContext *ctx) = 0;
+  virtual void exitAttribute_declaration(USLParser::Attribute_declarationContext *ctx) = 0;
 
-  virtual void enterCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) = 0;
-  virtual void exitCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) = 0;
+  virtual void enterFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
+  virtual void exitFunction_declaration(USLParser::Function_declarationContext *ctx) = 0;
 
-  virtual void enterNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) = 0;
-  virtual void exitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) = 0;
+  virtual void enterBasic_block(USLParser::Basic_blockContext *ctx) = 0;
+  virtual void exitBasic_block(USLParser::Basic_blockContext *ctx) = 0;
+
+  virtual void enterVariable_declaration(USLParser::Variable_declarationContext *ctx) = 0;
+  virtual void exitVariable_declaration(USLParser::Variable_declarationContext *ctx) = 0;
+
+  virtual void enterIf_statement(USLParser::If_statementContext *ctx) = 0;
+  virtual void exitIf_statement(USLParser::If_statementContext *ctx) = 0;
+
+  virtual void enterElse_statement(USLParser::Else_statementContext *ctx) = 0;
+  virtual void exitElse_statement(USLParser::Else_statementContext *ctx) = 0;
+
+  virtual void enterWhile_statement(USLParser::While_statementContext *ctx) = 0;
+  virtual void exitWhile_statement(USLParser::While_statementContext *ctx) = 0;
+
+  virtual void enterDo_statement(USLParser::Do_statementContext *ctx) = 0;
+  virtual void exitDo_statement(USLParser::Do_statementContext *ctx) = 0;
+
+  virtual void enterFor_statement(USLParser::For_statementContext *ctx) = 0;
+  virtual void exitFor_statement(USLParser::For_statementContext *ctx) = 0;
+
+  virtual void enterSwitch_statement(USLParser::Switch_statementContext *ctx) = 0;
+  virtual void exitSwitch_statement(USLParser::Switch_statementContext *ctx) = 0;
+
+  virtual void enterCase_statement(USLParser::Case_statementContext *ctx) = 0;
+  virtual void exitCase_statement(USLParser::Case_statementContext *ctx) = 0;
+
+  virtual void enterGoto_statement(USLParser::Goto_statementContext *ctx) = 0;
+  virtual void exitGoto_statement(USLParser::Goto_statementContext *ctx) = 0;
+
+  virtual void enterLable_statement(USLParser::Lable_statementContext *ctx) = 0;
+  virtual void exitLable_statement(USLParser::Lable_statementContext *ctx) = 0;
+
+  virtual void enterThrow_statement(USLParser::Throw_statementContext *ctx) = 0;
+  virtual void exitThrow_statement(USLParser::Throw_statementContext *ctx) = 0;
+
+  virtual void enterExpression_statement(USLParser::Expression_statementContext *ctx) = 0;
+  virtual void exitExpression_statement(USLParser::Expression_statementContext *ctx) = 0;
+
+  virtual void enterExpression(USLParser::ExpressionContext *ctx) = 0;
+  virtual void exitExpression(USLParser::ExpressionContext *ctx) = 0;
 
   virtual void enterAssignment_expr(USLParser::Assignment_exprContext *ctx) = 0;
   virtual void exitAssignment_expr(USLParser::Assignment_exprContext *ctx) = 0;
@@ -83,83 +98,92 @@ public:
   virtual void enterMultiplicative_expr(USLParser::Multiplicative_exprContext *ctx) = 0;
   virtual void exitMultiplicative_expr(USLParser::Multiplicative_exprContext *ctx) = 0;
 
-  virtual void enterUnary_expr(USLParser::Unary_exprContext *ctx) = 0;
-  virtual void exitUnary_expr(USLParser::Unary_exprContext *ctx) = 0;
+  virtual void enterPostfix_expr(USLParser::Postfix_exprContext *ctx) = 0;
+  virtual void exitPostfix_expr(USLParser::Postfix_exprContext *ctx) = 0;
+
+  virtual void enterPrefix_expr(USLParser::Prefix_exprContext *ctx) = 0;
+  virtual void exitPrefix_expr(USLParser::Prefix_exprContext *ctx) = 0;
 
   virtual void enterPrimary_expr(USLParser::Primary_exprContext *ctx) = 0;
   virtual void exitPrimary_expr(USLParser::Primary_exprContext *ctx) = 0;
 
-  virtual void enterFunction_call(USLParser::Function_callContext *ctx) = 0;
-  virtual void exitFunction_call(USLParser::Function_callContext *ctx) = 0;
+  virtual void enterAcces_modifiers(USLParser::Acces_modifiersContext *ctx) = 0;
+  virtual void exitAcces_modifiers(USLParser::Acces_modifiersContext *ctx) = 0;
 
-  virtual void enterAtribute_constructor(USLParser::Atribute_constructorContext *ctx) = 0;
-  virtual void exitAtribute_constructor(USLParser::Atribute_constructorContext *ctx) = 0;
+  virtual void enterThrows_postfix(USLParser::Throws_postfixContext *ctx) = 0;
+  virtual void exitThrows_postfix(USLParser::Throws_postfixContext *ctx) = 0;
 
-  virtual void enterAtrribute_requires(USLParser::Atrribute_requiresContext *ctx) = 0;
-  virtual void exitAtrribute_requires(USLParser::Atrribute_requiresContext *ctx) = 0;
+  virtual void enterQuailified_name(USLParser::Quailified_nameContext *ctx) = 0;
+  virtual void exitQuailified_name(USLParser::Quailified_nameContext *ctx) = 0;
 
-  virtual void enterImplements_function(USLParser::Implements_functionContext *ctx) = 0;
-  virtual void exitImplements_function(USLParser::Implements_functionContext *ctx) = 0;
+  virtual void enterAttribute_addition(USLParser::Attribute_additionContext *ctx) = 0;
+  virtual void exitAttribute_addition(USLParser::Attribute_additionContext *ctx) = 0;
 
-  virtual void enterImplements_Var(USLParser::Implements_VarContext *ctx) = 0;
-  virtual void exitImplements_Var(USLParser::Implements_VarContext *ctx) = 0;
+  virtual void enterAttribute(USLParser::AttributeContext *ctx) = 0;
+  virtual void exitAttribute(USLParser::AttributeContext *ctx) = 0;
 
-  virtual void enterPrimitives(USLParser::PrimitivesContext *ctx) = 0;
-  virtual void exitPrimitives(USLParser::PrimitivesContext *ctx) = 0;
+  virtual void enterComparision_operator(USLParser::Comparision_operatorContext *ctx) = 0;
+  virtual void exitComparision_operator(USLParser::Comparision_operatorContext *ctx) = 0;
 
-  virtual void enterIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
-  virtual void exitIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
+  virtual void enterBitshift_operator(USLParser::Bitshift_operatorContext *ctx) = 0;
+  virtual void exitBitshift_operator(USLParser::Bitshift_operatorContext *ctx) = 0;
 
-  virtual void enterSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) = 0;
-  virtual void exitSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) = 0;
+  virtual void enterAdditive_operator(USLParser::Additive_operatorContext *ctx) = 0;
+  virtual void exitAdditive_operator(USLParser::Additive_operatorContext *ctx) = 0;
 
-  virtual void enterUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) = 0;
-  virtual void exitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) = 0;
+  virtual void enterMultiplicative_operator(USLParser::Multiplicative_operatorContext *ctx) = 0;
+  virtual void exitMultiplicative_operator(USLParser::Multiplicative_operatorContext *ctx) = 0;
 
-  virtual void enterLitteral(USLParser::LitteralContext *ctx) = 0;
-  virtual void exitLitteral(USLParser::LitteralContext *ctx) = 0;
+  virtual void enterPrefix_operator(USLParser::Prefix_operatorContext *ctx) = 0;
+  virtual void exitPrefix_operator(USLParser::Prefix_operatorContext *ctx) = 0;
+
+  virtual void enterPostfix_operator(USLParser::Postfix_operatorContext *ctx) = 0;
+  virtual void exitPostfix_operator(USLParser::Postfix_operatorContext *ctx) = 0;
+
+  virtual void enterCall_operator(USLParser::Call_operatorContext *ctx) = 0;
+  virtual void exitCall_operator(USLParser::Call_operatorContext *ctx) = 0;
+
+  virtual void enterIndex_operator(USLParser::Index_operatorContext *ctx) = 0;
+  virtual void exitIndex_operator(USLParser::Index_operatorContext *ctx) = 0;
+
+  virtual void enterCvu_type(USLParser::Cvu_typeContext *ctx) = 0;
+  virtual void exitCvu_type(USLParser::Cvu_typeContext *ctx) = 0;
 
   virtual void enterType(USLParser::TypeContext *ctx) = 0;
   virtual void exitType(USLParser::TypeContext *ctx) = 0;
 
+  virtual void enterPrimitive(USLParser::PrimitiveContext *ctx) = 0;
+  virtual void exitPrimitive(USLParser::PrimitiveContext *ctx) = 0;
+
+  virtual void enterIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
+  virtual void exitIntegral_type(USLParser::Integral_typeContext *ctx) = 0;
+
+  virtual void enterFloating_type(USLParser::Floating_typeContext *ctx) = 0;
+  virtual void exitFloating_type(USLParser::Floating_typeContext *ctx) = 0;
+
+  virtual void enterVector_type(USLParser::Vector_typeContext *ctx) = 0;
+  virtual void exitVector_type(USLParser::Vector_typeContext *ctx) = 0;
+
+  virtual void enterParemeter_list(USLParser::Paremeter_listContext *ctx) = 0;
+  virtual void exitParemeter_list(USLParser::Paremeter_listContext *ctx) = 0;
+
   virtual void enterParameter(USLParser::ParameterContext *ctx) = 0;
   virtual void exitParameter(USLParser::ParameterContext *ctx) = 0;
 
-  virtual void enterParameterList(USLParser::ParameterListContext *ctx) = 0;
-  virtual void exitParameterList(USLParser::ParameterListContext *ctx) = 0;
+  virtual void enterLitteral(USLParser::LitteralContext *ctx) = 0;
+  virtual void exitLitteral(USLParser::LitteralContext *ctx) = 0;
 
-  virtual void enterClassmember_declaration(USLParser::Classmember_declarationContext *ctx) = 0;
-  virtual void exitClassmember_declaration(USLParser::Classmember_declarationContext *ctx) = 0;
+  virtual void enterBool_litteral(USLParser::Bool_litteralContext *ctx) = 0;
+  virtual void exitBool_litteral(USLParser::Bool_litteralContext *ctx) = 0;
 
-  virtual void enterOperator_symbols(USLParser::Operator_symbolsContext *ctx) = 0;
-  virtual void exitOperator_symbols(USLParser::Operator_symbolsContext *ctx) = 0;
+  virtual void enterCvu_decorators(USLParser::Cvu_decoratorsContext *ctx) = 0;
+  virtual void exitCvu_decorators(USLParser::Cvu_decoratorsContext *ctx) = 0;
 
-  virtual void enterScope_ressolution(USLParser::Scope_ressolutionContext *ctx) = 0;
-  virtual void exitScope_ressolution(USLParser::Scope_ressolutionContext *ctx) = 0;
+  virtual void enterScoperesolution_list(USLParser::Scoperesolution_listContext *ctx) = 0;
+  virtual void exitScoperesolution_list(USLParser::Scoperesolution_listContext *ctx) = 0;
 
-  virtual void enterAtribute_parameter(USLParser::Atribute_parameterContext *ctx) = 0;
-  virtual void exitAtribute_parameter(USLParser::Atribute_parameterContext *ctx) = 0;
-
-  virtual void enterAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) = 0;
-  virtual void exitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) = 0;
-
-  virtual void enterAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) = 0;
-  virtual void exitAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) = 0;
-
-  virtual void enterExtern_spec(USLParser::Extern_specContext *ctx) = 0;
-  virtual void exitExtern_spec(USLParser::Extern_specContext *ctx) = 0;
-
-  virtual void enterId_with_scope(USLParser::Id_with_scopeContext *ctx) = 0;
-  virtual void exitId_with_scope(USLParser::Id_with_scopeContext *ctx) = 0;
-
-  virtual void enterFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
-  virtual void exitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) = 0;
-
-  virtual void enterTest(USLParser::TestContext *ctx) = 0;
-  virtual void exitTest(USLParser::TestContext *ctx) = 0;
-
-  virtual void enterDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
-  virtual void exitDecorated_name(USLParser::Decorated_nameContext *ctx) = 0;
+  virtual void enterError_recovery(USLParser::Error_recoveryContext *ctx) = 0;
+  virtual void exitError_recovery(USLParser::Error_recoveryContext *ctx) = 0;
 
 
 };

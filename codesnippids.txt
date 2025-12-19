@@ -1,0 +1,15 @@
+#if   defined(__clang__)  || defined(__INTELLISENSE__)
+
+#else
+
+#endif //  __clang__ || __INTELLISENSE__
+
+
+
+//################################################################
+//						FILENAME
+//	Author: 
+//	Date created:
+//	Last modified:
+//	Purpose:
+//################################################################

@@ -1,5 +1,5 @@
 #pragma once
-#if   defined(__clang__)  || defined(__INTELLISENSE__)
+#if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
 #include <unordered_map>;
 #include <memory>
 #include <atomic>
@@ -41,6 +41,35 @@ namespace USL::FRONTEND {
 		std::unordered_map<std::string, ScopePtr> child_scopes;
 		WeakScopePtr parent_scope;
 		SymbolPtr ownSymbol;
+		std::string SimpleName;
+		friend class SymbolTable;
+	public:
+		std::unordered_map<std::string, SymbolPtr>& GetSymbols() noexcept {
+			return symbols;
+		}
+		std::unordered_map<std::string, ScopePtr>& GetChildScopes() noexcept {
+			return child_scopes;
+		}
+		WeakScopePtr GetParentScope() const noexcept {
+			return parent_scope;
+		}
+		void SetParentScope(WeakScopePtr parent) noexcept {
+			parent_scope = parent;
+		}
+		SymbolPtr GetOwnSymbol() const noexcept {
+			return ownSymbol;
+		}
+		void SetOwnSymbol(SymbolPtr symbol) noexcept {
+			ownSymbol = symbol;
+		}
+		void SetSimpleName(const std::string& name) noexcept {
+			SimpleName = name;
+		}
+		std::string GetSimpleName() const noexcept {
+			return SimpleName;
+		}
+
+
 	};
 	class Symbol {
 	private:

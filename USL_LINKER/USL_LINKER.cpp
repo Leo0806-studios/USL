@@ -2,80 +2,79 @@
 //
 
 #include <iostream>
-import std;
 int main()
 {
     std::cout << "Hello World!\n";
 }
-using RVA = unsigned __int64;
-namespace MXF_LINKER {
-    struct DebugInfoEntry {
-		unsigned __int64 lenght; //length of the entry including this field
-		RVA RTTI; //rva to the typeinfo structure
-        union {
-            struct {
-		char isFunction:1; //true if function false if variable
-		char isStatic : 1; //true if static
-		char isConst : 1; //true if const
-		char reserved : 5; //TBD
-            };
-			char raw;
-        };
-        union {
-            RVA nameOffset;
-            const char name[];
-        };
-    };
-
-    struct UnwindCode {
-		const char Code : 4;//the unwind code
-		const char OpInfo : 4;//additional info for the unwind code
-    };
-    enum HandlerType {
-		Terminate = 1,
-		UserDefined = 2
-    };
-    struct HandlerData {
-		HandlerType type;
-		RVA HandlerAddress;
-		RVA HandlerRtti;
-    };
-    struct FunctionDebugInfoEntry {
-        DebugInfoEntry base;
-		uint16_t prologSize;
-		uint16_t epilogSize;
-        RVA EpilogeStart;
-		uint16_t UnwindCodeCount;
-        UnwindCode codes[];
-        union {
-            struct {
-				const char handler : 2;//0 none, 1 = terminate, 2 =user defined ,3=both
-				const char reserved : 6;//TBD
-            };
-			char raw;
-        };
-        union {
-            struct {
-				uint16_t HandlerCount;
-				HandlerData handlers[];
-            };
-            //other stuff tbd
-        };
-    };
-    struct DebugInfoTable {
-        union {
-            struct {
-
-        const char LargeOffsets : 1; //rvas are 64 bit if true
-        const char PooledNames : 1;//nnames are pooled if true. otherwise they are stored null terinated inline in the entries
-		char reserved : 6;//TBD
-            };
-			char raw;
-        };
-		unsigned __int64 entryCount;
-		DebugInfoEntry entries[];
-	};
-}
+//using RVA = unsigned __int64;
+//namespace MXF_LINKER {
+//				const char handler : 2;//0 none, 1 = terminate, 2 =user defined ,3=both
+//				const char reserved : 6;//TBD
+//            };
+//			char raw;
+//        };
+//        union {
+//            struct {
+//				uint16_t HandlerCount;
+//				HandlerData handlers[];
+//            };
+//            //other stuff tbd
+//        };
+//    };
+//    struct DebugInfoEntry {
+//		unsigned __int64 lenght; //length of the entry including this field
+//		RVA RTTI; //rva to the typeinfo structure
+//        union {
+//            struct {
+//		char isFunction:1; //true if function false if variable
+//		char isStatic : 1; //true if static
+//		char isConst : 1; //true if const
+//		char reserved : 5; //TBD
+//            };
+//			char raw;
+//        };
+//        union {
+//            RVA nameOffset;
+//            const char name[];
+//        };
+//    };
+//
+//    struct UnwindCode {
+//		const char Code : 4;//the unwind code
+//		const char OpInfo : 4;//additional info for the unwind code
+//    };
+//    enum HandlerType {
+//		Terminate = 1,
+//		UserDefined = 2
+//    };
+//    struct HandlerData {
+//		HandlerType type;
+//		RVA HandlerAddress;
+//		RVA HandlerRtti;
+//    };
+//    struct FunctionDebugInfoEntry {
+//        DebugInfoEntry base;
+//		uint16_t prologSize;
+//		uint16_t epilogSize;
+//        RVA EpilogeStart;
+//		uint16_t UnwindCodeCount;
+//        UnwindCode codes[];
+//        union {
+//            struct {
+//    struct DebugInfoTable {
+//        union {
+//            struct {
+//
+//        const char LargeOffsets : 1; //rvas are 64 bit if true
+//        const char PooledNames : 1;//nnames are pooled if true. otherwise they are stored null terinated inline in the entries
+//		char reserved : 6;//TBD
+//            };
+//			char raw;
+//        };
+//		unsigned __int64 entryCount;
+//		DebugInfoEntry entries[];
+//	};
+//}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

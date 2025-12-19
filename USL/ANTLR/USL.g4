@@ -6,14 +6,15 @@ grammar USL;
 //scopes
 NAMESPACE                           :'namespace';
 CLASS                               :'class';
+STRUCT                              :'struct';
 ENUM                                :'enum';
 ATRIBUTE                            :'atribute';
 
 //inbuild types
-BYTE                                :'byte';
-SHORT                               :'short';
-INT                                 :'int';
-LONG                                :'long';
+BYTE                                :'byte';       //unsigned 8bit datatype
+SHORT                               :'short';      //signed 16 bit integral datatype
+INT                                 :'int';         //signed 32 bit datatype
+LONG                                :'long';        //signed 64 bit datatype
 FLOAT                               :'float';
 DOUBLE                              :'double';
 LONGDOUBLE                          :'w_double';
@@ -35,18 +36,39 @@ M512D                               :'m512d';
 //litteral keywprds
 NULL                                :'null';
 NULLPTR                             :'nullptr';
-BOOL_LITTERAL                       : 'true' | 'false' ;
+BOOL_LITTERAL_TRUE                  : 'true'  ;
+BOOL_LITTERAL_FALSE                 :  'false' ;
 
 //templates
 TEMPLATE                            :'template';
-
+//controll flow
+IF                                  :'if';
+ELSE                                :'else';
+WHILE                               :'while';
+DO                                  :'do';
+SWITCH                              :'switch';
+CASE                                :'case';
+GOTO                                :'goto';
+BREAK                               :'break';
+DEFAULT                             :'default';
+LABLE                               :'lable';
+FOR                                 :'for';
 //concurency
 ASYNC                               :'async';
 SYNC                                :'sync';
-
+//acces modifyers
+PUBLIC                              :'public';
+PRIVATE                             :'private';
+PROTECTED                           :'protected';
 //intrinsics
 INTERNAL                            :'__internal';
-
+ASSUME                              :'__assume';
+NORVO                               :'__norvo';
+UNROLL                              :'__unroll';
+INTRINSIC                           :'__intrinsic';
+OVERLAPSWITH                        :'__overlapswith';
+JUMPTABLE                           :'__jumptable';
+VECTORIZE                           :'__vectorize';
 //opperators
 OPPERATOR                           :'operator';
 
@@ -61,6 +83,7 @@ UNSAFE_CAST                         :'unsafe_cast';
 CONST_CAST                          :'const_cast';
 
 //exceptions
+THROW                               :'throw';
 THROWS                              :'throws';
 MAYBE                               :'maybe';
 //controll flow
@@ -77,26 +100,20 @@ CONST                               :'const';
 VIRTUAL                             :'virtual';
 OVERRIDE                            :'override';
 
-CUSTOM_OP                           :'def_operator';
-CUSTOM_KEYWORD                      :'def_keyword';
-CUSTOM_CONTROL                      :'def_flow';
-NOEXCEPT                            :'noexcept';
-REQUIRES                            :'requires';
+//auto type deduction
 AUTO                                :'auto';
+
+REQUIRES                            :'requires';
 EXTERN                              :'extern';
-DECLSPEC                            :'__declspec';
-DLLEXPORT                           :'dllexport';
-DLLIMPORT                           :'dllimport';
+
+//allocation
 NEW                                 :'new';
-UNSAFE_NEW                          :'unsafe_new';
-UNSAFE_DELETE                       :'unsafe_delete';
-INTRINSIC                           :'__intrinsic';
-NORVO                               :'__norvo';
-OVERLAPSWITH                        :'__overlapswith';
-JUMPTABLE                           :'__jumptable';
-UNROLL                              :'__unroll';
-VECTORIZE                           :'__vectorize';
-TEST                                :'__test';
+DELETE                              :'delete';
+
+
+
+
+
 //operators unary
 ASSIGN_OP                           :'=';
 PLUS_OP                             :'+';
@@ -105,15 +122,16 @@ MULT_OP                             :'*';
 DIV_OP                              :'/';
 MOD_OP                              :'%';
 HASH_OP                             :'#';
+INCREMENT                           :'++';
+DECREMENT                           :'--';
 
 //vector operators
 FMA_OP                              :'*+';
 //dereff
 DEREF                               :'->';
-
+//member acces opperator
+MEMBER_ACCES                        :'.';
 //operators Binary
-INCREMENT                           :'++';
-DECREMENT                           :'--';
 //operators Bit
 B_LEFT                              :'<<';
 B_RIGHT                             :'>>';
@@ -141,97 +159,125 @@ WS                                  : [ \t\r\n]+ -> skip ;
 
 
 ID                                  : [a-zA-Z_][a-zA-Z0-9_]* ;
-CUSTOM_OP_SYMBOLS                   :[~^?$§@€];
+
 //Global Rules
+
+//this represents a translation unit of the compiler
 program                             :global_statement+ EOF;
-global_statement                    :   class_delcaration|
-                                        namespace_declaration|
-                                        enum_declaration|
-                                        atribute_declaration|
-                                        intrinsic_function_pre_declaration ';'|
-                                        extern_function_pre_declaration ';'
-                                        ;
-statement                           :(var_declaration|function_declaration|
-                                    expression)';';
+//global statemnts are used to cleanly seperate what can be inside and outside of namespaces and classes
+global_statement                    :namespace_declaration|
+                                    class_declaration|
+                                    enum_declaration|
+                                    attribute_declaration;
 
 
-expression                          :assignment_expr;
+//
+statement                           :variable_declaration';'|
+                                    function_declaration|
+                                    goto_statement';'|
+                                    lable_statement';'|
+                                    while_statement|
+                                    for_statement|
+                                    switch_statement|
+                                    expression_statement';'|
+                                    error_recovery;
+
+//scope Statements (excluding controll flow)
+namespace_declaration               :NAMESPACE NamespaceName =ID basic_block;
+class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? basic_block;
+enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? ) (',')? '}';
+attribute_declaration               :ATRIBUTE AttributeName=ID '{''}';
+function_declaration                :attribute_addition? acces_modifiers ReturnType=cvu_type FunctionName=ID '('paremeter_list? ')'CONST? throws_postfix? basic_block;
+basic_block                         :'{'statement*'}';
+
+variable_declaration                :acces_modifiers Type = cvu_type name = ID (ASSIGN_OP expression)?;
+
+//controll_flow
+if_statement                        :IF '('expression')' basic_block; 
+else_statement                      :ELSE basic_block;
 
 
-basic_block                         :'{' statement* '}';
+while_statement                     :WHILE '(' expression')' basic_block ;
+do_statement                        :DO basic_block;
 
-//statements
-class_delcaration                   :atribute_decorators? CLASS ID '{'classmember_declaration*'}';
+for_statement                       :FOR '('expression';'expression';'expression')'basic_block;
 
-namespace_declaration               :NAMESPACE ID '{'global_statement*'}';
-atribute_declaration                :ATRIBUTE ID '{'atribute_constructor? atrribute_requires?'}';
+switch_statement                    :SWITCH '('expression')' '{' case_statement*'}';
+case_statement                      :CASE expression  ':' basic_block;
 
-function_declaration                :STATIC? variable_decorator* VIRTUAL? (VOID|type) ID'('parameterList?')' noexcept_specifyer? OVERRIDE? '{'statement*'}' ;
-intrinsic_function_pre_declaration  :INTRINSIC variable_decorator* (VOID|type) ID '('parameterList?')'noexcept_specifyer?;
-extern_function_pre_declaration     : extern_spec variable_decorator* (VOID|type) ID '('parameterList?')' noexcept_specifyer?;
-exter_function_declaratio           : extern_spec function_declaration;
-unit_test_declaration               :test function_declaration;
+goto_statement                      :GOTO ID;
+lable_statement                     :LABLE ID;
+throw_statement                     :THROW expression;
 
-enum_declaration                    :ENUM (':' integral_type)?'{' ID ('=' INT_LITTERAL)? (','ID ('='INT_LITTERAL)?)*'}';
+expression_statement                :expression;
 
-var_declaration                     :STATIC? variable_decorator? type ID(('('construct=expression')')|(ASSIGN_OP construct_assign=expression))?;
 
-custom_opperator_sym                : CUSTOM_OP '('CUSTOM_OP_SYMBOLS')' '('parameterList?')''{'statement*'}';
-
-noexcept_specifyer                  :NOEXCEPT '('BOOL_LITTERAL')';
 //expressions
+expression                          :assignment_expr;
 assignment_expr                     : left =equality_expr (ASSIGN_OP assignment_expr)? ;
 
-equality_expr                       : left=comparison_expr ((EQUALS | NOT) comparison_expr)* ;
+equality_expr                       : left=comparison_expr ((EQUALS ) comparison_expr)* ;
 
-comparison_expr                     : left=bitshift_expr ((LESS | LARGER | LESS_EQ | LARGER_EQ) bitshift_expr)* ;
+comparison_expr                     : left=bitshift_expr ( comparision_operator bitshift_expr)* ;
 
-bitshift_expr                       : left=additive_expr ((B_LEFT | B_RIGHT) additive_expr)* ;
+bitshift_expr                       : left=additive_expr (bitshift_operator additive_expr)* ;
 
-additive_expr                       : left=multiplicative_expr ((PLUS_OP | MINUS_OP) multiplicative_expr)* ;
+additive_expr                       : left=multiplicative_expr (additive_operator multiplicative_expr)* ;
 
-multiplicative_expr                 : left=unary_expr ((MULT_OP | DIV_OP | MOD_OP) unary_expr)* ;
+multiplicative_expr                 : left=postfix_expr (multiplicative_operator postfix_expr)* ;
+postfix_expr                        :prefix_expr postfix_operator*;
+prefix_expr                         :prefix_operator prefix_expr
+                                    | primary_expr;
 
-unary_expr                          : (INCREMENT | DECREMENT | NOT)? primary_expr ;
 
-primary_expr                        : function_call
-                                    | id_with_scope
+primary_expr                        :  quailified_name
                                     | litteral
                                     | '(' expression ')';
 
-function_call                       :CALL id_with_scope'('(function_call_parameters)?')';
-
-
-
-
-
-
-//rules for attribute declarations
-atribute_constructor                :type '('parameterList')';
-atrribute_requires                  :REQUIRES '{'(implements_function|implements_Var)*'}';
-implements_function                 :(type ID'('parameterList')');
-implements_Var                      :type ID;
 
 //helper rules
-primitives                          :BOOL|BYTE|SHORT|INT|LONG|FLOAT|DOUBLE|HASH|STRING|CHAR;
-integral_type                       :signed_inegral_type|unsigned_integral_type;
-signed_inegral_type                 :(BYTE|SHORT|INT|LONG);
-unsigned_integral_type              :UNSIGNED (BYTE|SHORT|INT|LONG);
-litteral                            :STRING_LITTERAL|INT_LITTERAL|UINT_LITTERAL|FLOAT_LITTERAL|CHAR_LITTERAL|BOOL_LITTERAL ;
-type                                :primitives|((scope_ressolution?ID)|magledName=decorated_name);
-parameter                           :variable_decorator* type ID;
-parameterList                       :parameter(','parameter)*; 
-classmember_declaration             :(function_declaration|var_declaration)';';
-operator_symbols                    :CUSTOM_OP_SYMBOLS|EQUALS|LESS|LARGER|NOT|LESS_EQ|LARGER_EQ|B_LEFT|B_RIGHT|INCREMENT|DECREMENT;
-scope_ressolution                   :ID (SCOPE_RESSOLUTION_OP ID)* SCOPE_RESSOLUTION_OP ;
-atribute_parameter                  :ID|litteral;
-atribute_parameter_list             :atribute_parameter (','atribute_parameter)*;
-atribute_decorators                 :'['ID ('('atribute_parameter_list')')? (','ID ('('atribute_parameter_list')')?)?']';
-extern_spec                         :EXTERN STRING_LITTERAL;
-id_with_scope                       :scope_ressolution? ID;
-function_call_parameters            :expression(','expression)*;
-test                                :TEST ('('name=STRING_LITTERAL ',' fuzzing=BOOL_LITTERAL','repeat_count=INT_LITTERAL ')');
-variable_decorator                 : VOLATILE| CONST| UNSAFE;
-//semantic helper rules
-//these rule are not included anywhere and are just to be able to inject semantic information safely
-decorated_name                      :'®';//use normaly untypable symbol to make rul not match empty string 
+acces_modifiers                     :PUBLIC|PRIVATE|PROTECTED;
+throws_postfix                      :THROWS'('(quailified_name(','quailified_name)*)|MAYBE ')';
+quailified_name                     :scoperesolution_list? ID;
+//attribute helpers
+attribute_addition                  :'[['attribute (',' attribute)*   ']]';
+attribute                           :quailified_name ('('expression(','expression)*')')?;
+//operator helpers
+comparision_operator                :LESS | LARGER | LESS_EQ | LARGER_EQ;
+bitshift_operator                   :B_LEFT|B_RIGHT;
+additive_operator                   :PLUS_OP|MINUS_OP;
+multiplicative_operator             :MULT_OP | DIV_OP | MOD_OP;
+prefix_operator                      :INCREMENT | DECREMENT | NOT|HASH_OP;
+postfix_operator                    :call_operator|index_operator|INCREMENT|DECREMENT;
+call_operator                       :'('expression (',' expression)*')';
+
+index_operator                      :'['expression(','expression)* ']';
+
+//type helpers
+cvu_type                            : cvu_decorators type;
+type                                :(quailified_name) |AUTO|primitive;
+primitive                           :integral_type|floating_type|vector_type|STRING|HASH|CHAR|BYTE|BOOL|NULLPTR_T|VOID;
+integral_type                       :UNSIGNED? SHORT|INT|LONG;
+floating_type                       :FLOAT|DOUBLE|LONGDOUBLE;
+vector_type                         :M128|M128D|M128I|M256|M256D|M256I|M512|M512D|M512I;
+//function Signature Helpers
+paremeter_list                      :parameter (','parameter)*;
+parameter                           :Type=cvu_type ParameterName=ID;
+
+//litteral helpers
+litteral                            :INT_LITTERAL|FLOAT_LITTERAL|STRING_LITTERAL|CHAR_LITTERAL|bool_litteral;
+bool_litteral                       :BOOL_LITTERAL_TRUE|BOOL_LITTERAL_FALSE;
+
+cvu_decorators                      :(consts =CONST|volatiles=VOLATILE|unsafes =UNSAFE)*;
+
+
+//scope resolution list. contains the last resolution op
+scoperesolution_list                :ID (SCOPE_RESSOLUTION_OP ID)* SCOPE_RESSOLUTION_OP;
+
+
+
+//intrinsic rules
+
+
+//error recovery
+error_recovery                      :.+?';';

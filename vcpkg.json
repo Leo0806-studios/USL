@@ -1,7 +1,14 @@
 {
-  "dependencies": [{
-    "name": "llvm",
-    "default-features": false,
-    "features": ["target-x86"]
-  }]
+  "dependencies": [
+    "argtable3",
+    "catch2",
+    "libzip",
+    {
+      "name": "llvm",
+      "default-features": false,
+      "features": [
+        "target-x86"
+      ]
+    }
+  ]
 }

@@ -75,10 +75,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual std::any visitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) override {
     return visitChildren(ctx);
   }

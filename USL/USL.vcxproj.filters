@@ -21,6 +21,9 @@
     <ClCompile Include="SRC\FRONTEND\MANGLED_NAME\MANGLED_NAME.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -40,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HEADER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

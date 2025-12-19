@@ -59,9 +59,6 @@ public:
   virtual void enterVar_declaration(USLParser::Var_declarationContext *ctx) = 0;
   virtual void exitVar_declaration(USLParser::Var_declarationContext *ctx) = 0;
 
-  virtual void enterCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) = 0;
-  virtual void exitCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) = 0;
-
   virtual void enterNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) = 0;
   virtual void exitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) = 0;
 

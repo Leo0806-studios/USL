@@ -27,43 +27,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitExpression(USLParser::ExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitBasic_block(USLParser::Basic_blockContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitClass_delcaration(USLParser::Class_delcarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual std::any visitNamespace_declaration(USLParser::Namespace_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAtribute_declaration(USLParser::Atribute_declarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitIntrinsic_function_pre_declaration(USLParser::Intrinsic_function_pre_declarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitExtern_function_pre_declaration(USLParser::Extern_function_pre_declarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitExter_function_declaratio(USLParser::Exter_function_declaratioContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitUnit_test_declaration(USLParser::Unit_test_declarationContext *ctx) override {
+  virtual std::any visitClass_declaration(USLParser::Class_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -71,15 +39,67 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitVar_declaration(USLParser::Var_declarationContext *ctx) override {
+  virtual std::any visitAttribute_declaration(USLParser::Attribute_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitCustom_opperator_sym(USLParser::Custom_opperator_symContext *ctx) override {
+  virtual std::any visitFunction_declaration(USLParser::Function_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitNoexcept_specifyer(USLParser::Noexcept_specifyerContext *ctx) override {
+  virtual std::any visitBasic_block(USLParser::Basic_blockContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitVariable_declaration(USLParser::Variable_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitIf_statement(USLParser::If_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitElse_statement(USLParser::Else_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitWhile_statement(USLParser::While_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitDo_statement(USLParser::Do_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitFor_statement(USLParser::For_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitSwitch_statement(USLParser::Switch_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitCase_statement(USLParser::Case_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitGoto_statement(USLParser::Goto_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitLable_statement(USLParser::Lable_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitThrow_statement(USLParser::Throw_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExpression_statement(USLParser::Expression_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExpression(USLParser::ExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -107,7 +127,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitUnary_expr(USLParser::Unary_exprContext *ctx) override {
+  virtual std::any visitPostfix_expr(USLParser::Postfix_exprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitPrefix_expr(USLParser::Prefix_exprContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -115,43 +139,59 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitFunction_call(USLParser::Function_callContext *ctx) override {
+  virtual std::any visitAcces_modifiers(USLParser::Acces_modifiersContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAtribute_constructor(USLParser::Atribute_constructorContext *ctx) override {
+  virtual std::any visitThrows_postfix(USLParser::Throws_postfixContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAtrribute_requires(USLParser::Atrribute_requiresContext *ctx) override {
+  virtual std::any visitQuailified_name(USLParser::Quailified_nameContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitImplements_function(USLParser::Implements_functionContext *ctx) override {
+  virtual std::any visitAttribute_addition(USLParser::Attribute_additionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitImplements_Var(USLParser::Implements_VarContext *ctx) override {
+  virtual std::any visitAttribute(USLParser::AttributeContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitPrimitives(USLParser::PrimitivesContext *ctx) override {
+  virtual std::any visitComparision_operator(USLParser::Comparision_operatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitIntegral_type(USLParser::Integral_typeContext *ctx) override {
+  virtual std::any visitBitshift_operator(USLParser::Bitshift_operatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitSigned_inegral_type(USLParser::Signed_inegral_typeContext *ctx) override {
+  virtual std::any visitAdditive_operator(USLParser::Additive_operatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitUnsigned_integral_type(USLParser::Unsigned_integral_typeContext *ctx) override {
+  virtual std::any visitMultiplicative_operator(USLParser::Multiplicative_operatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitLitteral(USLParser::LitteralContext *ctx) override {
+  virtual std::any visitPrefix_operator(USLParser::Prefix_operatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitPostfix_operator(USLParser::Postfix_operatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitCall_operator(USLParser::Call_operatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitIndex_operator(USLParser::Index_operatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitCvu_type(USLParser::Cvu_typeContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -159,55 +199,47 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitPrimitive(USLParser::PrimitiveContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitIntegral_type(USLParser::Integral_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitFloating_type(USLParser::Floating_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitVector_type(USLParser::Vector_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitParemeter_list(USLParser::Paremeter_listContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitParameter(USLParser::ParameterContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitParameterList(USLParser::ParameterListContext *ctx) override {
+  virtual std::any visitLitteral(USLParser::LitteralContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClassmember_declaration(USLParser::Classmember_declarationContext *ctx) override {
+  virtual std::any visitBool_litteral(USLParser::Bool_litteralContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitOperator_symbols(USLParser::Operator_symbolsContext *ctx) override {
+  virtual std::any visitCvu_decorators(USLParser::Cvu_decoratorsContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitScope_ressolution(USLParser::Scope_ressolutionContext *ctx) override {
+  virtual std::any visitScoperesolution_list(USLParser::Scoperesolution_listContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAtribute_parameter(USLParser::Atribute_parameterContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitAtribute_parameter_list(USLParser::Atribute_parameter_listContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitAtribute_decorators(USLParser::Atribute_decoratorsContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitExtern_spec(USLParser::Extern_specContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitId_with_scope(USLParser::Id_with_scopeContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitFunction_call_parameters(USLParser::Function_call_parametersContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitTest(USLParser::TestContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitDecorated_name(USLParser::Decorated_nameContext *ctx) override {
+  virtual std::any visitError_recovery(USLParser::Error_recoveryContext *ctx) override {
     return visitChildren(ctx);
   }
 

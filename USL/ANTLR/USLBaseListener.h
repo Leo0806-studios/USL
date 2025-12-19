@@ -61,9 +61,6 @@ public:
   virtual void enterVar_declaration(USLParser::Var_declarationContext * /*ctx*/) override { }
   virtual void exitVar_declaration(USLParser::Var_declarationContext * /*ctx*/) override { }
 
-  virtual void enterCustom_opperator_sym(USLParser::Custom_opperator_symContext * /*ctx*/) override { }
-  virtual void exitCustom_opperator_sym(USLParser::Custom_opperator_symContext * /*ctx*/) override { }
-
   virtual void enterNoexcept_specifyer(USLParser::Noexcept_specifyerContext * /*ctx*/) override { }
   virtual void exitNoexcept_specifyer(USLParser::Noexcept_specifyerContext * /*ctx*/) override { }
 
