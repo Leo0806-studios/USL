@@ -11,9 +11,13 @@ Checks: '*,-llvmlibc-implementation-in-namespace,
 -performance-move-const-arg,
 -clang-diagnostic-pre-c++20-compat,
 -clang-diagnostic-pre-c++17-compat,
--llvm-include-order,
 -clang-diagnostic-c++98-compat-pedantic,
--readability-convert-member-functions-to-static'
+-readability-convert-member-functions-to-static,
+-llvmlibc-restrict-system-libc-headers,
+-llvmlibc-inline-function-decl,
+-misc-use-anonymous-namespace,
+-misc-no-recursion,
+-fuchsia-overloaded-operator'
 
 HeaderFilterRegex: 'C:\Users\leo08\source\repos\\USL\*'
 

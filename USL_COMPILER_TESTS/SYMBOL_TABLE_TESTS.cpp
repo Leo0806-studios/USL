@@ -1,16 +1,48 @@
+#include <utility>
+#include <memory>
+#include <string>
+#include <tuple>
 #include <CppUnitTest.h>
+#include <SYMBOL.h>
 #include "HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace USL::FRONTEND;
 namespace USL_COMPILER_TESTS
 {
+	class CreateInvalidThreadedSymbolTableFixture {
+	public:
+		static std::atomic_bool threwException;
+		static std::atomic_bool reachedEnd;
+	static void CreateInvalidThreadedSymbolTable() {
+		try {
+			SymbolTable symbolTable;
+
+		}
+		catch (const std::runtime_error&) {
+			threwException = true;
+			return;
+		}
+		reachedEnd = true;
+	}
+	};
+
+
 	TEST_CLASS(SYMBOL_TABLE_TESTS)
 	{
 	public:
+		
 		TEST_METHOD(TestCreateSymbolTable) {
 			SymbolTable symbolTable;
 			Assert::IsNotNull(symbolTable.GetCurrentScope().lock().get());
 			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(), std::string("global"));
+		}
+		TEST_METHOD(TestCreateSymbolTableSingleThreadedNotMainThread) {
+			
+			std::thread t(CreateInvalidThreadedSymbolTableFixture::CreateInvalidThreadedSymbolTable);
+			t.join();
+			Assert::IsTrue(CreateInvalidThreadedSymbolTableFixture::threwException);
+			Assert::IsFalse(CreateInvalidThreadedSymbolTableFixture::reachedEnd);
+		
 		}
 		TEST_METHOD(TestScopeInsertionValid) {
 						SymbolTable symbolTable;
@@ -40,7 +72,7 @@ namespace USL_COMPILER_TESTS
 			SymbolTable symbolTable;
 			bool succses =symbolTable.InsertScope("MyScope");
 
-			symbolTable.ExitScope();
+			std::ignore = symbolTable.ExitScope();
 	
 			 succses = symbolTable.InsertScope("MyScope");
 			 Assert::IsTrue(succses==false);
@@ -82,11 +114,13 @@ namespace USL_COMPILER_TESTS
 		}
 		TEST_METHOD(TestInsertSymbolValid){
 		SymbolTable symbolTable;
-			auto symbol = std::make_shared<VariableSymbol>();
+			auto symbol = std::make_unique<VariableSymbol>();
 			std::string symbolName = "myVar";
-			bool succses = symbolTable.InsertSymbol(symbol, symbolName);
+			bool succses = symbolTable.InsertSymbol(std::move(symbol), symbolName);
 			Assert::IsTrue(succses);
 
 		}
 	};
+	std::atomic_bool CreateInvalidThreadedSymbolTableFixture::threwException = false;
+	std::atomic_bool CreateInvalidThreadedSymbolTableFixture::reachedEnd = false;
 }

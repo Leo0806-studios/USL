@@ -1,22 +1,28 @@
 #pragma once
 #include "MACROS.h"
-	#if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
-	#include <vector>
-	#include <string>
-	#include <utility>
-	#else
-	import<vector>;
-	import<string>;
-	import <utility>;
+#if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
+#include <vector>
+#include <string>
+#include <utility>
+#include <algorithm>
+#include <exception>
+#include <type_traits>
+#else
+import<vector>;
+import<string>;
+import <utility>;
+import <algorithm>;
+import <exception>;
+import <type_traits>;
 	#endif //  __clang__ || __INTELLISENSE__
 namespace USL::FRONTEND
 {
 	class InvalidDecoratedNameException : public std::exception {
-		std::string message = {};
+		std::string message ;
 	public:
 		InvalidDecoratedNameException() = default;
 		explicit InvalidDecoratedNameException(const std::string& msg) : message(msg) {}
-		const char* what() const noexcept override {
+		[[nodiscard]]const char* what() const noexcept override {
 			return message.c_str();
 		}
 	};
@@ -40,29 +46,29 @@ namespace USL::FRONTEND
 	public:
 		RuleOfFive(VariableSymbol_)
 			bool operator==(const VariableSymbol_& other) const noexcept = default;
-		std::string to_string() const;
+		[[nodiscard]]std::string to_string() const;
 	};
 	class TypeSymbol_ {
 	public:
 		RuleOfFive(TypeSymbol_)
 			bool operator==(const TypeSymbol_& other) const noexcept = default;
-			std::string to_string() const;
+			[[nodiscard]]std::string to_string() const;
 	};
 	class FunctionSymbol_ {
 		friend struct std::hash<FunctionSymbol_>;
 		using ScopeList = std::vector<std::string >;
-		std::vector<ScopeList> Parameters = {};
-		ScopeList ReturnType = {};
+		std::vector<ScopeList> Parameters ;
+		ScopeList ReturnType ;
 	public:
 		RuleOfFive(FunctionSymbol_)
 			bool operator==(const FunctionSymbol_& other) const noexcept = default;
-			std::string to_string() const;
+		[[nodiscard]] std::string to_string() const;
 	};
 	class AttributeSymbol_ {
 	public:
 		RuleOfFive(AttributeSymbol_)
 			bool operator==(const AttributeSymbol_& other) const noexcept = default;
-			std::string to_string() const;
+		[[nodiscard]] std::string to_string() const;
 	};
 	/// <summary>
 	/// represents the decorated name of a symbol in the USL language.
@@ -71,7 +77,7 @@ namespace USL::FRONTEND
 	/// </summary>
 	class DecoratedName {
 		friend struct std::hash<DecoratedName>;
-		std::vector<std::string> scope = {};
+		std::vector<std::string> scope ;
 		size_t PrecomputedHash = 0;
 		union {
 			VariableSymbol_ variable_symbol;
@@ -80,35 +86,15 @@ namespace USL::FRONTEND
 			AttributeSymbol_ attribute_symbol;
 		};
 		SymbolType symbol_type = SymbolType::invalid_type;
+
 	public:
 		DecoratedName() : function_symbol{} {}
-		~DecoratedName() {};
-		template<typename SymbolKind,typename = std::enable_if<
-			std::is_same_v<SymbolKind, VariableSymbol_> ||
-			std::is_same_v<SymbolKind, TypeSymbol_> ||
-			std::is_same_v<SymbolKind, FunctionSymbol_> ||
-			std::is_same_v<SymbolKind, AttributeSymbol_>>>
-		DecoratedName(std::vector<std::string> scopes,SymbolKind symbolKind)
-		{
-			scope = std::move(scopes);
-			if constexpr (std::is_same_v<SymbolKind, VariableSymbol_>) {
-				symbol_type = SymbolType::variable;
-				variable_symbol =std::move(symbolKind);
-			}
-			else if constexpr (std::is_same_v<SymbolKind, TypeSymbol_>) {
-				symbol_type = SymbolType::type;
-				type_symbol=std::move(symbolKind);
-			}
-			else if constexpr (std::is_same_v<SymbolKind, FunctionSymbol_>) {
-				symbol_type = SymbolType::function;
-				function_symbol =std::move(symbolKind);
-			}
-			else if constexpr (std::is_same_v<SymbolKind, AttributeSymbol_>) {
-				symbol_type = SymbolType::attribute;
-				attribute_symbol =std::move(symbolKind);
-			}
-			PrecomputedHash = std::hash<DecoratedName>{}(*this);
-		}
+		~DecoratedName() { return; }
+		DecoratedName(const std::vector<std::string>& scopes, const VariableSymbol_& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const TypeSymbol_& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbol_& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbol_& symbolKind);
+
 		explicit DecoratedName(const std::string& mangled_name);
 		DecoratedName(const DecoratedName& other);
 		DecoratedName& operator=(const DecoratedName& other);
@@ -119,10 +105,10 @@ namespace USL::FRONTEND
 		void SetPrecomputedHash(size_t hash) noexcept {
 			PrecomputedHash = hash;
 		}
-		size_t GetPrecomputedHash() const noexcept {
+		[[nodiscard]]size_t GetPrecomputedHash() const noexcept {
 			return PrecomputedHash;
 		}
-		std::string to_string() const;
+		[[nodiscard]] std::string to_string() const;
 	};
 } // namespace USL::FRONTEND
 

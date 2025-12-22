@@ -1,14 +1,19 @@
 #pragma once
+#include "MACROS.h"
 #if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
-#include <unordered_map>;
+#include <utility>
+#include <unordered_map>
 #include <memory>
 #include <atomic>
 #include <variant>
-#include "MACROS.h"
 #include "HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
+#include <string>
+#include <vector>
 
 #else
-
+import <utility>;
+import <string>;
+import <vector>;
 import <memory>;
 import <unordered_map>;
 import <atomic>;
@@ -50,22 +55,22 @@ namespace USL::FRONTEND {
 		std::unordered_map<std::string, ScopePtr>& GetChildScopes() noexcept {
 			return child_scopes;
 		}
-		WeakScopePtr GetParentScope() const noexcept {
+		[[nodiscard]] WeakScopePtr GetParentScope() const noexcept {
 			return parent_scope;
 		}
 		void SetParentScope(WeakScopePtr parent) noexcept {
-			parent_scope = parent;
+			parent_scope = std::move(parent);
 		}
-		SymbolPtr GetOwnSymbol() const noexcept {
+		[[nodiscard]]  SymbolPtr GetOwnSymbol() const noexcept {
 			return ownSymbol;
 		}
 		void SetOwnSymbol(SymbolPtr symbol) noexcept {
-			ownSymbol = symbol;
+			ownSymbol = std::move(symbol);
 		}
 		void SetSimpleName(const std::string& name) noexcept {
 			SimpleName = name;
 		}
-		std::string GetSimpleName() const noexcept {
+		[[nodiscard]]  std::string GetSimpleName() const noexcept {
 			return SimpleName;
 		}
 
@@ -73,11 +78,11 @@ namespace USL::FRONTEND {
 	};
 	class Symbol {
 	private:
-		WeakScopePtr ParentScope = DEFAULTINIT;
+		WeakScopePtr ParentScope ;
 	};
 	class VariableSymbol :public Symbol {
-		std::weak_ptr<TypeSymbol> type = DEFAULTINIT;
-		DecoratedName decoratedName = DEFAULTINIT;
+		std::weak_ptr<TypeSymbol> type ;
+		DecoratedName decoratedName ;
 		
 		/// <summary>
 		/// stores the aligment of the var. a value of 0 means it uses the default aligment for the type
@@ -96,8 +101,8 @@ namespace USL::FRONTEND {
 
 	};
 	class FunctionSymbol :public Symbol {
-		std::weak_ptr<TypeSymbol> returnType = DEFAULTINIT;
-		std::vector<std::weak_ptr<VariableSymbol>> parameterList = DEFAULTINIT;
+		std::weak_ptr<TypeSymbol> returnType ;
+		std::vector<std::weak_ptr<VariableSymbol>> parameterList ;
 
 
 	};

@@ -8,7 +8,10 @@
 //	identifier of the symbol in the source-file without any decoration.
 //################################################################
 #pragma once
+#include "MACROS.h"
 #if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
+#include <utility>
+#include <string>
 #include <unordered_map>
 #include <exception>
 #include <vector>
@@ -18,6 +21,8 @@
 #include "HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
 #include "HEADER/FRONTEND/SYMBOL/SYMBOL.h"
 #else
+import <utility>;
+import <string>;
 import <memory>;
 import <exception>;
 import <unordered_map>;
@@ -28,22 +33,21 @@ import <HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
 import <HEADER/FRONTEND/SYMBOL/SYMBOL.h>;
 #endif //  __clang__ || __INTELLISENSE__
 
-import std;
 namespace USL::FRONTEND {
 	class ScopeNotFOund : public std::exception {
-		std::string message = DEFAULTINIT;
+		std::string message ;
 	public:
 		ScopeNotFOund() = default;
-		explicit ScopeNotFOund(const std::string& msg) : message(msg) {}
-		const char* what() const noexcept override {
+		explicit ScopeNotFOund(std::string msg) : message(std::move(msg)) {}
+		[[nodiscard]]const char* what() const noexcept override {
 			return message.c_str();
 		}
 	};
 	class SymbolTable {
 	private:
-		ScopePtr globalScope = DEFAULTINIT;
+		ScopePtr globalScope ;
 		std::unordered_map<DecoratedName, WeakSymbolPtr> FastMap;
-		std::unordered_map<std::thread::id, WeakScopePtr> currentScopes=DEFAULTINIT;
+		std::unordered_map<std::thread::id, WeakScopePtr> currentScopes;
 	public:
 		/// <summary>
 		/// creates a symbol table with a global scope and initializes the current scope for the calling thread to the global scope
@@ -56,7 +60,7 @@ namespace USL::FRONTEND {
 		/// usable for multi threaded environments
 		/// </summary>
 		/// <param name="maxThreads"></param>
-		SymbolTable(const std::vector<std::thread>& threads);
+		explicit SymbolTable(const std::vector<std::thread>& threads);
 		
 		/// <summary>
 		/// builds the FastMap from the hierarchical table that can be indexed by the decorated name in O(1) time
@@ -69,14 +73,14 @@ namespace USL::FRONTEND {
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		[[nodiscard]] WeakSymbolPtr LookupSymbol(const DecoratedName& name)const  ;
+		[[nodiscard]] WeakSymbolPtr LookupSymbol(const DecoratedName& name)const;
 
 		/// <summary>
 		/// performs a lookup for a symbol in the currents cope by its simple name
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		[[nodiscard]] WeakSymbolPtr LookupSymbol(std::string_view name )const  ;
+		[[nodiscard]] WeakSymbolPtr LookupSymbol(const std::string& name)const;
 
 		/// <summary>
 		/// performs a lookup for a symbol by its simple name in the given scope.
@@ -86,7 +90,7 @@ namespace USL::FRONTEND {
 		/// <param name="name">the name of the symbol to find</param>
 		/// <param name="scope">a list of Scope names sorted towards the target scope (target scope is the last element)</param>
 		/// <returns></returns>
-		[[nodiscard]] WeakSymbolPtr LookupSymbol(std::string_view name,const std::vector< std::string>& scope )const  ;
+		[[nodiscard]] WeakSymbolPtr LookupSymbol(const std::string& name, const std::vector< std::string>& scope)const;
 
 
 
@@ -98,7 +102,7 @@ namespace USL::FRONTEND {
 		/// returns false on failiure
 		/// </summary>
 		/// <param name="scope_name"></param>
-		[[nodiscard]] bool  EnterScope(std::string_view scope_name) ;
+		[[nodiscard]] bool  EnterScope(const std::string& scope_name);
 
 		/// <summary>
 		/// exits the current internal scope and makes the parent scope the current scope on the calling thread.
@@ -125,9 +129,9 @@ namespace USL::FRONTEND {
 		/// <param name="symbol"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		[[nodiscard]] bool InsertSymbol(SymbolPtr symbol, std::string& name);
+		[[nodiscard]] bool InsertSymbol(std::unique_ptr<Symbol>symbol, std::string& name);
 
 
 		
 	};
-}
+}//namespace USL::FRONTEND
