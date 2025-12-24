@@ -4,6 +4,7 @@
 #include <tuple>
 #include <CppUnitTest.h>
 #include <SYMBOL.h>
+#include <utilitys.h>
 #include "HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace USL::FRONTEND;
@@ -18,7 +19,7 @@ namespace USL_COMPILER_TESTS
 			SymbolTable symbolTable;
 
 		}
-		catch (const std::runtime_error&) {
+		catch (const NotMainThreadException&) {
 			threwException = true;
 			return;
 		}

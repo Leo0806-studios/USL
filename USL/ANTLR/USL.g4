@@ -183,14 +183,14 @@ statement                           :variable_declaration';'|
                                     error_recovery;
 
 //scope Statements (excluding controll flow)
-namespace_declaration               :NAMESPACE NamespaceName =ID basic_block;
-class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? basic_block;
-enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? ) (',')? '}';
+namespace_declaration               :NAMESPACE NamespaceName =ID '{'global_statement* '}';
+class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? basic_block ';';
+enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? )* (',')? '}' ';';
 attribute_declaration               :ATRIBUTE AttributeName=ID '{''}';
 function_declaration                :attribute_addition? acces_modifiers ReturnType=cvu_type FunctionName=ID '('paremeter_list? ')'CONST? throws_postfix? basic_block;
 basic_block                         :'{'statement*'}';
 
-variable_declaration                :acces_modifiers Type = cvu_type name = ID (ASSIGN_OP expression)?;
+variable_declaration                :acces_modifiers? Type = cvu_type name = ID (ASSIGN_OP expression)?;
 
 //controll_flow
 if_statement                        :IF '('expression')' basic_block; 

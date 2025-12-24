@@ -1,23 +1,43 @@
-Checks: '*,-llvmlibc-implementation-in-namespace,
+Checks: '*,
 -modernize-use-trailing-return-type, 
+
+
+-altera-unroll-loops,
+
+
+-cppcoreguidelines-pro-type-union-access,
+
+
+-hicpp-move-const-arg,performance-move-const-arg,
+
+
+-performance-move-const-arg,
+
+
 -clang-diagnostic-pragma-once-outside-header, 
 -clang-diagnostic-unused-macro,
--clang-diagnostic-c++98-compat,
--llvmlibc-callee-namespace,
--misc-include-cleaner,
--altera-unroll-loops,
--cppcoreguidelines-pro-type-union-access,
--hicpp-move-const-arg,performance-move-const-arg,
--performance-move-const-arg,
 -clang-diagnostic-pre-c++20-compat,
 -clang-diagnostic-pre-c++17-compat,
 -clang-diagnostic-c++98-compat-pedantic,
+-clang-diagnostic-c++98-compat,
+
+
 -readability-convert-member-functions-to-static,
+
+
 -llvmlibc-restrict-system-libc-headers,
 -llvmlibc-inline-function-decl,
+-llvmlibc-callee-namespace,
+-llvmlibc-implementation-in-namespace,
+
+
 -misc-use-anonymous-namespace,
 -misc-no-recursion,
--fuchsia-overloaded-operator'
+-misc-include-cleaner,
+
+
+-fuchsia-overloaded-operator,
+-fuchsia-default-arguments-calls'
 
 HeaderFilterRegex: 'C:\Users\leo08\source\repos\\USL\*'
 

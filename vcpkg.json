@@ -1,6 +1,9 @@
 {
   "dependencies": [
+    "arg-router",
     "argtable3",
+    "boost-parameter",
+    "boost-program-options",
     "catch2",
     "libzip",
     {
@@ -9,6 +12,7 @@
       "features": [
         "target-x86"
       ]
-    }
+    },
+    "antlr4"
   ]
 }

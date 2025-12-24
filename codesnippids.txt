@@ -1,8 +1,8 @@
-#if   defined(__clang__)  || defined(__INTELLISENSE__)
+#if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 
 #else
 
-#endif //  __clang__ || __INTELLISENSE__
+#endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 
 

@@ -13,6 +13,7 @@
 #include "HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 #include <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>
 #include <FRONTEND/SYMBOL/SYMBOL.h>
+#include "utilitys.h"
 #else
 import <memory>;
 import <thread>;
@@ -24,16 +25,14 @@ import <string>;
 import <string_view>;
 import <utility>;
 import <vector>;
+import <utilitys.h>;
 import <HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
 #endif //  __clang__ || __INTELLISENSE__
 
 namespace USL::FRONTEND {
-	const std::thread::id mainThreadId = std::this_thread::get_id();
 	SymbolTable::SymbolTable()
 	{
-		if (std::this_thread::get_id() != mainThreadId) {
-			throw std::runtime_error("SymbolTable default constructor can only be called from the main thread in single threaded environments");
-		}
+		ThrowIfNotMainThread();
 		globalScope = std::make_shared<Scope>();
 		const std::thread::id thread_id = std::this_thread::get_id();
 		currentScopes[thread_id] = std::weak_ptr(globalScope);
@@ -43,12 +42,15 @@ namespace USL::FRONTEND {
 	
 	SymbolTable::SymbolTable(const std::vector<std::thread>& threads)
 	{
-		if (std::this_thread::get_id() != mainThreadId) {
-			throw std::runtime_error("SymbolTable multi-threaded constructor can only be called from the main thread");
-		}
+		ThrowIfNotMainThread();
+
 		globalScope = std::make_shared<Scope>();
 		
 		globalScope->SimpleName = "global";
+		// initialize current scopes for all threads to global scope
+
+
+		currentScopes[std::this_thread::get_id()]	 = std::weak_ptr(globalScope);
 		for (const auto& thread : threads) {
 			const std::thread::id thread_id = thread.get_id();
 			currentScopes[thread_id] = std::weak_ptr(globalScope);

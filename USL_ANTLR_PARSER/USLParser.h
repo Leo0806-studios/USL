@@ -196,8 +196,9 @@ public:
     Namespace_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *NAMESPACE();
-    Basic_blockContext *basic_block();
     antlr4::tree::TerminalNode *ID();
+    std::vector<Global_statementContext *> global_statement();
+    Global_statementContext* global_statement(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -318,9 +319,9 @@ public:
     antlr4::Token *name = nullptr;
     Variable_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Acces_modifiersContext *acces_modifiers();
     Cvu_typeContext *cvu_type();
     antlr4::tree::TerminalNode *ID();
+    Acces_modifiersContext *acces_modifiers();
     antlr4::tree::TerminalNode *ASSIGN_OP();
     ExpressionContext *expression();
 
