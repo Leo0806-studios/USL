@@ -55,15 +55,13 @@ namespace USL::FRONTEND {
 		std::unique_ptr<antlr4::CommonTokenStream> TokeStream;
 		std::unique_ptr<USLLexer> Lexer;
 		std::unique_ptr<USLParser> Parser;
-
-
+		antlr4::tree::ParseTree* tree = nullptr;
 	};
 	static thread_local PerThreadData ThreadData_g;//NOSONAR
 
-
 	static void printAST(std::stringstream& outstream, USLParser* parser, antlr4::tree::ParseTree* tree, const std::string& indent = "", bool last = true) {
 		// Print the current node
-		const std::string nodeText = antlr4::tree::Trees::getNodeText(tree, parser); 
+		const std::string nodeText = antlr4::tree::Trees::getNodeText(tree, parser);
 		outstream << indent;
 
 		if (last) {
@@ -84,10 +82,6 @@ namespace USL::FRONTEND {
 		}
 	}
 
-
-
-
-
 	USL_Compiler::USL_Compiler(int argc, char** argv) : compilerArguments(argc, argv), SyncPoint(static_cast<int>(compilerArguments.GetSourceFiles().size()))
 	{
 #pragma warning (push)
@@ -105,7 +99,6 @@ namespace USL::FRONTEND {
 
 	const USL_Compiler::CompilerResults USL::FRONTEND::USL_Compiler::Compile()
 	{
-
 		//
 		StartCompiler.store(true);
 		Worker();
@@ -128,9 +121,6 @@ namespace USL::FRONTEND {
 		}
 	}
 
-
-
-
 	void USL_Compiler::appendComStream()
 	{
 		const 	std::lock_guard<std::mutex> lock(ComStreamMutex);
@@ -146,87 +136,20 @@ namespace USL::FRONTEND {
 			ComStream.str(std::string());
 		}
 		SyncPoint.arrive_and_wait();
-
 	}
 
 	void USL_Compiler::Worker()
 	{
+		Results[std::this_thread::get_id()];
+
 
 		while (!StartCompiler.load()) {
 			std::this_thread::yield();
 		}
 		Phase1();
-		SyncPoint.arrive_and_wait();
-		const size_t index = SafeCounter.fetch_add(1,std::memory_order::acquire);
-		const auto& inputFile = compilerArguments.GetSourceFiles()[index];
-		std::ifstream fileStream(inputFile, std::ios::in);
-		if (!fileStream.is_open()) {
-			std::cerr << "Failed to open source file: " << inputFile << '\n' << std::flush;
-			FailiureDetected.store(true);
-			SyncPoint.arrive_and_drop();
+		if (ThreadData_g.failed) {
 			return;
 		}
-
-		SyncPoint.arrive_and_wait();
-
-		antlr4::ANTLRInputStream input(fileStream);
-		USLLexer lexer(&input);
-
-		antlr4::CommonTokenStream tokens(&lexer);
-		tokens.fill();
-		SyncPoint.arrive_and_wait();
-		SafeCounter.fetch_sub(1, std::memory_order::release);
-		SyncPoint.arrive_and_wait();
-		std::stringstream& localStream=ThreadData_g.localStream;
-		localStream << "Tokens for file: " << inputFile;
-
-		for (const auto* token : tokens.getTokens()) {
-			localStream << token->toString() << '\n' << std::flush;
-		}
-		appendComStream();
-
-		SyncPoint.arrive_and_wait();
-		printComStream_Syncs();
-
-		SyncPoint.arrive_and_wait();
-		USLParser parser(&tokens);
-		parser.removeErrorListeners();
-		USL_ErrorListener errorListener;
-		parser.addErrorListener(&errorListener);
-
-		SyncPoint.arrive_and_wait();
-		antlr4::tree::ParseTree* tree = parser.program();
-		SyncPoint.arrive_and_wait();
-		localStream.str(std::string());
-		if (!errorListener.GetSyntaxErrors().empty()) {
-			localStream << "Syntax Errors in file: " << inputFile << '\n';
-			for (const auto& error : errorListener.GetSyntaxErrors()) {
-				localStream << error.ToString() << '\n';
-			}
-			appendComStream();
-			FailiureDetected.store(true);
-			SyncPoint.arrive_and_drop();
-
-			return;
-		}
-		SyncPoint.arrive_and_wait();
-		printComStream_Syncs();
-		SyncPoint.arrive_and_wait();
-
-
-
-		if (compilerArguments.IsDebugOptionEnabled(Arguments::CompilerDebugOptions::printParseTree)) {
-		localStream.str(std::string());
-		localStream << "-c ptr is set. printing parse tree... \n";
-		localStream << "Parse Tree for file: " << inputFile << '\n';
-		printAST(localStream, &parser, tree);
-		appendComStream();
-		SyncPoint.arrive_and_wait();
-		printComStream_Syncs();
-
-		}
-
-
 
 	}
 	void USL_Compiler::Phase1()
@@ -238,11 +161,12 @@ namespace USL::FRONTEND {
 		const size_t index = SafeCounter.fetch_add(1, std::memory_order::acquire);
 		const auto& inputFile = compilerArguments.GetSourceFiles()[index];
 		SafeCounter.fetch_sub(1, std::memory_order::acquire);
+
 		//load and open file
 		std::ifstream& fileStream = [&]()->std::ifstream& {
-				std::ifstream inputFilestream(inputFile, std::ios::in);
-				ThreadData_g.InputFileStream = std::move(inputFilestream);
-				return ThreadData_g.InputFileStream;
+			std::ifstream inputFilestream(inputFile, std::ios::in);
+			ThreadData_g.InputFileStream = std::move(inputFilestream);
+			return ThreadData_g.InputFileStream;
 			}();
 		if (!fileStream.is_open()) {
 			localStream << "failed to open source file: " << inputFile << '\n';
@@ -252,9 +176,10 @@ namespace USL::FRONTEND {
 			return;
 		}
 		printComStream_Syncs();
-		using antlr4Istream =std::unique_ptr< antlr4::ANTLRInputStream>;
-		antlr4Istream& inputStream = [&]()->std::unique_ptr< antlr4::ANTLRInputStream>& {
-			ThreadData_g.InputStream=std::make_unique<antlr4::ANTLRInputStream>(fileStream); 
+
+		using antlr4Istream = std::unique_ptr< antlr4::ANTLRInputStream>;
+		antlr4Istream& inputStream = [&]()->std::unique_ptr< antlr4::ANTLRInputStream>&{
+			ThreadData_g.InputStream = std::make_unique<antlr4::ANTLRInputStream>(fileStream);
 			return ThreadData_g.InputStream;
 			}();
 		if (!inputStream) {
@@ -265,7 +190,6 @@ namespace USL::FRONTEND {
 			ThreadData_g.failed.store(true);
 			return;
 		}
-
 		printComStream_Syncs();
 
 		using USLLexer = std::unique_ptr<USLLexer>;
@@ -278,6 +202,7 @@ namespace USL::FRONTEND {
 			localStream << "failed to allocate and create USLLexer in thread: " << std::this_thread::get_id() << " for file: " << inputFile << '\n';
 			appendComStream();
 			SyncPoint.arrive_and_drop();
+			ThreadData_g.failed.store(true);
 		}
 		printComStream_Syncs();
 
@@ -293,10 +218,65 @@ namespace USL::FRONTEND {
 			SyncPoint.arrive_and_drop();
 			ThreadData_g.failed.store(true);
 			return;
-			
 		}
-		
+		tokenStream->fill();
+		printComStream_Syncs();
 
+		if (compilerArguments.IsDebugOptionEnabled(USL::FRONTEND::Arguments::CompilerDebugOptions::printToken)) {
+			localStream << "Tokens for file: " << inputFile;
+			for (const auto* token : tokenStream->getTokens()) {
+				localStream << token->toString() << '\n';
+			}
+			printComStream_Syncs();
+		}
+
+		using USLParser = std::unique_ptr<::USLParser>;
+		USLParser& parser = [&]()->std::unique_ptr<::USLParser>&{
+			ThreadData_g.Parser = std::make_unique<::USLParser>(tokenStream);
+			return ThreadData_g.Parser;
+			}();
+		if (!parser) {
+			localStream.str(std::string());//might be unecesary
+			localStream << "failed to allocated and create USLParser on thread: " << std::this_thread::get_id() << " for file: " << inputFile << '\n';
+			appendComStream();
+			SyncPoint.arrive_and_drop();
+			ThreadData_g.failed.store(true);
+			return;
+		}
+		printComStream_Syncs();
+		parser->removeErrorListeners();
+		USL_ErrorListener errorListener;
+		parser->addErrorListener(&errorListener);
+		antlr4::tree::ParseTree*& tree = [&]()->antlr4::tree::ParseTree*& {
+			ThreadData_g.tree = parser->program();
+			return ThreadData_g.tree;
+			}();
+		if (!errorListener.GetSyntaxErrors().empty()) {
+			localStream.str(std::string());//might be uneccesary
+			localStream << "Syntax Errors in file: " << inputFile << '\n';
+			for (const auto& error : errorListener.GetSyntaxErrors()) {
+				localStream << error.ToString() << '\n';
+			}
+			appendComStream();
+			SyncPoint.arrive_and_drop();
+			ThreadData_g.failed.store(true);
+			return;
+		}
+		printComStream_Syncs();
+		if (compilerArguments.IsDebugOptionEnabled(Arguments::CompilerDebugOptions::printParseTree)) {
+			localStream.str(std::string());
+			localStream << "-c ptr is set. printing parse tree... \n";
+			localStream << "Parse Tree for file: " << inputFile << '\n';
+			printAST(localStream, &parser, tree);
+			appendComStream();
+			SyncPoint.arrive_and_wait();
+			printComStream_Syncs();
+		}
+		SyncPoint.arrive_and_wait();
+	}
+	void USL_Compiler::Phase2()
+	{
+		SyncPoint.arrive_and_wait();
 
 	}
 }// namespace USL::FRONTEND

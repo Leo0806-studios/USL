@@ -269,6 +269,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HEADER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp" />
     <ClCompile Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.cpp" />
     <ClCompile Include="SRC\utilitys.cpp" />
     <ClCompile Include="SRC\FRONTEND\CMD_PARSE\CMD_PARSE.cpp" />
@@ -285,9 +286,11 @@
   <ItemGroup>
     <ClInclude Include="HEADER\BENCHMARK\BENCHMARK.h" />
     <ClInclude Include="HEADER\FRONTEND\CMD_PARSE\CMD_PARSE.h" />
+    <ClInclude Include="HEADER\FRONTEND\ERROR_CODES\ERROR_CODES.h" />
     <ClInclude Include="HEADER\FRONTEND\ERROR_LISTENER\ERROR_LISTENER.h" />
     <ClInclude Include="HEADER\FRONTEND\MANGLED_NAME\MANGLED_NAME.h" />
     <ClInclude Include="HEADER\FRONTEND\SYMBOL\SYMBOL.h" />
+    <ClInclude Include="HEADER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.h" />
     <ClInclude Include="HEADER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h" />
     <ClInclude Include="HEADER\utilitys.h" />
     <ClInclude Include="MACROS.h" />

@@ -201,20 +201,25 @@ namespace USL::FRONTEND {
 		return (*currentScopes.find(thread_id)).second;//suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
 	}
-	bool USL::FRONTEND::SymbolTable::InsertScope(std::string name)
+	 USL::FRONTEND::SymbolTable:: InsertScopeResult USL::FRONTEND::SymbolTable::InsertScope(std::string name)
 	{
 		const std::thread::id thread_id = std::this_thread::get_id();
 
 		const ScopePtr current = currentScopes[thread_id].lock();
+		auto exists = current->GetChildScopes().find(name);
+		if ( exists!= current->GetChildScopes().end()) {
+			currentScopes[thread_id] = std::weak_ptr((*exists).second);
+			return InsertScopeResult::allreadyExists;
+		}
 		auto newScope = std::make_shared<Scope>();
 		newScope->SetSimpleName(name);
 		newScope->SetParentScope(current);
 		auto succses =current->GetChildScopes().insert({ std::move(name),newScope });
 		if (!succses.second ) {
-			return false;
+			return InsertScopeResult::failiure;
 		}
 		currentScopes[thread_id] = std::weak_ptr(newScope);
-		return true;
+		return succses;
 
 	}
 	bool SymbolTable::InsertSymbol(std::unique_ptr<Symbol>symbol, std::string& name)

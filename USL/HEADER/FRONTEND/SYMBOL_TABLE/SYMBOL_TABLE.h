@@ -115,12 +115,18 @@ namespace USL::FRONTEND {
 		/// <returns></returns>
 		[[nodiscard]] WeakScopePtr GetCurrentScope()const noexcept;
 
+		enum class InsertScopeResult :unsigned char {
+			succses = 0,
+			failiure=1,
+			allreadyExists=2
+		};
 		/// <summary>
 		/// inserts an empty scope with the given name into the current scope and enters it.
 		/// enters the scope only for the calling thread.
+		/// if the scope already exists it just enters it and returns 
 		/// </summary>
 		/// <param name="name"></param>
-		[[nodiscard]] bool InsertScope(std::string name);
+		[[nodiscard]] InsertScopeResult InsertScope(std::string name);
 
 		/// <summary>
 		/// inserts a symbol into the current scope of the calling thread with the given simple name

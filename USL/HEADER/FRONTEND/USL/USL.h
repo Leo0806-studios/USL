@@ -4,11 +4,13 @@
 #include <string>
 #include <cstdint>
 #include <thread>
+#include <atomic>
 #include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
 #include "FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 #include <barrier>
 #include <mutex>
 #else
+import <atomic>;
 import <thread>;
 import <barrier>;
 import <cstdint>;
@@ -27,57 +29,63 @@ namespace antlr4 {
 	}//namespace tree
 }//namespace antlr4
 namespace USL::FRONTEND {
-
 	class USL_Compiler {
+	public:
+		class CompilerResults {
+		public:
+			enum class Phase :std::uint8_t {
+				done,
+				Parsing,
+				SemanticAnalysis,
+				StaticAnalysis,
+				CodeGen
+			};
+			bool success = false;
+			Phase failedPhase = Phase::done;
+			std::vector<std::string> errors;
+			std::vector<std::string> warnings;
+		};
+	private:
 		friend class CompilerHelpers;
 		Arguments compilerArguments;
 		std::vector<std::thread> WorkerThreads;
 		std::atomic_bool StartCompiler{ false };
 		std::atomic_size_t SafeCounter{ 0 };
-		 std::stringstream ComStream;
-		 std::mutex ComStreamMutex;
-		 std::barrier<> SyncPoint;
-		FRONTEND::SymbolTable symbolTable;		
+		std::stringstream ComStream;
+		std::mutex ComStreamMutex;
+		std::barrier<> SyncPoint;
+		FRONTEND::SymbolTable symbolTable;
+		std::unordered_map<std::thread::id, CompilerResults> Results;
 		/// <summary>
 		/// Appends the local stream of the thread to the comstream in a threadsafe way
 		/// </summary>
-		void appendComStream();		
+		void appendComStream();
 		/// <summary>
 		/// Prints the com stream to the console on the main thread and clears the comstream afterwards.
 		/// fully guards and makes all threads wait untill the print is done
 		/// </summary>
 		void printComStream_Syncs();
 
-			/// <summary>
-			/// main worker function wich handles compliling a single source file
-			/// </summary>
-			void Worker();
+		/// <summary>
+		/// main worker function wich handles compliling a single source file
+		/// </summary>
+		void Worker();
 
-			/// <summary>
-			/// loads,lexes and parses the source files and generates the parse trees.
-			/// optionaly prints tokens and the parse tree depending on debug flags
-			/// </summary>
-			void Phase1();
-	public:		
+		/// <summary>
+		/// loads,lexes and parses the source files and generates the parse trees.
+		/// optionaly prints tokens and the parse tree depending on debug flags
+		/// </summary>
+		void Phase1();
+		
+		/// <summary>
+		/// performs ymbole gathering and resolving
+		/// </summary>
+		void Phase2();
+	public:
+		//no co
 		USL_Compiler(const USL_Compiler&) = delete;
 		USL_Compiler& operator=(const USL_Compiler&) = delete;
 
-
-
-		class CompilerResults {
-			public:
-				enum class Phase:std::uint8_t {
-					done,
-					Parsing,
-					SemanticAnalysis,
-					StaticAnalysis,
-					CodeGen
-				};
-			bool success = false;
-			Phase failedPhase=Phase::done;
-			std::vector<std::string> errors;
-			std::vector<std::string> warnings;
-		};
 		/// <summary>
 		/// Initializes a new instance of the <see cref="USL_Compiler"/> class.
 		/// creates the compiler and parses the comand line arguments
@@ -89,5 +97,4 @@ namespace USL::FRONTEND {
 		bool WriteOutput();
 		~USL_Compiler();
 	};
-
 }// namespace USL::FRONTEND
