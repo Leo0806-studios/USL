@@ -176,6 +176,7 @@ public:
     Goto_statementContext *goto_statement();
     Lable_statementContext *lable_statement();
     While_statementContext *while_statement();
+    If_statementContext *if_statement();
     For_statementContext *for_statement();
     Switch_statementContext *switch_statement();
     Expression_statementContext *expression_statement();
@@ -341,6 +342,7 @@ public:
     antlr4::tree::TerminalNode *IF();
     ExpressionContext *expression();
     Basic_blockContext *basic_block();
+    Else_statementContext *else_statement();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -356,6 +358,7 @@ public:
     Else_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *ELSE();
+    If_statementContext *if_statement();
     Basic_blockContext *basic_block();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;

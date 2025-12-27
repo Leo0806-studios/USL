@@ -1,0 +1,15 @@
+naming convention
+namespaces: All Caps
+typenames : Pascal case. no udnerscores except with acronyms those are seperated from the main name by underscores. optional _t suffix
+static private meber variables: camel case. _s suffix
+static public member variables: Pascal case. _s suffix
+private member variables: camel case
+public member variable: pascal case
+private member functions: camel case
+public member functions: pascal case
+
+
+
+
+name prefixes:
+_Syncs: this functions syncs via std::barrier in the begining and end of the function. might use a object local barrier so care needs to be taken that no phase lagging happens

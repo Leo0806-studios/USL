@@ -177,13 +177,14 @@ statement                           :variable_declaration';'|
                                     goto_statement';'|
                                     lable_statement';'|
                                     while_statement|
+                                    if_statement|
                                     for_statement|
                                     switch_statement|
                                     expression_statement';'|
                                     error_recovery;
 
 //scope Statements (excluding controll flow)
-namespace_declaration               :NAMESPACE NamespaceName =ID '{'global_statement* '}';
+namespace_declaration               :NAMESPACE NamespaceName =ID '{'global_statement* '}';  
 class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? basic_block ';';
 enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? )* (',')? '}' ';';
 attribute_declaration               :ATRIBUTE AttributeName=ID '{''}';
@@ -193,8 +194,8 @@ basic_block                         :'{'statement*'}';
 variable_declaration                :acces_modifiers? Type = cvu_type name = ID (ASSIGN_OP expression)?;
 
 //controll_flow
-if_statement                        :IF '('expression')' basic_block; 
-else_statement                      :ELSE basic_block;
+if_statement                        :IF '('expression')' basic_block else_statement?; 
+else_statement                      :ELSE (if_statement|basic_block);
 
 
 while_statement                     :WHILE '(' expression')' basic_block ;

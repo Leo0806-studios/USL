@@ -14,24 +14,25 @@ import <antlr4-runtime.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 namespace USL::FRONTEND {
 	class SyntaxError {
-		public:
 			size_t line;
 			size_t charPositionInLine;
 			std::string msg;
-			SyntaxError(size_t line, size_t charPositionInLine, const std::string& msg)
-				: line(line), charPositionInLine(charPositionInLine), msg(msg) {}
-			std::string ToString() const {
+		public:
+			SyntaxError(size_t line_,   std::string msg_, size_t charPositionInLine_)
+				: line(line_), charPositionInLine(charPositionInLine_), msg(std::move(msg_)) {
+			}
+			[[nodiscard]]std::string ToString() const {
 				return "Line " + std::to_string(line) + ":" + std::to_string(charPositionInLine) + " " + msg;
 			}
 	};
 	class USL_ErrorListener : public antlr4::BaseErrorListener {
 		std::vector<SyntaxError> syntaxErrors;
 		public:
-		virtual void syntaxError(antlr4::Recognizer* recognizer, antlr4::Token* offendingSymbol, size_t line,
+		 void syntaxError(antlr4::Recognizer* recognizer, antlr4::Token* offendingSymbol, size_t line,
 			size_t charPositionInLine, const std::string& msg, std::exception_ptr e) override {
-			syntaxErrors.emplace_back(line, charPositionInLine, msg);
+			syntaxErrors.emplace_back(line,  msg, charPositionInLine);
 		}
-		const std::vector<SyntaxError>& GetSyntaxErrors() const noexcept {
+		[[nodiscard ]]const std::vector<SyntaxError>& GetSyntaxErrors() const noexcept {
 			return syntaxErrors;
 		}
 	};

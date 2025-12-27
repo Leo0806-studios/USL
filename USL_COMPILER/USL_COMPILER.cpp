@@ -1,19 +1,17 @@
 // USL_COMPILER.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
-#include "USL.h"
+#include "HEADER/FRONTEND/USL/USL.h"
 #include <iostream>
 #else
 import <iostream>;
-import <USL.h>;
+import <HEADER/FRONTEND/USL/USL.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 
 
 int main(int argc, char** argv)
 {
-	std::unordered_map<std::string, bool>t;
-	std::cout << t["wwww"] << '\n';
 	USL::FRONTEND::USL_Compiler compiler(argc, argv);
 	const USL::FRONTEND::USL_Compiler::CompilerResults results = compiler.Compile();
 	if (!results.success) {

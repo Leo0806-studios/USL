@@ -185,7 +185,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
-      <BuildStlModules>true</BuildStlModules>
+      <BuildStlModules>false</BuildStlModules>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\vcpkg_installed\x64-windows\x64-windows\include\antlr4-runtime;C:\Users\leo08\source\repos\USL\depend;C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\USL;C:\Users\leo08\source\repos\USL\USL\MODULES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
@@ -269,11 +269,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.cpp" />
     <ClCompile Include="SRC\utilitys.cpp" />
     <ClCompile Include="SRC\FRONTEND\CMD_PARSE\CMD_PARSE.cpp" />
     <ClCompile Include="SRC\FRONTEND\MANGLED_NAME\MANGLED_NAME.cpp" />
     <ClCompile Include="SRC\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.cpp" />
-    <ClCompile Include="USL.cpp">
+    <ClCompile Include="SRC\FRONTEND\USL\USL.cpp">
       <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5045;4820;4514;4100;4505;4583;4582;4626;5027;4625;5026;4263;4264</DisableSpecificWarnings>
     </ClCompile>
   </ItemGroup>
@@ -290,9 +291,11 @@
     <ClInclude Include="HEADER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h" />
     <ClInclude Include="HEADER\utilitys.h" />
     <ClInclude Include="MACROS.h" />
-    <ClInclude Include="USL.h" />
+    <ClInclude Include="HEADER\FRONTEND\USL\USL.h" />
+    <ClInclude Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig" />
     <None Include="ANTLR\USL.g4" />
     <None Include=".clang-tidy" />
     <None Include="cpp.hint" />

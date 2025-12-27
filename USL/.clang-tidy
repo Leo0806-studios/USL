@@ -37,7 +37,8 @@ Checks: '*,
 
 
 -fuchsia-overloaded-operator,
--fuchsia-default-arguments-calls'
+-fuchsia-default-arguments-calls,
+-fuchsia-default-arguments-declarations'
 
 HeaderFilterRegex: 'C:\Users\leo08\source\repos\\USL\*'
 

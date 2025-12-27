@@ -13,9 +13,33 @@ import <unordered_map>;
 
 namespace USL::FRONTEND {
 	class Arguments {
+	public:
+		enum class CompilerDebugOptions : unsigned char {
+printToken,
+printParseTree,
+printSymbolTable,
+printInheritedTypes,
+printUBAnalysis,
+printAutoGenInfo,
+printOverloadResInfo,
+printOptimisationDecisions,
+timeCompilationPhases
+		};
+	private:
 		std::vector<std::filesystem::path> sourceFiles;
 		std::filesystem::path outputFile;
 		std::unordered_map<std::string,bool>compilerDebugOptions;
+		std::unordered_map<CompilerDebugOptions, std::string> compilerDebugOptionstranslations = {
+		{CompilerDebugOptions::printToken,"pt"},
+		{ CompilerDebugOptions::printParseTree,"ptr" },
+		{ CompilerDebugOptions::printSymbolTable,"pst" },
+		{ CompilerDebugOptions::printInheritedTypes,"pip" },
+		{ CompilerDebugOptions::printUBAnalysis,"pub" },
+		{ CompilerDebugOptions::printAutoGenInfo,"pag" },
+		{ CompilerDebugOptions::printOverloadResInfo,"poc" },
+		{ CompilerDebugOptions::printOptimisationDecisions,"pOc" },
+		{ CompilerDebugOptions::timeCompilationPhases,"tc" }
+		};
 		int maxThreads = 4;
 		unsigned char optimisationLevel = 0;
 		unsigned char analysisLevel = 3;
@@ -39,5 +63,6 @@ namespace USL::FRONTEND {
 			[[nodiscard]] unsigned char GetWarningLevel() const noexcept { return warningLevel; }
 			[[nodiscard]] bool GetWarningsAsErrors() const noexcept { return warningsAsErrors; }
 			[[nodiscard]] bool GetEnableExceptions() const noexcept { return enableExceptions; }
+			[[nodiscard]] bool IsDebugOptionEnabled(CompilerDebugOptions option) const noexcept;
 	};
 }

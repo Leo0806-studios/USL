@@ -3,11 +3,13 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <thread>
 #include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
 #include "FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 #include <barrier>
 #include <mutex>
 #else
+import <thread>;
 import <barrier>;
 import <cstdint>;
 import <vector>;
@@ -22,25 +24,43 @@ namespace antlr4 {
 	class CommonTokenStream;
 	namespace tree {
 		class ParseTree;
-	}
-}
+	}//namespace tree
+}//namespace antlr4
 namespace USL::FRONTEND {
 
 	class USL_Compiler {
+		friend class CompilerHelpers;
 		Arguments compilerArguments;
 		std::vector<std::thread> WorkerThreads;
-		antlr4::ANTLRInputStream* inputStream = nullptr;
-		antlr4::CommonTokenStream* tokenStream = nullptr;
-		antlr4::tree::ParseTree* parseTree = nullptr;
 		std::atomic_bool StartCompiler{ false };
 		std::atomic_size_t SafeCounter{ 0 };
-		std::atomic_bool FailiureDetected{ false };
 		 std::stringstream ComStream;
 		 std::mutex ComStreamMutex;
-		FRONTEND::SymbolTable symbolTable;
+		 std::barrier<> SyncPoint;
+		FRONTEND::SymbolTable symbolTable;		
+		/// <summary>
+		/// Appends the local stream of the thread to the comstream in a threadsafe way
+		/// </summary>
+		void appendComStream();		
+		/// <summary>
+		/// Prints the com stream to the console on the main thread and clears the comstream afterwards.
+		/// fully guards and makes all threads wait untill the print is done
+		/// </summary>
+		void printComStream_Syncs();
 
+			/// <summary>
+			/// main worker function wich handles compliling a single source file
+			/// </summary>
 			void Worker();
+
+			/// <summary>
+			/// loads,lexes and parses the source files and generates the parse trees.
+			/// optionaly prints tokens and the parse tree depending on debug flags
+			/// </summary>
+			void Phase1();
 	public:		
+		USL_Compiler(const USL_Compiler&) = delete;
+		USL_Compiler& operator=(const USL_Compiler&) = delete;
 
 
 
@@ -70,4 +90,4 @@ namespace USL::FRONTEND {
 		~USL_Compiler();
 	};
 
-}
+}// namespace USL::FRONTEND

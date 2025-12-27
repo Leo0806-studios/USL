@@ -17,7 +17,7 @@ namespace USL::FRONTEND {
 		boost::program_options::options_description desc("allowed options");
 		const char* compilerDebugStr = R"(sets variouse debug options to print internal compiler state
 possible options:
-Pt: prints token streams
+pt: prints token streams
 ptr: prints parse trees
 pst: prints symbol tables
 pip: prints possible derived types for a baseclass object at that point in the program
@@ -38,7 +38,7 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 			("warningLeve,W", boost::program_options::value<int>()->default_value(3), "sets the warning level (0-7). default value: 3")
 			("warnFail,f", boost::program_options::value<bool>()->default_value(false), "treat warnings as errors. default value: false")
 			("enableExceptions,e", boost::program_options::value<bool>()->default_value(true), "enables or disables exceptions. default value: true")
-			("compilerDebug,cD",boost::program_options::value<std::vector<std::string>>(), compilerDebugStr);
+			("compilerDebug,d",boost::program_options::value<std::vector<std::string>>(), compilerDebugStr);
 		boost::program_options::variables_map ArgMap;
 		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), ArgMap);
 		if (ArgMap["help"].as<bool>()) {
@@ -60,7 +60,7 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 		}
 		if (!ArgMap["compilerDebug"].empty()) {
 			for (const auto& debugOption : ArgMap["compilerDebug"].as<std::vector<std::string>>()) {
-				if (debugOption != "Pt"  &&
+				if (debugOption != "pt"  &&
 					debugOption != "ptr" && 
 					debugOption != "pst" &&
 					debugOption != "pip" && 
@@ -81,6 +81,17 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 
 		}
 
+	}
+
+	 bool Arguments::IsDebugOptionEnabled(CompilerDebugOptions option) const noexcept {
+#pragma warning (push)
+#pragma warning (disable: 26447)
+		const auto it = compilerDebugOptions.find(compilerDebugOptionstranslations.at(option));
+#pragma warning (pop)
+		if (it != compilerDebugOptions.end()) {
+			return it->second;
+		}
+		return false;
 	}
 
 }// namespace USL::FRONTEND

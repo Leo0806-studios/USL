@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="USL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SRC\FRONTEND\MANGLED_NAME\MANGLED_NAME.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -28,6 +25,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SRC\utilitys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SRC\FRONTEND\USL\USL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,9 +54,6 @@
     <ClInclude Include="HEADER\FRONTEND\SYMBOL_TABLE\SYMBOL_TABLE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="USL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HEADER\FRONTEND\CMD_PARSE\CMD_PARSE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -63,10 +63,17 @@
     <ClInclude Include="HEADER\FRONTEND\ERROR_LISTENER\ERROR_LISTENER.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HEADER\FRONTEND\USL\USL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ANTLR\USL.g4" />
     <None Include=".clang-tidy" />
     <None Include="cpp.hint" />
+    <None Include="..\.editorconfig" />
   </ItemGroup>
 </Project>
