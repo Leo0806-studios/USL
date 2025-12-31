@@ -45,7 +45,7 @@ namespace USL::FRONTEND {
 		std::unordered_map<std::string, SymbolPtr> symbols;
 		std::unordered_map<std::string, ScopePtr> child_scopes;
 		WeakScopePtr parent_scope;
-		SymbolPtr ownSymbol;
+		std::pair<SymbolPtr, std::string> ownSymbol;
 		std::string SimpleName;
 		friend class SymbolTable;
 	public:
@@ -61,10 +61,10 @@ namespace USL::FRONTEND {
 		void SetParentScope(WeakScopePtr parent) noexcept {
 			parent_scope = std::move(parent);
 		}
-		[[nodiscard]]  SymbolPtr GetOwnSymbol() const noexcept {
+		[[nodiscard]] std::pair<WeakSymbolPtr, std::string> GetOwnSymbol() const noexcept {
 			return ownSymbol;
 		}
-		void SetOwnSymbol(SymbolPtr symbol) noexcept {
+		void SetOwnSymbol(std::pair<SymbolPtr,std::string> symbol) noexcept {
 			ownSymbol = std::move(symbol);
 		}
 		void SetSimpleName(const std::string& name) noexcept {
@@ -75,10 +75,17 @@ namespace USL::FRONTEND {
 		}
 
 
+
+
 	};
 	class Symbol {
 	private:
 		WeakScopePtr ParentScope ;
+		public:
+			Symbol(WeakScopePtr parentScope) :ParentScope(std::move(parentScope)) {}
+		[[nodiscard]] WeakScopePtr GetParentScope() const noexcept {
+			return ParentScope;
+		}
 	};
 	class VariableSymbol :public Symbol {
 		std::weak_ptr<TypeSymbol> type ;
@@ -107,10 +114,13 @@ namespace USL::FRONTEND {
 
 	};
 	class EnumSymbol :public Symbol {
+	public:
+		explicit [[nodiscard]] EnumSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 
 	};
 	class TypeSymbol:public Symbol{
-
+	public:
+		explicit [[nodiscard]]TypeSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 	};
 	class AttribueSymbol :public Symbol {
 

@@ -68,7 +68,8 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 					debugOption != "pag" && 
 					debugOption != "tc"&&
 					debugOption != "poc"&&
-					debugOption != "pOc"
+					debugOption != "pOc"&&
+					debugOption != "pfl"
 					) {
 					std::cerr << "Invalid compiler debug option: " << debugOption << std::endl;
 					exit(1);

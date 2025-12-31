@@ -4,19 +4,30 @@
 #include <antlr4-runtime.h>
 #include <USLBaseListener.h>
 #include "FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
+#include "FRONTEND/ERROR_CODES/ERROR_CODES.h"
+#include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
 
 #else
+import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
 import <antlr4-runtime.h>;
 import <USLLexer.h>;
 import <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
+import <FRONTEND/ERROR_CODES/ERROR_CODES.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 namespace USL::FRONTEND {
 
 	class SymbolGatherer :public USLBaseListener {
 		SymbolTable& table;
 		std::vector<std::string> errors;
+		std::vector<std::string> warnings;
+		std::vector<std::string> infos;
+		const Arguments& args;
+		void logError(InternalErrors error,const std::string& errorMessage,size_t line, size_t pos);
+		void logError(error error,const std::string& errorMessage, size_t line, size_t pos);
+		void logWarning(WarningCodes warning,const std::string& warningMessage, size_t line, size_t pos);
+		void logInfo(const std::string& infoMessage, size_t line, size_t pos);
 	public:
-		explicit [[nodiscard]] SymbolGatherer(SymbolTable& table);
+		explicit [[nodiscard]] SymbolGatherer(SymbolTable& rTable,const Arguments& rArgs);
 
 		 void enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
 		 void exitNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;

@@ -22,6 +22,7 @@
 #include "HEADER/FRONTEND/CMD_PARSE/CMD_PARSE.h"
 #include "HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
 #include "utilitys.h"
+#include <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>
 #else
 #include "utilitys.h"
 import <ios>;
@@ -43,7 +44,7 @@ import <FRONTEND/USL/USL.h>;
 import <USLLexer.h>;
 import <USLParser.h>;
 import <FRONTEND/ERROR_LISTENER/ERROR_LISTENER.h>;
-#include "COMPILER_HELPERS/COMPILER_HELPERS.h"
+import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 namespace USL::FRONTEND {
@@ -267,7 +268,7 @@ namespace USL::FRONTEND {
 			localStream.str(std::string());
 			localStream << "-c ptr is set. printing parse tree... \n";
 			localStream << "Parse Tree for file: " << inputFile << '\n';
-			printAST(localStream, &parser, tree);
+			printAST(localStream,&(*parser), tree);
 			appendComStream();
 			SyncPoint.arrive_and_wait();
 			printComStream_Syncs();

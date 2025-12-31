@@ -23,7 +23,8 @@ printUBAnalysis,
 printAutoGenInfo,
 printOverloadResInfo,
 printOptimisationDecisions,
-timeCompilationPhases
+timeCompilationPhases,
+printFullLogs
 		};
 	private:
 		std::vector<std::filesystem::path> sourceFiles;
@@ -38,7 +39,8 @@ timeCompilationPhases
 		{ CompilerDebugOptions::printAutoGenInfo,"pag" },
 		{ CompilerDebugOptions::printOverloadResInfo,"poc" },
 		{ CompilerDebugOptions::printOptimisationDecisions,"pOc" },
-		{ CompilerDebugOptions::timeCompilationPhases,"tc" }
+		{ CompilerDebugOptions::timeCompilationPhases,"tc" },
+		{  CompilerDebugOptions::printFullLogs,"pfl"  }
 		};
 		int maxThreads = 4;
 		unsigned char optimisationLevel = 0;

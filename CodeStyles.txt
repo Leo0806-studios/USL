@@ -12,4 +12,8 @@ public member functions: pascal case
 
 
 name prefixes:
-_Syncs: this functions syncs via std::barrier in the begining and end of the function. might use a object local barrier so care needs to be taken that no phase lagging happens
+	_Syncs: this functions syncs via std::barrier in the begining and end of the function. might use a object local barrier so care needs to be taken that no phase lagging happens
+	parameters:
+		r: efers to a parameter that is passed by reference
+		cr: refers to a parameter that is passed by const reference
+		p: refers to a parameter that is passed by pointer

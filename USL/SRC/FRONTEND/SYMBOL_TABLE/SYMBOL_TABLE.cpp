@@ -14,6 +14,7 @@
 #include <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>
 #include <FRONTEND/SYMBOL/SYMBOL.h>
 #include "utilitys.h"
+#include "FRONTEND/ERROR_CODES/ERROR_CODES.h"
 #else
 import <memory>;
 import <thread>;
@@ -27,6 +28,9 @@ import <utility>;
 import <vector>;
 import <utilitys.h>;
 import <HEADER/FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
+import <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
+import <FRONTEND/SYMBOL/SYMBOL.h>;
+import <FRONTEND/ERROR_CODES/ERROR_CODES.h>;
 #endif //  __clang__ || __INTELLISENSE__
 
 namespace USL::FRONTEND {
@@ -39,18 +43,31 @@ namespace USL::FRONTEND {
 		currentScopes[thread_id].lock()->SimpleName = "global";
 
 	}
-	
+
+	SymbolTable::SymbolTable(SymbolTable&& other) noexcept :
+		insertLock(), globalScope(std::exchange(other.globalScope, nullptr)), FastMap(std::move(other.FastMap)), currentScopes(std::exchange(other.currentScopes, nullptr))
+	{
+	}
+
+	SymbolTable& SymbolTable::operator=(SymbolTable&& other) noexcept
+	{
+		globalScope = std::exchange(other.globalScope, nullptr);
+		FastMap = std::exchange(other.FastMap, {});
+		currentScopes = std::exchange(other.currentScopes, nullptr);
+		return *this;
+	}
+
 	SymbolTable::SymbolTable(const std::vector<std::thread>& threads)
 	{
 		ThrowIfNotMainThread();
 
 		globalScope = std::make_shared<Scope>();
-		
+
 		globalScope->SimpleName = "global";
 		// initialize current scopes for all threads to global scope
 
 
-		currentScopes[std::this_thread::get_id()]	 = std::weak_ptr(globalScope);
+		currentScopes[std::this_thread::get_id()] = std::weak_ptr(globalScope);
 		for (const auto& thread : threads) {
 			const std::thread::id thread_id = thread.get_id();
 			currentScopes[thread_id] = std::weak_ptr(globalScope);
@@ -60,21 +77,21 @@ namespace USL::FRONTEND {
 
 	void SymbolTable::BuildFastMap()
 	{
-		
+
 	}
-	WeakSymbolPtr SymbolTable::LookupSymbol(const DecoratedName& name) const 
+	WeakSymbolPtr SymbolTable::LookupSymbol(const DecoratedName& name) const
 	{
-		
+
 		WeakSymbolPtr ret = DEFAULTINIT;
 		try {
-		ret =FastMap.at(name);
+			ret = FastMap.at(name);
 		}
-		catch (const std::out_of_range& ) {
+		catch (const std::out_of_range&) {
 			return {};
 		}
 		return ret;
 	}
-	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const 
+	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const
 	{
 		const std::thread::id thread_id = std::this_thread::get_id();
 		const ScopePtr current = (*currentScopes.find(thread_id)).second.lock();
@@ -84,7 +101,7 @@ namespace USL::FRONTEND {
 			return symbol;
 
 		}
-		catch (const std::out_of_range& ) {
+		catch (const std::out_of_range&) {
 			return{};
 		}
 
@@ -106,39 +123,44 @@ namespace USL::FRONTEND {
 			auto& symbols = current->GetSymbols();
 #pragma warning(push)
 #pragma warning(disable:26447)
-				auto symbol = symbols.find( symbolName );
+			auto symbol = symbols.find(symbolName);
 #pragma warning(pop)
 
-				if (symbol != symbols.end()) {
+			if (symbol != symbols.end()) {
 				return (*symbol).second;
+			}
+			else {
+				if (current->GetOwnSymbol().second == symbolName) {
+					return current->GetOwnSymbol().first;
 				}
-					return {};
+			}
+			return {};
 
 		}
-		
-			// find next child scope in current scope from stack.
-			auto& childScopes = scope.lock()->GetChildScopes();
-			const std::string top = scopes.top();
-			scopes.pop();
+
+		// find next child scope in current scope from stack.
+		auto& childScopes = scope.lock()->GetChildScopes();
+		const std::string top = scopes.top();
+		scopes.pop();
 #pragma warning(push)
 #pragma warning(disable:26447)
-				auto nextScope = childScopes.find(top);
+		auto nextScope = childScopes.find(top);
 
 #pragma warning(pop)
-				if (nextScope == childScopes.end()) {
-					return {};
-				}
-				return RecursiveLookuphelper(symbolName, scopes, (*nextScope).second);
-			
+		if (nextScope == childScopes.end()) {
+			return {};
+		}
+		return RecursiveLookuphelper(symbolName, scopes, (*nextScope).second);
 
 
-		
+
+
 	}
 	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name, const std::vector< std::string>& scopes) const
 	{
 		std::stack<std::string> scopesStack = DEFAULTINIT;
 		for (const auto& scope : scopes) {
-			scopesStack.emplace( scope );
+			scopesStack.emplace(scope);
 		}
 		const std::thread::id thread_id = std::this_thread::get_id();
 #pragma warning(push)
@@ -157,14 +179,14 @@ namespace USL::FRONTEND {
 	}
 
 	bool SymbolTable::EnterScope(const std::string& scope_name)
-	{ 
+	{
 		const std::thread::id thread_id = std::this_thread::get_id();
 		const ScopePtr current = currentScopes[thread_id].lock();
 		if (!current) {
 			return false;
 		}
 		auto& childScopes = current->GetChildScopes();
-		auto nextScopeIt = childScopes.find( scope_name);
+		auto nextScopeIt = childScopes.find(scope_name);
 		if (nextScopeIt == childScopes.end()) {
 			return false;
 		}
@@ -179,12 +201,12 @@ namespace USL::FRONTEND {
 		const ScopePtr current = currentScopes[thread_id].lock(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
 
-			if (current && current->GetParentScope().lock()) {
+		if (current && current->GetParentScope().lock()) {
 #pragma warning(push)
 #pragma warning(disable:26447)
-				currentScopes[thread_id] = currentScopes[thread_id].lock()->GetParentScope(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
+			currentScopes[thread_id] = currentScopes[thread_id].lock()->GetParentScope(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
-				return true;
+			return true;
 
 		}
 		return false;
@@ -194,44 +216,77 @@ namespace USL::FRONTEND {
 	/// returns the current internal scope of the calling thread
 	/// </summary>
 	/// <returns></returns>
-	 WeakScopePtr SymbolTable::GetCurrentScope() const noexcept {
+	WeakScopePtr SymbolTable::GetCurrentScope() const noexcept {
 		const std::thread::id thread_id = std::this_thread::get_id();
 #pragma warning(push)
 #pragma warning(disable:26447)
 		return (*currentScopes.find(thread_id)).second;//suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
 	}
-	 USL::FRONTEND::SymbolTable:: InsertScopeResult USL::FRONTEND::SymbolTable::InsertScope(std::string name)
+	USL::FRONTEND::SymbolTable::InsertScopeResult USL::FRONTEND::SymbolTable::InsertScope(std::string name)
 	{
 		const std::thread::id thread_id = std::this_thread::get_id();
 
 		const ScopePtr current = currentScopes[thread_id].lock();
 		auto exists = current->GetChildScopes().find(name);
-		if ( exists!= current->GetChildScopes().end()) {
+		if (exists != current->GetChildScopes().end()) {
 			currentScopes[thread_id] = std::weak_ptr((*exists).second);
 			return InsertScopeResult::allreadyExists;
 		}
 		auto newScope = std::make_shared<Scope>();
 		newScope->SetSimpleName(name);
 		newScope->SetParentScope(current);
-		auto succses =current->GetChildScopes().insert({ std::move(name),newScope });
-		if (!succses.second ) {
+		auto succses = current->GetChildScopes().insert({ std::move(name),newScope });
+		if (!succses.second) {
 			return InsertScopeResult::failiure;
 		}
 		currentScopes[thread_id] = std::weak_ptr(newScope);
-		return succses;
+		return InsertScopeResult::succses;
 
 	}
-	bool SymbolTable::InsertSymbol(std::unique_ptr<Symbol>symbol, std::string& name)
+	SymbolTable::InsertSymbolResult SymbolTable::InsertSymbol(std::unique_ptr<Symbol>symbol, const std::string& name)
 	{
 		const std::thread::id thread_id = std::this_thread::get_id();
-
-		static std::mutex mutex;
-		mutex.lock();
 		const ScopePtr current = currentScopes[thread_id].lock();
+
+		std::unique_lock <std::mutex> lock(insertLock);
+		auto exists = current->GetSymbols().find(name);
+		if (exists != current->GetSymbols().end()) {
+			return InsertSymbolResult::allreadyExists;
+		}
 		auto& symbols = current->GetSymbols();
 		auto succsess = symbols.insert({ name,std::move(symbol) });
-		mutex.unlock();
-		return succsess.second;
+		if (!succsess.second) {
+			return InsertSymbolResult::failiure;
+		}
+		return InsertSymbolResult::succses;
+	}
+	SymbolTable::InsertSymbolResult SymbolTable::InsertScopeWithSymbol(const std::string& symbol_name, std::unique_ptr<Symbol> symbol, const std::string& scope_name)
+	{
+		const auto currentScopeCopy = GetCurrentScope();
+		const auto it = currentScopeCopy.lock()->GetSymbols().find(symbol_name);
+		if (it != currentScopeCopy.lock()->GetSymbols().end()) {
+
+			return InsertSymbolResult::allreadyExists;
+		}
+		const InsertScopeResult scopeResult = InsertScope(scope_name);
+		switch (scopeResult) {
+			case InsertScopeResult::succses: {
+					break;// nothing else to do here. just exists for future proofing
+				}
+			case InsertScopeResult::failiure: {
+					return InsertSymbolResult::failiure;
+				}
+			case InsertScopeResult::allreadyExists: {
+					if (!ExitScope()) {
+
+						throw FatalError(FatalError::FailiurePhase::Phase2, "Failed to exit scope after inserting symbol with scope",__LINE__,__FILE__,__FUNCTION__); 
+					}
+					return InsertSymbolResult::allreadyExists;
+				}
+		}
+		auto const currentScopeAfterInsert = GetCurrentScope();
+		currentScopeAfterInsert.lock()->SetOwnSymbol({ std::move(symbol),symbol_name });
+		return InsertSymbolResult::succses;
 	}
 }// namespace USL::FRONTEND

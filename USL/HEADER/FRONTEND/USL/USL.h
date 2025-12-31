@@ -82,10 +82,11 @@ namespace USL::FRONTEND {
 		/// </summary>
 		void Phase2();
 	public:
-		//no co
+		//no  copying for you lol :3
 		USL_Compiler(const USL_Compiler&) = delete;
 		USL_Compiler& operator=(const USL_Compiler&) = delete;
 
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="USL_Compiler"/> class.
 		/// creates the compiler and parses the comand line arguments

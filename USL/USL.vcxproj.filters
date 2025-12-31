@@ -33,7 +33,7 @@
     <ClCompile Include="SRC\FRONTEND\USL\USL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HEADER\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp">
+    <ClCompile Include="SRC\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

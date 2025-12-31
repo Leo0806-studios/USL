@@ -20,6 +20,7 @@ Checks: '*,
 -clang-diagnostic-pre-c++17-compat,
 -clang-diagnostic-c++98-compat-pedantic,
 -clang-diagnostic-c++98-compat,
+-clang-diagnostic-covered-switch-default, 
 
 
 -readability-convert-member-functions-to-static,

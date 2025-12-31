@@ -45,6 +45,7 @@ namespace USL::FRONTEND {
 	};
 	class SymbolTable {
 	private:
+		std::mutex insertLock;
 		ScopePtr globalScope ;
 		std::unordered_map<DecoratedName, WeakSymbolPtr> FastMap;
 		std::unordered_map<std::thread::id, WeakScopePtr> currentScopes;
@@ -54,7 +55,10 @@ namespace USL::FRONTEND {
 		/// only usable for single threaded environments
 		/// </summary>
 		SymbolTable();
-		
+		SymbolTable(const SymbolTable&)	 = delete;
+		SymbolTable& operator=(const SymbolTable&) = delete;
+		SymbolTable(SymbolTable&&)noexcept;
+		SymbolTable& operator=(SymbolTable&&)noexcept;
 		/// <summary>
 		/// creates a symbol table with a global scope and initializes the current scope for each thread to the global scope
 		/// usable for multi threaded environments
@@ -128,6 +132,12 @@ namespace USL::FRONTEND {
 		/// <param name="name"></param>
 		[[nodiscard]] InsertScopeResult InsertScope(std::string name);
 
+		enum class InsertSymbolResult :unsigned char {
+			succses = 0,
+			failiure=1,
+			allreadyExists=2
+		};
+
 		/// <summary>
 		/// inserts a symbol into the current scope of the calling thread with the given simple name
 		/// 
@@ -135,7 +145,18 @@ namespace USL::FRONTEND {
 		/// <param name="symbol"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		[[nodiscard]] bool InsertSymbol(std::unique_ptr<Symbol>symbol, std::string& name);
+		[[nodiscard]] InsertSymbolResult InsertSymbol(std::unique_ptr<Symbol>symbol, const std::string& name);
+
+
+		/// <summary>
+		/// inserts a scope with an own symbol into the current scope of the calling thread
+		/// sets scope->setOwnSymbol  to the provided symbol and symbol_name
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <param name="scope_name"></param>
+		/// <param name="symbol_name"></param>
+		/// <returns></returns>
+		[[nodiscard]] InsertSymbolResult InsertScopeWithSymbol(const std::string& symbol_name, std::unique_ptr<Symbol>symbol, const std::string& scope_name);
 
 
 		

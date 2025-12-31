@@ -14,7 +14,7 @@ import <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
 
 namespace USL::FRONTEND
 {
-	std::string USL::FRONTEND::FunctionSymbol_::to_string() const {
+	std::string USL::FRONTEND::FunctionSymbolName::to_string() const {
 		std::stringstream returnStream = {};
 		returnStream << "$";
 		for (const std::string_view param : ReturnType) {
@@ -32,37 +32,37 @@ namespace USL::FRONTEND
 		returnStream << '@';
 		return returnStream.str();
 	}
-	std::string TypeSymbol_::to_string() const {
+	std::string TypeSymbolName::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
-	std::string VariableSymbol_::to_string() const {
+	std::string VariableSymbolName::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
-	std::string AttributeSymbol_::to_string() const {
+	std::string AttributeSymbolName::to_string() const {
 		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
-	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const VariableSymbol_& symbolKind)
+	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const VariableSymbolName& symbolKind)
 		: scope(scopes), variable_symbol(symbolKind), symbol_type(SymbolType::variable)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
-	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const TypeSymbol_& symbolKind) :
+	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const TypeSymbolName& symbolKind) :
 		scope(scopes), type_symbol(symbolKind), symbol_type(SymbolType::type)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
-	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbol_& symbolKind) :
+	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbolName& symbolKind) :
 		scope(scopes), function_symbol(symbolKind), symbol_type(SymbolType::function)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
-	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbol_& symbolKind) :
+	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbolName& symbolKind) :
 		scope(scopes),  attribute_symbol(symbolKind),symbol_type(SymbolType::attribute)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
@@ -317,22 +317,22 @@ namespace std {
 		switch (name.symbol_type)
 		{
 		case SymbolType::variable: {
-			const std::hash<USL::FRONTEND::VariableSymbol_> hasher{};
+			const std::hash<USL::FRONTEND::VariableSymbolName> hasher{};
 			hash = hash_combine(hash, hasher.operator()((name.variable_symbol)));
 			break;
 		}
 		case SymbolType::type: {
-			const std::hash<USL::FRONTEND::TypeSymbol_>hasher{};
+			const std::hash<USL::FRONTEND::TypeSymbolName>hasher{};
 			hash = hash_combine(hash, hasher.operator()(name.type_symbol));
 			break;
 		}
 		case SymbolType::function: {
-			const std::hash<USL::FRONTEND::FunctionSymbol_>hasher{};
+			const std::hash<USL::FRONTEND::FunctionSymbolName>hasher{};
 			hash = hash_combine(hash, hasher.operator() (name.function_symbol));
 			break;
 		}
 		case SymbolType::attribute: {
-			const std::hash<USL::FRONTEND::AttributeSymbol_>hasher{};
+			const std::hash<USL::FRONTEND::AttributeSymbolName>hasher{};
 			hash = hash_combine(hash, hasher.operator()(name.attribute_symbol));
 			break;
 		}

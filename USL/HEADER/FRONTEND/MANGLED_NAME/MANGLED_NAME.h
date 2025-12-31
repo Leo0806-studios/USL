@@ -42,32 +42,32 @@ namespace USL::FRONTEND
 	enum class Postfix :char {
 		invalid = '\0',
 	};
-	class VariableSymbol_ {
+	class VariableSymbolName {
 	public:
-		RuleOfFive(VariableSymbol_)
-			bool operator==(const VariableSymbol_& other) const noexcept = default;
+		RuleOfFive(VariableSymbolName)
+			bool operator==(const VariableSymbolName& other) const noexcept = default;
 		[[nodiscard]]std::string to_string() const;
 	};
-	class TypeSymbol_ {
+	class TypeSymbolName {
 	public:
-		RuleOfFive(TypeSymbol_)
-			bool operator==(const TypeSymbol_& other) const noexcept = default;
+		RuleOfFive(TypeSymbolName)
+			bool operator==(const TypeSymbolName& other) const noexcept = default;
 			[[nodiscard]]std::string to_string() const;
 	};
-	class FunctionSymbol_ {
-		friend struct std::hash<FunctionSymbol_>;
+	class FunctionSymbolName {
+		friend struct std::hash<FunctionSymbolName>;
 		using ScopeList = std::vector<std::string >;
 		std::vector<ScopeList> Parameters ;
 		ScopeList ReturnType ;
 	public:
-		RuleOfFive(FunctionSymbol_)
-			bool operator==(const FunctionSymbol_& other) const noexcept = default;
+		RuleOfFive(FunctionSymbolName)
+			bool operator==(const FunctionSymbolName& other) const noexcept = default;
 		[[nodiscard]] std::string to_string() const;
 	};
-	class AttributeSymbol_ {
+	class AttributeSymbolName {
 	public:
-		RuleOfFive(AttributeSymbol_)
-			bool operator==(const AttributeSymbol_& other) const noexcept = default;
+		RuleOfFive(AttributeSymbolName)
+			bool operator==(const AttributeSymbolName& other) const noexcept = default;
 		[[nodiscard]] std::string to_string() const;
 	};
 	/// <summary>
@@ -80,20 +80,20 @@ namespace USL::FRONTEND
 		std::vector<std::string> scope ;
 		size_t PrecomputedHash = 0;
 		union {
-			VariableSymbol_ variable_symbol;
-			TypeSymbol_ type_symbol;
-			FunctionSymbol_ function_symbol;
-			AttributeSymbol_ attribute_symbol;
+			VariableSymbolName variable_symbol;
+			TypeSymbolName type_symbol;
+			FunctionSymbolName function_symbol;
+			AttributeSymbolName attribute_symbol;
 		};
 		SymbolType symbol_type = SymbolType::invalid_type;
 
 	public:
 		DecoratedName() : function_symbol{} {}
 		~DecoratedName() { return; }
-		DecoratedName(const std::vector<std::string>& scopes, const VariableSymbol_& symbolKind);
-		DecoratedName(const std::vector<std::string>& scopes, const TypeSymbol_& symbolKind);
-		DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbol_& symbolKind);
-		DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbol_& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const VariableSymbolName& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const TypeSymbolName& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbolName& symbolKind);
+		DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbolName& symbolKind);
 
 		explicit DecoratedName(const std::string& mangled_name);
 		DecoratedName(const DecoratedName& other);
@@ -117,25 +117,25 @@ namespace USL::FRONTEND
 
  namespace std {
 	template<>
-	struct hash<USL::FRONTEND::VariableSymbol_> {
+	struct hash<USL::FRONTEND::VariableSymbolName> {
 	public:
-		size_t operator()(const USL::FRONTEND::VariableSymbol_& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::VariableSymbolName& symbol) const noexcept {
 
 			return 0;
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::TypeSymbol_> {
+	struct hash<USL::FRONTEND::TypeSymbolName> {
 	public:
-		size_t operator()(const USL::FRONTEND::TypeSymbol_& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::TypeSymbolName& symbol) const noexcept {
 
 			return 0;
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::FunctionSymbol_> {
+	struct hash<USL::FRONTEND::FunctionSymbolName> {
 	public:
-		size_t operator()(const USL::FRONTEND::FunctionSymbol_& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::FunctionSymbolName& symbol) const noexcept {
 
 			size_t hash = 0;
 			for (const auto& paramList : symbol.Parameters) {
@@ -150,9 +150,9 @@ namespace USL::FRONTEND
 		}
 	};
 	template<>
-	struct hash<USL::FRONTEND::AttributeSymbol_> {
+	struct hash<USL::FRONTEND::AttributeSymbolName> {
 	public:
-		size_t operator()(const USL::FRONTEND::AttributeSymbol_& symbol) const noexcept {
+		size_t operator()(const USL::FRONTEND::AttributeSymbolName& symbol) const noexcept {
 
 			return 0;
 		}
