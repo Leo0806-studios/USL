@@ -14,15 +14,22 @@ Checks: '*,
 -performance-move-const-arg,
 
 
+-cert-int09-c,
+-cert-dcl58-cpp,
+
+
 -clang-diagnostic-pragma-once-outside-header, 
 -clang-diagnostic-unused-macro,
 -clang-diagnostic-pre-c++20-compat,
 -clang-diagnostic-pre-c++17-compat,
 -clang-diagnostic-c++98-compat-pedantic,
 -clang-diagnostic-c++98-compat,
+-clang-diagnostic-pre-c++14-compat,
 -clang-diagnostic-covered-switch-default, 
+-clang-diagnostic-c++98-compat-local-type-template-args,
 
 
+-readability-enum-initial-value,
 -readability-convert-member-functions-to-static,
 
 
@@ -35,6 +42,9 @@ Checks: '*,
 -misc-use-anonymous-namespace,
 -misc-no-recursion,
 -misc-include-cleaner,
+-misc-unused-parameters,
+
+-concurrency-mt-unsafe,
 
 
 -fuchsia-overloaded-operator,

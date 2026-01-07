@@ -1,24 +1,28 @@
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
-#include <vector>
-#include <string>
-#include <cstdint>
-#include <thread>
 #include <atomic>
+#include <barrier>
+#include <cstdint>
+#include <mutex>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 #include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
 #include "FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
-#include <barrier>
-#include <mutex>
 #else
 import <atomic>;
-import <thread>;
 import <barrier>;
 import <cstdint>;
-import <vector>;
+import <mutex>;
+import <sstream>;
 import <string>;
+import <thread>;
+import <unordered_map>;
+import <vector>;
 import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
 import <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
-import <mutex>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 namespace antlr4 {
@@ -85,7 +89,8 @@ namespace USL::FRONTEND {
 		//no  copying for you lol :3
 		USL_Compiler(const USL_Compiler&) = delete;
 		USL_Compiler& operator=(const USL_Compiler&) = delete;
-
+		USL_Compiler(USL_Compiler&& other)=delete;
+		USL_Compiler& operator=(USL_Compiler&&) = delete;
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="USL_Compiler"/> class.

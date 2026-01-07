@@ -109,6 +109,10 @@ public:
 
     virtual std::any visitCvu_type(USLParser::Cvu_typeContext *context) = 0;
 
+    virtual std::any visitPointer_type(USLParser::Pointer_typeContext *context) = 0;
+
+    virtual std::any visitArray_type(USLParser::Array_typeContext *context) = 0;
+
     virtual std::any visitType(USLParser::TypeContext *context) = 0;
 
     virtual std::any visitPrimitive(USLParser::PrimitiveContext *context) = 0;

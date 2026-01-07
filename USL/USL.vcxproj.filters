@@ -78,6 +78,9 @@
     <ClInclude Include="HEADER\FRONTEND\ERROR_CODES\ERROR_CODES.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GET_SET_WRAPPER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ANTLR\USL.g4" />

@@ -1,11 +1,47 @@
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
-
+#include <antlr4-runtime.h>
+#include <FRONTEND/CMD_PARSE/CMD_PARSE.h>
+#include <FRONTEND/ERROR_CODES/ERROR_CODES.h>
+#include <FRONTEND/SYMBOL/SYMBOL.h>
+#include <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <USLParser.h>
+#include <utility>
+#include <vector>
+#include "FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
 #include "FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h"
 #else
 import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
+import <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
+import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
+import <FRONTEND/ERROR_CODES/ERROR_CODES.h>;
+import <FRONTEND/SYMBOL/SYMBOL.h>;
+import <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
+import <memory>;
+import <sstream>;
+import <string>;
+#pragma warning (push,0)
+import <antlr4-runtime.h>;
+import <USLParser.h>;
+#pragma warning (pop)
+import <utility>;
+import <vector>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 namespace USL::FRONTEND {
+	namespace {
+		std::vector<std::string> aggregateScope(WeakScopePtr startScope) {
+			std::vector<std::string> ret;
+			WeakScopePtr current = std::move(startScope);
+			do {
+				ret.emplace_back(current.lock()->Get_simpleName());
+				current = current.lock()->Get_parentScope();
+			} while (current.lock()->Get_parentScope().lock());
+			return ret;
+		}
+	}
 	void SymbolGatherer::logError(InternalErrors error, const std::string& errorMessage, size_t line, size_t pos)
 	{
 		std::stringstream errorText;
@@ -13,6 +49,22 @@ namespace USL::FRONTEND {
 			<< " at line: " << line
 			<< " char position: " << pos << '\n';
 		errors.emplace_back(errorText.str());
+	}
+	void SymbolGatherer::logError(error error, const std::string& errorMessage, size_t line, size_t pos)
+	{
+		std::stringstream errorText;
+		errorText << "Generic Error [" << std::to_underlying(ErrorTypes::Generic) << std::to_underlying(error) << "]: " << errorMessage
+			<< " at line: " << line
+			<< " char position: " << pos << '\n';
+		errors.emplace_back(errorText.str());
+	}
+	void SymbolGatherer::logWarning(WarningCodes warning, const std::string& warningMessage, size_t line, size_t pos)
+	{
+		std::stringstream warnText;
+		warnText << "Warning [" << std::to_underlying(SeverityLevels::Warning) << std::to_underlying(warning) << "]: " << warningMessage
+			<< " at line: " << line
+			<< " char position: " << pos << '\n';
+		warnings.emplace_back(warnText.str());
 	}
 	void SymbolGatherer::logInfo(const std::string& infoMessage, size_t line, size_t pos)
 	{
@@ -22,14 +74,20 @@ namespace USL::FRONTEND {
 			<< " char position: " << pos << '\n';
 		infos.emplace_back(infoText.str());
 	}
-	SymbolGatherer::SymbolGatherer(SymbolTable& rTable, const Arguments& rArgs) :table(rTable), args(rArgs)
+	SymbolGatherer::SymbolGatherer(std::weak_ptr<SymbolTable> Table,
+								   std::weak_ptr<const Arguments> Args,
+								   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames) :
+		table(std::move(Table)),
+		args(std::move(Args)),
+		DecoratedNames(std::move(DecoratedNames))
 	{
 	}
 
 	void SymbolGatherer::enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
 	{
 		using iResult = SymbolTable::InsertScopeResult;
-		switch (table.InsertScope(ctx->NamespaceName->getText())) {
+		auto lockedTable = this->table.lock();
+		switch (lockedTable->InsertScope(ctx->NamespaceName->getText())) {
 			case iResult::succses: {
 					break;
 				}
@@ -38,7 +96,7 @@ namespace USL::FRONTEND {
 					return;
 				}
 			case iResult::allreadyExists: {
-					if (args.IsDebugOptionEnabled(Arguments::CompilerDebugOptions::printFullLogs)) {
+					if (args.lock()->IsDebugOptionEnabled(Arguments::CompilerDebugOptions::printFullLogs)) {
 						logInfo("Namespace scope already exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
 					}
 					return;
@@ -51,40 +109,19 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::exitNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
 	{
-		if (!table.ExitScope()) {
+		if (!table.lock()->ExitScope()) {
 			logError(InternalErrors::FailedToExitScope, "Failed to exit Namespace scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
 		}
-
 	}
 
 	void SymbolGatherer::enterClass_declaration(USLParser::Class_declarationContext* ctx)
 	{
-		using iResultScope = SymbolTable::InsertScopeResult;
-		switch (table.InsertScope(ctx->TypeName->getText())) {
-			case iResultScope::succses: {
-					break;// nothing else to do here. just exists for future proofing
-				}
-			case iResultScope::failiure: {
-					logError(InternalErrors::FailedToInsertScope, "Failed to insert Class/Struct scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		auto lockedTable = this->table.lock();
 
-					return;
-				}
-			case iResultScope::allreadyExists: {
-					logInfo("Class/Struct scope already exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
-
-					return;
-				}
-			default: {
-					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Class/Struct scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
-					return;
-				}
-		}
-
-
-		const WeakScopePtr currentScope = table.GetCurrentScope();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
 		std::unique_ptr<USL::FRONTEND::Symbol> classSymbol = std::make_unique<USL::FRONTEND::TypeSymbol>(currentScope);
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
-		switch (table.InsertSymbol(std::move(classSymbol), ctx->TypeName->getText()))
+		switch (lockedTable->InsertScopeWithSymbol(ctx->TypeName->getText(), std::move(classSymbol), ctx->TypeName->getText()))
 		{
 			case iResultSymbol::succses: {
 					break; //nothing else to do here. just exists for future proofing
@@ -102,44 +139,27 @@ namespace USL::FRONTEND {
 					return;
 				}
 		}
+		const auto scopes = aggregateScope(lockedTable->GetCurrentScope().lock()->Get_parentScope());
+
+		const DecoratedName decoratedName(scopes, TypeSymbolName(ctx->TypeName->getText()));
+		DecoratedNames.lock()->put(ctx, decoratedName);
 	}
 
 	void SymbolGatherer::exitClass_declaration(USLParser::Class_declarationContext* ctx)
 	{
-		if (!table.ExitScope()) {
+		if (!table.lock()->ExitScope()) {
 			logError(InternalErrors::FailedToExitScope, "Failed to exit Class/Struct scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
-
 		}
-
-
 	}
 
 	void SymbolGatherer::enterEnum_declaration(USLParser::Enum_declarationContext* ctx)
 	{
-		using iResultScope = SymbolTable::InsertScopeResult;
-		switch (table.InsertScope(ctx->EnumName->getText())) {
-			case iResultScope::succses: {
-					break;// nothing else to do here. just exists for future proofing
-				}
-			case iResultScope::failiure: {
-					logError(InternalErrors::FailedToInsertScope, "Failed to insert Enum scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		auto lovkedTable = this->table.lock();
 
-					return;
-				}
-			case iResultScope::allreadyExists: {
-					logInfo("Enum scope already exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
-
-					return;
-				}
-			default: {
-					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Enum scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
-					return;
-				}
-		}
-		const WeakScopePtr currentScope = table.GetCurrentScope();
+		const WeakScopePtr currentScope = lovkedTable->GetCurrentScope();
 		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::EnumSymbol>(currentScope);
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
-		switch (table.InsertSymbol(std::move(enumSymbol), ctx->EnumName->getText()))
+		switch (lovkedTable->InsertScopeWithSymbol(ctx->EnumName->getText(), std::move(enumSymbol), ctx->EnumName->getText()))
 		{
 			case iResultSymbol::succses: {
 					break; //nothing else to do here. just exists for future proofing
@@ -151,7 +171,6 @@ namespace USL::FRONTEND {
 			case iResultSymbol::allreadyExists: {
 					logError(error::DuplicateSymbolDeclaration, "Enum symbol already exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
 					return;
-
 				}
 			default: {
 					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Enum symbol", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
@@ -160,26 +179,98 @@ namespace USL::FRONTEND {
 
 		//enum is different to classes and such since there are no helper rules and we have to enumerate the enum values here
 		const auto enumIds = ctx->ID();
+		for (const auto& id : enumIds) {
+			std::unique_ptr<Symbol> symbol = std::make_unique<EnumConstant>(lovkedTable->GetCurrentScope());
+			switch (lovkedTable->InsertSymbol(std::move(symbol), id->getText())) {
+				case iResultSymbol::succses: {
+						break;//nothing to do
+					}
+				case iResultSymbol::allreadyExists: {
+						logError(error::DuplicateSymbolDeclaration, "enum constant " + id->getText() + " allready exists", id->getSymbol()->getLine(), 0);
+						return;
+					}
+				case iResultSymbol::failiure: {
+						logError(InternalErrors::FailedToInsertSymbol, "failed to insert enum constant " + id->getText(), id->getSymbol()->getLine(), 0);
+						return;
+					}
+				default: {
+						logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Enum constant", id->getSymbol()->getLine(), 0);
+						return;
+					}
+			}
+		}
 	}
 
 	void SymbolGatherer::exitEnum_declaration(USLParser::Enum_declarationContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Enum scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterAttribute_declaration(USLParser::Attribute_declarationContext* ctx)
 	{
+		auto lokedTable = this->table.lock();
+
+		const WeakScopePtr currentScope = lokedTable->GetCurrentScope();
+		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::AttribueSymbol>(currentScope);
+		using iResultSymbol = SymbolTable::InsertSymbolResult;
+		switch (lokedTable->InsertScopeWithSymbol(ctx->AttributeName->getText(), std::move(enumSymbol), ctx->AttributeName->getText()))
+		{
+			case iResultSymbol::succses: {
+					break; //nothing else to do here. just exists for future proofing
+				}
+			case iResultSymbol::failiure: {
+					logError(InternalErrors::FailedToInsertSymbol, "Failed to insert attribute  symbol", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iResultSymbol::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "attribute symbol already exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting attribute symbol", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+				}
+		}
 	}
 
 	void SymbolGatherer::exitAttribute_declaration(USLParser::Attribute_declarationContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Attribute scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
+		auto lovkedTable = this->table.lock();
+		const WeakScopePtr currentScope = lovkedTable->GetCurrentScope();
+		std::unique_ptr<USL::FRONTEND::Symbol> functionSymbol = std::make_unique<USL::FRONTEND::FunctionSymbol>(currentScope);
+		using iResultSymbol = SymbolTable::InsertSymbolResult;
+		switch (lovkedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
+			case iResultSymbol::succses: {
+					break;//nothing to do here
+				}
+			case iResultSymbol::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "Function Symbol allready exists:  " + ctx->FunctionName->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iResultSymbol::failiure: {
+					logError(InternalErrors::FailedToInsertSymbol, "failed to insert Funktion symbol: " + ctx->FunctionName->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "unknown error occured while inserting function Symbol: " + ctx->FunctionName->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Function scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterVariable_declaration(USLParser::Variable_declarationContext* ctx)

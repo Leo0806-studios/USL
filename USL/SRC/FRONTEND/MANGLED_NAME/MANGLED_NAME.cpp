@@ -33,181 +33,107 @@ namespace USL::FRONTEND
 		return returnStream.str();
 	}
 	std::string TypeSymbolName::to_string() const {
-		// Implement the logic to convert the AttributeSymbol to its string representation
-		return ""; // Placeholder
+		return typeName;
+	}
+	bool VariableSymbolName::operator==(const VariableSymbolName& other) const noexcept
+	{
+		return this->type == other.type;
 	}
 	std::string VariableSymbolName::to_string() const {
-		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
+	VariableSymbolName::VariableSymbolName(const VariableSymbolName& other):type(std::make_unique<DecoratedName>(DecoratedName(*other.type)))
+	{
+	}
+	VariableSymbolName::VariableSymbolName(VariableSymbolName&& other)noexcept :type(std::move(other.type))
+	{
+	}
+	VariableSymbolName& VariableSymbolName::operator=(const VariableSymbolName& other)
+	{
+		if (this != &other) {
+		this->type = std::make_unique<DecoratedName>(*other.type);
+
+		}
+		return *this;
+	}
+	VariableSymbolName& VariableSymbolName::operator=(VariableSymbolName&& other)noexcept
+	{
+		if(this!=&other){
+			this->type = std::move(other.type);
+		}
+		return *this;
+	}
+
 	std::string AttributeSymbolName::to_string() const {
-		// Implement the logic to convert the AttributeSymbol to its string representation
 		return ""; // Placeholder
 	}
 	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const VariableSymbolName& symbolKind)
-		: scope(scopes), variable_symbol(symbolKind), symbol_type(SymbolType::variable)
+		: scope(scopes), Specalisations(symbolKind)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
 	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const TypeSymbolName& symbolKind) :
-		scope(scopes), type_symbol(symbolKind), symbol_type(SymbolType::type)
+		scope(scopes), Specalisations(symbolKind)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
 	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const FunctionSymbolName& symbolKind) :
-		scope(scopes), function_symbol(symbolKind), symbol_type(SymbolType::function)
+		scope(scopes), Specalisations(symbolKind)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
 	DecoratedName::DecoratedName(const std::vector<std::string>& scopes, const AttributeSymbolName& symbolKind) :
-		scope(scopes),  attribute_symbol(symbolKind),symbol_type(SymbolType::attribute)
+		scope(scopes),  Specalisations(symbolKind)
 	{
 		PrecomputedHash = std::hash<DecoratedName>{}(*this);
 	}
 
-	DecoratedName::DecoratedName(const std::string& mangled_name) :function_symbol()
+	DecoratedName::DecoratedName(const std::string& mangled_name)
 	{
 		std::vector<std::string> parts = {};
 		parts.push_back(mangled_name.substr(0, mangled_name.find_first_of('$', 0ULL)));
 	}
-	DecoratedName::DecoratedName(const DecoratedName& other) :scope(other.scope), PrecomputedHash(other.PrecomputedHash), symbol_type(other.symbol_type)
+	DecoratedName::DecoratedName()
 	{
-		switch (symbol_type)
-		{
-			using enum USL::FRONTEND::SymbolType;
-		case SymbolType::variable: {
-			variable_symbol = other.variable_symbol;
-			break;
-		}
-		case SymbolType::type: {
-			type_symbol = other.type_symbol;
-			break;
-		}
-		case SymbolType::function: {
-			function_symbol = other.function_symbol;
-			break;
-		}
-		case SymbolType::attribute: {
-			attribute_symbol = other.attribute_symbol;
-			break;
-		}
-		case  SymbolType::invalid_type: {
-			[[fallthrough]];
-		}
-		[[unlikely]] default:
-			throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for copying");
-			break;
-		}
-
+	}
+	DecoratedName::~DecoratedName()
+	{
+	}
+	DecoratedName::DecoratedName(const DecoratedName& other) :scope(other.scope), PrecomputedHash(other.PrecomputedHash), Specalisations(other.Specalisations)
+	{
 		this->scope = other.scope;
 	}
 
 	DecoratedName& DecoratedName::operator=(const DecoratedName& other)
 	{
 		if (this != &other) {
-			this->symbol_type = other.symbol_type;
 
 			this->scope = other.scope;
 			this->PrecomputedHash = other.PrecomputedHash;
-			switch (symbol_type)
-			{
-				using enum USL::FRONTEND::SymbolType;
-			case SymbolType::variable: {
-				variable_symbol = other.variable_symbol;
-				break;
-			}
-			case SymbolType::type: {
-				type_symbol = other.type_symbol;
-				break;
-			}
-			case SymbolType::function: {
-				function_symbol = other.function_symbol;
-				break;
-			}
-			case SymbolType::attribute: {
-				attribute_symbol = other.attribute_symbol;
-				break;
-			}
-			case  SymbolType::invalid_type: {
-				[[fallthrough]];
-			}
-			[[unlikely]] default:
-				throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for assignment");
-				break;
-			}
+			Specalisations = other.Specalisations;
 		}
 		return *this;
 	}
 
-	DecoratedName::DecoratedName(DecoratedName&& other) : scope(std::move(other.scope)), symbol_type(other.symbol_type)
+	DecoratedName::DecoratedName(DecoratedName&& other)noexcept : scope(std::move(other.scope)), Specalisations(std::move(other.Specalisations))
 	{
 		this->PrecomputedHash = other.PrecomputedHash;
 		other.PrecomputedHash = 0;
-		switch (symbol_type)
-		{
-			using enum USL::FRONTEND::SymbolType;
-		case SymbolType::variable: {
-			variable_symbol = std::move(other.variable_symbol);
-			break;
-		}
-		case SymbolType::type: {
-			type_symbol = std::move(other.type_symbol);
-			break;
-		}
-		case SymbolType::function: {
-			function_symbol = std::move(other.function_symbol);
-			break;
-		}
-		case SymbolType::attribute: {
-			attribute_symbol = std::move(other.attribute_symbol);
-			break;
-		}
-		case  SymbolType::invalid_type: {
-			[[fallthrough]];
-		}
-		[[unlikely]] default:
-			throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for moving");
-			break;
-		}
+
 	}
 
-	DecoratedName& DecoratedName::operator=(DecoratedName&& other)
+	DecoratedName& DecoratedName::operator=(DecoratedName&& other)noexcept
 	{
 		if (this != &other) {
-			this->symbol_type = other.symbol_type;
 
 			this->scope = std::move(other.scope);
 			this->PrecomputedHash = other.PrecomputedHash;
 			other.PrecomputedHash = 0;
-			switch (symbol_type)
-			{
-				using enum USL::FRONTEND::SymbolType;
-			case SymbolType::variable: {
-				variable_symbol = std::move(other.variable_symbol);
-				break;
-			}
-			case SymbolType::type: {
-				type_symbol = std::move(other.type_symbol);
-				break;
-			}
-			case SymbolType::function: {
-				function_symbol = std::move(other.function_symbol);
-				break;
-			}
-			case SymbolType::attribute: {
-				attribute_symbol = std::move(other.attribute_symbol);
-				break;
-			}
-			case  SymbolType::invalid_type: {
-				[[fallthrough]];
-			}
-			[[unlikely]] default:
-				throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for moving assignment");
-				break;
-			}
+			Specalisations = std::move(other.Specalisations);
+
 		}
 		return *this;
 	}
@@ -225,84 +151,44 @@ namespace USL::FRONTEND
 		{
 			return false;
 		}
-
-		if (this->symbol_type != other.symbol_type)
-		{
+		if (Specalisations != other.Specalisations) {
 			return false;
 		}
-		else {
-			switch (symbol_type)
-			{
-				using enum USL::FRONTEND::SymbolType;
-			case SymbolType::variable: {
-				return this->variable_symbol == other.variable_symbol;
-				break;
-			}
-			case SymbolType::type: {
-				return this->type_symbol == other.type_symbol;
-				break;
-			}
-			case SymbolType::function: {
-				return this->function_symbol == other.function_symbol;
-				break;
-			}
-			case SymbolType::attribute: {
-				return this->attribute_symbol == other.attribute_symbol;
-				break;
-			}
-			case  SymbolType::invalid_type: {
-				[[fallthrough]];
-			}
-			[[unlikely]] default:
-				return false;
-			}
-		}
+		return true;
+	
+		
 	}
 
 	std::string DecoratedName::to_string() const {
 		std::stringstream ss = {};
 
-		for (const std::string& str : scope) {
-			ss << str << "@";
+
+		for (size_t i = scope.size() ; i >= 1; i--) {
+			ss << scope[i-1] << "@";
+
 		}
+		constexpr char table[] = {
+			'T',
+			'F',
+			'V',
+			'A',
+
+		};
 		ss << '@';
 		ss << '$';
-		ss << std::to_underlying(symbol_type);
+		ss << table[Specalisations.index()];//TODO : Make this safer by checking the index
+		std::visit([&](auto&& arg) {
+			ss << arg.to_string();
+				   }, Specalisations);
 
-		switch (symbol_type)
-		{
-			using enum USL::FRONTEND::SymbolType;
-			using SymbolType = USL::FRONTEND::SymbolType;
-		case SymbolType::variable: {
-			ss << variable_symbol.to_string();
-			break;
-		}
-		case SymbolType::type: {
-			ss << type_symbol.to_string();
-			break;
-		}
-		case SymbolType::function: {
-			ss << function_symbol.to_string();
-			break;
-		}
-		case SymbolType::attribute: {
-			ss << attribute_symbol.to_string();
-			break;
-		}
-		case  SymbolType::invalid_type: {
-			[[fallthrough]];
-		}
-		[[unlikely]] default:
-			throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for hashing");
-			break;
-		}
 
 		return ss.str();
 	}
 } // namespace USL::FRONTEND
 
 namespace std {
-	size_t hash<USL::FRONTEND::DecoratedName>::operator()(const USL::FRONTEND::DecoratedName& name) const
+
+	size_t hash<USL::FRONTEND::DecoratedName>::operator()(const USL::FRONTEND::DecoratedName& name) const noexcept
 	{
 		if (name.PrecomputedHash != 0)
 		{
@@ -312,41 +198,30 @@ namespace std {
 		for (const std::string& str : name.scope) {
 			hash = hash_combine(hash, std::hash<std::string>{}(str));
 		}
-		hash = hash_combine(hash, std::hash<char>{}(static_cast<char>(name.symbol_type)));
-		using SymbolType = USL::FRONTEND::SymbolType;
-		switch (name.symbol_type)
-		{
-		case SymbolType::variable: {
-			const std::hash<USL::FRONTEND::VariableSymbolName> hasher{};
-			hash = hash_combine(hash, hasher.operator()((name.variable_symbol)));
-			break;
-		}
-		case SymbolType::type: {
-			const std::hash<USL::FRONTEND::TypeSymbolName>hasher{};
-			hash = hash_combine(hash, hasher.operator()(name.type_symbol));
-			break;
-		}
-		case SymbolType::function: {
-			const std::hash<USL::FRONTEND::FunctionSymbolName>hasher{};
-			hash = hash_combine(hash, hasher.operator() (name.function_symbol));
-			break;
-		}
-		case SymbolType::attribute: {
-			const std::hash<USL::FRONTEND::AttributeSymbolName>hasher{};
-			hash = hash_combine(hash, hasher.operator()(name.attribute_symbol));
-			break;
-		}
-		case  SymbolType::invalid_type: {
-			[[fallthrough]];
-		}
-		[[unlikely]] default:
-			throw USL::FRONTEND::InvalidDecoratedNameException("Invalid SymbolType for hashing");
-			break;
-		}
+		hash = hash_combine(hash,
+							std::hash<std::variant<USL::FRONTEND::VariableSymbolName,
+							USL::FRONTEND::TypeSymbolName, USL::FRONTEND::FunctionSymbolName, USL::FRONTEND::AttributeSymbolName>>{}(name.Specalisations));
+		return hash;
+	}
+	size_t hash<USL::FRONTEND::VariableSymbolName>::operator()(const USL::FRONTEND::VariableSymbolName& symbol) const noexcept {
+		size_t hash = 0;
+		hash = hash_combine(hash, std::hash<USL::FRONTEND::DecoratedName>{}(*symbol.type.get()));
+		return hash;
+	}
+	size_t hash<std::variant<USL::FRONTEND::VariableSymbolName, USL::FRONTEND::TypeSymbolName, USL::FRONTEND::FunctionSymbolName, USL::FRONTEND::AttributeSymbolName>>::operator()(const std::variant<USL::FRONTEND::VariableSymbolName, USL::FRONTEND::TypeSymbolName, USL::FRONTEND::FunctionSymbolName, USL::FRONTEND::AttributeSymbolName>& variant) const noexcept
+	{
+		return std::visit([](auto&& arg)->size_t {
+			using T = std::decay_t<decltype(arg)>; 
+			return std::hash<T>{}(arg);},
+						  variant);
+	}
+	size_t hash<USL::FRONTEND::TypeSymbolName>::operator()(const USL::FRONTEND::TypeSymbolName& symbol) const noexcept
+	{
+		size_t hash = 0;
+		hash = hash_combine(hash, std::hash<std::string>{}(symbol.typeName));
 		return hash;
 	}
 } // namespace std
-
 size_t hash_combine(size_t lhs, size_t rhs) noexcept {
 	lhs ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);//NOLINT
 	return lhs;

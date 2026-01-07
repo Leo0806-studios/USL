@@ -2,14 +2,21 @@
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 
 #include <antlr4-runtime.h>
+
+#include <exception>
 #include <iostream>
 #include <string>
+#include <tuple>
+#include <utility>
 #include <vector>
 #else
+import <exception>;
+import <tuple>;
+import <utility>;
+import <antlr4-runtime.h>;
+import <iostream>;
 import <string>;
 import <vector>;
-import <iostream>;
-import <antlr4-runtime.h>;
 
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 namespace USL::FRONTEND {
@@ -29,7 +36,10 @@ namespace USL::FRONTEND {
 		std::vector<SyntaxError> syntaxErrors;
 		public:
 		 void syntaxError(antlr4::Recognizer* recognizer, antlr4::Token* offendingSymbol, size_t line,
-			size_t charPositionInLine, const std::string& msg, std::exception_ptr e) override {
+			size_t charPositionInLine, const std::string& msg, std::exception_ptr exceptionPtr) override {
+			 std::ignore = recognizer;
+			 std::ignore = offendingSymbol;
+			 std::ignore = exceptionPtr;
 			syntaxErrors.emplace_back(line,  msg, charPositionInLine);
 		}
 		[[nodiscard ]]const std::vector<SyntaxError>& GetSyntaxErrors() const noexcept {

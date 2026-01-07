@@ -255,7 +255,9 @@ call_operator                       :'('expression (',' expression)*')';
 index_operator                      :'['expression(','expression)* ']';
 
 //type helpers
-cvu_type                            : cvu_decorators type;
+cvu_type                            : cvu_decorators type IsArray = array_type? IsPointer= pointer_type?;
+pointer_type                        :'*' cvu_decorators;
+array_type                          :'[' expression(',' expression)?']';
 type                                :(quailified_name) |AUTO|primitive;
 primitive                           :integral_type|floating_type|vector_type|STRING|HASH|CHAR|BYTE|BOOL|NULLPTR_T|VOID;
 integral_type                       :UNSIGNED? SHORT|INT|LONG;

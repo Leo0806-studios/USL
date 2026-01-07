@@ -51,10 +51,11 @@ public:
     RuleAttribute_addition = 34, RuleAttribute = 35, RuleComparision_operator = 36, 
     RuleBitshift_operator = 37, RuleAdditive_operator = 38, RuleMultiplicative_operator = 39, 
     RulePrefix_operator = 40, RulePostfix_operator = 41, RuleCall_operator = 42, 
-    RuleIndex_operator = 43, RuleCvu_type = 44, RuleType = 45, RulePrimitive = 46, 
-    RuleIntegral_type = 47, RuleFloating_type = 48, RuleVector_type = 49, 
-    RuleParemeter_list = 50, RuleParameter = 51, RuleLitteral = 52, RuleBool_litteral = 53, 
-    RuleCvu_decorators = 54, RuleScoperesolution_list = 55, RuleError_recovery = 56
+    RuleIndex_operator = 43, RuleCvu_type = 44, RulePointer_type = 45, RuleArray_type = 46, 
+    RuleType = 47, RulePrimitive = 48, RuleIntegral_type = 49, RuleFloating_type = 50, 
+    RuleVector_type = 51, RuleParemeter_list = 52, RuleParameter = 53, RuleLitteral = 54, 
+    RuleBool_litteral = 55, RuleCvu_decorators = 56, RuleScoperesolution_list = 57, 
+    RuleError_recovery = 58
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -119,6 +120,8 @@ public:
   class Call_operatorContext;
   class Index_operatorContext;
   class Cvu_typeContext;
+  class Pointer_typeContext;
+  class Array_typeContext;
   class TypeContext;
   class PrimitiveContext;
   class Integral_typeContext;
@@ -919,10 +922,14 @@ public:
 
   class  Cvu_typeContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Array_typeContext *IsArray = nullptr;
+    USLParser::Pointer_typeContext *IsPointer = nullptr;
     Cvu_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Cvu_decoratorsContext *cvu_decorators();
     TypeContext *type();
+    Array_typeContext *array_type();
+    Pointer_typeContext *pointer_type();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -932,6 +939,38 @@ public:
   };
 
   Cvu_typeContext* cvu_type();
+
+  class  Pointer_typeContext : public antlr4::ParserRuleContext {
+  public:
+    Pointer_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *MULT_OP();
+    Cvu_decoratorsContext *cvu_decorators();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Pointer_typeContext* pointer_type();
+
+  class  Array_typeContext : public antlr4::ParserRuleContext {
+  public:
+    Array_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Array_typeContext* array_type();
 
   class  TypeContext : public antlr4::ParserRuleContext {
   public:

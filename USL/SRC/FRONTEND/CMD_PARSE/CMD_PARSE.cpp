@@ -1,16 +1,6 @@
-#if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
-#include "HEADER/FRONTEND/CMD_PARSE/CMD_PARSE.h"
 #include <boost/program_options.hpp>
-#include <iostream>
-#include <string>
-#include <vector>
-#else
-import <string>;
-import <vector>;
-import <iostream>;
-#include <boost/program_options.hpp>
-#include "HEADER/FRONTEND/CMD_PARSE/CMD_PARSE.h"
-#endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
+#include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
+import std;
 namespace USL::FRONTEND {
 	Arguments::Arguments(int argc, char** argv) {
 
@@ -42,17 +32,17 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 		boost::program_options::variables_map ArgMap;
 		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), ArgMap);
 		if (ArgMap["help"].as<bool>()) {
-			std::cout << desc << std::endl; 
+			std::cout << desc << '\n'<<std::flush;
 			exit(0);
 		}
 		if (!ArgMap.count("output")) {
-			std::cerr << "No output file specified. use -o <output file> to specify an output file" << std::endl;
+			std::cerr << "No output file specified. use -o <output file> to specify an output file" << '\n' << std::flush;
 			exit(1);
 		}
 			outputFile = std::filesystem::path(ArgMap["output"].as<std::string>());
 		
 		if(ArgMap["input"].empty()){
-			std::cerr << "No input files specified. use -i <input files> to specify input files" << std::endl;
+			std::cerr << "No input files specified. use -i <input files> to specify input files" << '\n' << std::flush;
 			exit(1);
 		}
 		for (const auto& inputFile : ArgMap["input"].as<std::vector<std::string>>()) {
@@ -71,7 +61,7 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 					debugOption != "pOc"&&
 					debugOption != "pfl"
 					) {
-					std::cerr << "Invalid compiler debug option: " << debugOption << std::endl;
+					std::cerr << "Invalid compiler debug option: " << debugOption << '\n' << std::flush;
 					exit(1);
 				}
 			}
@@ -87,10 +77,10 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 	 bool Arguments::IsDebugOptionEnabled(CompilerDebugOptions option) const noexcept {
 #pragma warning (push)
 #pragma warning (disable: 26447)
-		const auto it = compilerDebugOptions.find(compilerDebugOptionstranslations.at(option));
+		const auto iterator = compilerDebugOptions.find(compilerDebugOptionstranslations.at(option));
 #pragma warning (pop)
-		if (it != compilerDebugOptions.end()) {
-			return it->second;
+		if (iterator != compilerDebugOptions.end()) {
+			return iterator->second;
 		}
 		return false;
 	}

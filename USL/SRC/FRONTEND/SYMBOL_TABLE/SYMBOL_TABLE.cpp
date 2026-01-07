@@ -40,12 +40,12 @@ namespace USL::FRONTEND {
 		globalScope = std::make_shared<Scope>();
 		const std::thread::id thread_id = std::this_thread::get_id();
 		currentScopes[thread_id] = std::weak_ptr(globalScope);
-		currentScopes[thread_id].lock()->SimpleName = "global";
+		currentScopes[thread_id].lock()->simpleName = "global";
 
 	}
 
 	SymbolTable::SymbolTable(SymbolTable&& other) noexcept :
-		insertLock(), globalScope(std::exchange(other.globalScope, nullptr)), FastMap(std::move(other.FastMap)), currentScopes(std::exchange(other.currentScopes, nullptr))
+		insertLock(), globalScope(std::exchange(other.globalScope, nullptr)), FastMap(std::move(other.FastMap)), currentScopes(std::move(other.currentScopes))
 	{
 	}
 
@@ -53,7 +53,7 @@ namespace USL::FRONTEND {
 	{
 		globalScope = std::exchange(other.globalScope, nullptr);
 		FastMap = std::exchange(other.FastMap, {});
-		currentScopes = std::exchange(other.currentScopes, nullptr);
+		currentScopes = std::move(other.currentScopes);
 		return *this;
 	}
 
@@ -63,7 +63,7 @@ namespace USL::FRONTEND {
 
 		globalScope = std::make_shared<Scope>();
 
-		globalScope->SimpleName = "global";
+		globalScope->simpleName = "global";
 		// initialize current scopes for all threads to global scope
 
 
@@ -130,8 +130,8 @@ namespace USL::FRONTEND {
 				return (*symbol).second;
 			}
 			else {
-				if (current->GetOwnSymbol().second == symbolName) {
-					return current->GetOwnSymbol().first;
+				if (current->Get_ownSymbol().second == symbolName) {
+					return current->Get_ownSymbol().first;
 				}
 			}
 			return {};
@@ -201,10 +201,10 @@ namespace USL::FRONTEND {
 		const ScopePtr current = currentScopes[thread_id].lock(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
 
-		if (current && current->GetParentScope().lock()) {
+		if (current && current->Get_parentScope().lock()) {
 #pragma warning(push)
 #pragma warning(disable:26447)
-			currentScopes[thread_id] = currentScopes[thread_id].lock()->GetParentScope(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
+			currentScopes[thread_id] = currentScopes[thread_id].lock()->Get_parentScope(); //suppress warning about possible throwing since we know that operator [] wont throw in this case
 #pragma warning(pop)
 			return true;
 
@@ -234,8 +234,8 @@ namespace USL::FRONTEND {
 			return InsertScopeResult::allreadyExists;
 		}
 		auto newScope = std::make_shared<Scope>();
-		newScope->SetSimpleName(name);
-		newScope->SetParentScope(current);
+		newScope->Set_simpleName(name);
+		newScope->Set_parentScope(current);
 		auto succses = current->GetChildScopes().insert({ std::move(name),newScope });
 		if (!succses.second) {
 			return InsertScopeResult::failiure;
@@ -280,13 +280,13 @@ namespace USL::FRONTEND {
 			case InsertScopeResult::allreadyExists: {
 					if (!ExitScope()) {
 
-						throw FatalError(FatalError::FailiurePhase::Phase2, "Failed to exit scope after inserting symbol with scope",__LINE__,__FILE__,__FUNCTION__); 
+						throw FatalError(FatalError::FailiurePhase::Phase2, "Failed to exit scope after inserting symbol with scope", __FILE__,__LINE__, __FUNCTION__);
 					}
 					return InsertSymbolResult::allreadyExists;
 				}
 		}
 		auto const currentScopeAfterInsert = GetCurrentScope();
-		currentScopeAfterInsert.lock()->SetOwnSymbol({ std::move(symbol),symbol_name });
+		currentScopeAfterInsert.lock()->Set_ownSymbol({ std::move(symbol),symbol_name });
 		return InsertSymbolResult::succses;
 	}
 }// namespace USL::FRONTEND

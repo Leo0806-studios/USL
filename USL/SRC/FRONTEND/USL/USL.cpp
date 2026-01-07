@@ -41,10 +41,12 @@ import <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
 import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
 import <antlr4-runtime.h>;
 import <FRONTEND/USL/USL.h>;
+#pragma warning (push,0)
 import <USLLexer.h>;
 import <USLParser.h>;
+#pragma warning(pop)
 import <FRONTEND/ERROR_LISTENER/ERROR_LISTENER.h>;
-import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
+#include <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 namespace USL::FRONTEND {
@@ -100,9 +102,10 @@ namespace USL::FRONTEND {
 
 	const USL_Compiler::CompilerResults USL::FRONTEND::USL_Compiler::Compile()
 	{
-		//
+		
 		StartCompiler.store(true);
 		Worker();
+		std::cout << ComStream.str() << '\n' << std::flush;
 		return CompilerResults();
 	}
 
@@ -161,6 +164,7 @@ namespace USL::FRONTEND {
 		std::stringstream& localStream = ThreadData_g.localStream;
 		const size_t index = SafeCounter.fetch_add(1, std::memory_order::acquire);
 		const auto& inputFile = compilerArguments.GetSourceFiles()[index];
+		SyncPoint.arrive_and_wait();
 		SafeCounter.fetch_sub(1, std::memory_order::acquire);
 
 		//load and open file
@@ -193,9 +197,9 @@ namespace USL::FRONTEND {
 		}
 		printComStream_Syncs();
 
-		using USLLexer = std::unique_ptr<USLLexer>;
-		USLLexer& lexer = [&]()->std::unique_ptr<::USLLexer>&{
-			ThreadData_g.Lexer = std::make_unique<::USLLexer>(inputStream);
+
+		std::unique_ptr<::USLLexer>& lexer = [&]()->std::unique_ptr<::USLLexer>&{
+			ThreadData_g.Lexer = std::make_unique<::USLLexer>(static_cast<antlr4::CharStream*>(&(*inputStream)));
 			return ThreadData_g.Lexer;
 			}();
 		if (!lexer) {
@@ -208,8 +212,10 @@ namespace USL::FRONTEND {
 		printComStream_Syncs();
 
 		using antlr4TokenStream = std::unique_ptr<antlr4::CommonTokenStream>;
+		//antlr4::CommonTokenStream str(&*lexer);
 		antlr4TokenStream& tokenStream = [&]()->std::unique_ptr< antlr4::CommonTokenStream>&{
-			ThreadData_g.TokeStream = std::make_unique<antlr4::CommonTokenStream>(lexer);
+
+			ThreadData_g.TokeStream = std::make_unique<antlr4::CommonTokenStream>(static_cast<antlr4::TokenSource*>(&(*ThreadData_g.Lexer)));
 			return ThreadData_g.TokeStream;
 			}();
 		if (!tokenStream) {
@@ -233,7 +239,7 @@ namespace USL::FRONTEND {
 
 		using USLParser = std::unique_ptr<::USLParser>;
 		USLParser& parser = [&]()->std::unique_ptr<::USLParser>&{
-			ThreadData_g.Parser = std::make_unique<::USLParser>(tokenStream);
+			ThreadData_g.Parser = std::make_unique<::USLParser>(static_cast<antlr4::TokenStream*>(&(*tokenStream)));
 			return ThreadData_g.Parser;
 			}();
 		if (!parser) {
@@ -268,14 +274,15 @@ namespace USL::FRONTEND {
 			localStream.str(std::string());
 			localStream << "-c ptr is set. printing parse tree... \n";
 			localStream << "Parse Tree for file: " << inputFile << '\n';
-			printAST(localStream,&(*parser), tree);
+			printAST(localStream, &(*parser), tree);
 			appendComStream();
 			SyncPoint.arrive_and_wait();
 			printComStream_Syncs();
 		}
 		SyncPoint.arrive_and_wait();
 	}
-	void USL_Compiler::Phase2()
+
+	void USL::FRONTEND::USL_Compiler::Phase2()
 	{
 		SyncPoint.arrive_and_wait();
 

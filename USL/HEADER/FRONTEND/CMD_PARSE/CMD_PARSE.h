@@ -1,20 +1,10 @@
 #pragma once
-#if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
-#include <vector>
-#include <string>
-#include <filesystem>
-#include <unordered_map>
-#else
-import <vector>;
-import <string>;
-import <filesystem>;
-import <unordered_map>;
-#endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
+import std;
 
 namespace USL::FRONTEND {
 	class Arguments {
 	public:
-		enum class CompilerDebugOptions : unsigned char {
+		enum class CompilerDebugOptions : unsigned char { 
 printToken,
 printParseTree,
 printSymbolTable,
@@ -67,4 +57,4 @@ printFullLogs
 			[[nodiscard]] bool GetEnableExceptions() const noexcept { return enableExceptions; }
 			[[nodiscard]] bool IsDebugOptionEnabled(CompilerDebugOptions option) const noexcept;
 	};
-}
+}//namespace USL::FRONTEND

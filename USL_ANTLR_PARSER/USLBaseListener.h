@@ -151,6 +151,12 @@ public:
   virtual void enterCvu_type(USLParser::Cvu_typeContext * /*ctx*/) override { }
   virtual void exitCvu_type(USLParser::Cvu_typeContext * /*ctx*/) override { }
 
+  virtual void enterPointer_type(USLParser::Pointer_typeContext * /*ctx*/) override { }
+  virtual void exitPointer_type(USLParser::Pointer_typeContext * /*ctx*/) override { }
+
+  virtual void enterArray_type(USLParser::Array_typeContext * /*ctx*/) override { }
+  virtual void exitArray_type(USLParser::Array_typeContext * /*ctx*/) override { }
+
   virtual void enterType(USLParser::TypeContext * /*ctx*/) override { }
   virtual void exitType(USLParser::TypeContext * /*ctx*/) override { }
 

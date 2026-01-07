@@ -9,8 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		codesnippids.txt = codesnippids.txt
-		x64\Debug\test.txt = x64\Debug\test.txt
 		CodeStyles.txt = CodeStyles.txt
+		x64\Debug\test.txt = x64\Debug\test.txt
 		USL_LANGUAGE_SPEC.docx = USL_LANGUAGE_SPEC.docx
 	EndProjectSection
 EndProject

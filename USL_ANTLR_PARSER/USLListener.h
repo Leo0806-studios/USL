@@ -149,6 +149,12 @@ public:
   virtual void enterCvu_type(USLParser::Cvu_typeContext *ctx) = 0;
   virtual void exitCvu_type(USLParser::Cvu_typeContext *ctx) = 0;
 
+  virtual void enterPointer_type(USLParser::Pointer_typeContext *ctx) = 0;
+  virtual void exitPointer_type(USLParser::Pointer_typeContext *ctx) = 0;
+
+  virtual void enterArray_type(USLParser::Array_typeContext *ctx) = 0;
+  virtual void exitArray_type(USLParser::Array_typeContext *ctx) = 0;
+
   virtual void enterType(USLParser::TypeContext *ctx) = 0;
   virtual void exitType(USLParser::TypeContext *ctx) = 0;
 

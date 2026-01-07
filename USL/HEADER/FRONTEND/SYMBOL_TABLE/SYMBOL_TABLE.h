@@ -17,10 +17,12 @@
 #include <vector>
 #include <memory>
 #include <atomic>
+#include <mutex>
 #include <thread>
 #include "HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
 #include "HEADER/FRONTEND/SYMBOL/SYMBOL.h"
 #else
+import <mutex>;
 import <utility>;
 import <string>;
 import <memory>;
@@ -31,7 +33,7 @@ import <vector>;
 import <thread>;
 import <HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
 import <HEADER/FRONTEND/SYMBOL/SYMBOL.h>;
-#endif //  __clang__ || __INTELLISENSE__
+#endif //  __clang__ || __INTELLISENSE__ 
 
 namespace USL::FRONTEND {
 	class ScopeNotFOund : public std::exception {
@@ -59,6 +61,7 @@ namespace USL::FRONTEND {
 		SymbolTable& operator=(const SymbolTable&) = delete;
 		SymbolTable(SymbolTable&&)noexcept;
 		SymbolTable& operator=(SymbolTable&&)noexcept;
+		~SymbolTable() = default;
 		/// <summary>
 		/// creates a symbol table with a global scope and initializes the current scope for each thread to the global scope
 		/// usable for multi threaded environments

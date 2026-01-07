@@ -139,6 +139,9 @@
       <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\vcpkg_installed\x64-windows\x64-windows\include\antlr4-runtime;C:\Users\leo08\source\repos\USL\depend;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <TranslateIncludes>false</TranslateIncludes>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>

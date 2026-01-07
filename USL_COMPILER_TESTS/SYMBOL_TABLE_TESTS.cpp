@@ -35,7 +35,7 @@ namespace USL_COMPILER_TESTS
 		TEST_METHOD(TestCreateSymbolTable) {
 			SymbolTable symbolTable;
 			Assert::IsNotNull(symbolTable.GetCurrentScope().lock().get());
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(), std::string("global"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_simpleName(), std::string("global"));
 		}
 		TEST_METHOD(TestCreateSymbolTableSingleThreadedNotMainThread) {
 			
@@ -47,36 +47,36 @@ namespace USL_COMPILER_TESTS
 		}
 		TEST_METHOD(TestScopeInsertionValid) {
 						SymbolTable symbolTable;
-			bool succses=symbolTable.InsertScope("MyScope");
-			Assert::IsTrue(succses);
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(), std::string("MyScope"));
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetParentScope().lock()->GetSimpleName(), std::string("global"));
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetParentScope().lock()->GetChildScopes().size(), 1ULL);
+			auto succses=symbolTable.InsertScope("MyScope");
+			Assert::IsTrue(succses==USL::FRONTEND::SymbolTable::InsertScopeResult::succses);
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_simpleName(), std::string("MyScope"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_parentScope().lock()->Get_simpleName(), std::string("global"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_parentScope().lock()->GetChildScopes().size(), 1ULL);
 		}
 		TEST_METHOD(TestNestedScopeInsertionValid) {
 			SymbolTable symbolTable;
-			bool succses = symbolTable.InsertScope("MyScope1");
-			Assert::IsTrue(succses);
+			auto succses = symbolTable.InsertScope("MyScope1");
+			Assert::IsTrue(succses == USL::FRONTEND::SymbolTable::InsertScopeResult::succses);
 			succses = symbolTable.InsertScope("MyScope2");
-			Assert::IsTrue(succses);
+			Assert::IsTrue(succses == USL::FRONTEND::SymbolTable::InsertScopeResult::succses);
 			succses = symbolTable.InsertScope("MyScope3");
-			Assert::IsTrue(succses);
+			Assert::IsTrue(succses == USL::FRONTEND::SymbolTable::InsertScopeResult::succses);
 			//now check that the parrents are correct
 			//starting with the current scopoe
-			Assert::AreEqual(std::string("MyScope3"), symbolTable.GetCurrentScope().lock()->GetSimpleName());
-			Assert::AreEqual(std::string("MyScope2"), symbolTable.GetCurrentScope().lock()->GetParentScope().lock()->GetSimpleName());
-			Assert::AreEqual(std::string("MyScope1"), symbolTable.GetCurrentScope().lock()->GetParentScope().lock()->GetParentScope().lock()->GetSimpleName());
-			Assert::AreEqual(std::string("global"), symbolTable.GetCurrentScope().lock()->GetParentScope().lock()->GetParentScope().lock()->GetParentScope().lock()->GetSimpleName());
+			Assert::AreEqual(std::string("MyScope3"), symbolTable.GetCurrentScope().lock()->Get_simpleName());
+			Assert::AreEqual(std::string("MyScope2"), symbolTable.GetCurrentScope().lock()->Get_parentScope().lock()->Get_simpleName());
+			Assert::AreEqual(std::string("MyScope1"), symbolTable.GetCurrentScope().lock()->Get_parentScope().lock()->Get_parentScope().lock()->Get_simpleName());
+			Assert::AreEqual(std::string("global"), symbolTable.GetCurrentScope().lock()->Get_parentScope().lock()->Get_parentScope().lock()->Get_parentScope().lock()->Get_simpleName());
 		}
 		
 		TEST_METHOD(TestScopeInsertionInvalid) {
 			SymbolTable symbolTable;
-			bool succses =symbolTable.InsertScope("MyScope");
+			auto succses =symbolTable.InsertScope("MyScope");
 
 			std::ignore = symbolTable.ExitScope();
 	
 			 succses = symbolTable.InsertScope("MyScope");
-			 Assert::IsTrue(succses==false);
+			 Assert::IsTrue(succses != USL::FRONTEND::SymbolTable::InsertScopeResult::succses);
 
 		}
 		TEST_METHOD(TestExitScopeValid) {
@@ -87,7 +87,7 @@ namespace USL_COMPILER_TESTS
 
 
 			Assert::IsTrue(succses );
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(), std::string("global"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_simpleName(), std::string("global"));
 		}
 		TEST_METHOD(TestExitScopeInvalid) {
 			SymbolTable symbolTable;
@@ -103,7 +103,7 @@ namespace USL_COMPILER_TESTS
 			std::ignore = symbolTable.ExitScope();
 			bool sucsess = symbolTable.EnterScope("MyScope");
 			Assert::IsTrue(sucsess);
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(),std::string( "MyScope"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_simpleName(),std::string( "MyScope"));
 		}
 		TEST_METHOD(TestEnterScopeInvalid) {
 			SymbolTable symbolTable;
@@ -111,14 +111,14 @@ namespace USL_COMPILER_TESTS
 			std::ignore = symbolTable.ExitScope();
 			bool sucsess = symbolTable.EnterScope("NonExistingScope");
 			Assert::IsTrue(sucsess==false);
-			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->GetSimpleName(), std::string("global"));
+			Assert::AreEqual(symbolTable.GetCurrentScope().lock()->Get_simpleName(), std::string("global"));
 		}
 		TEST_METHOD(TestInsertSymbolValid){
 		SymbolTable symbolTable;
-			auto symbol = std::make_unique<VariableSymbol>();
+			auto symbol = std::make_unique<VariableSymbol>(symbolTable.GetCurrentScope());
 			std::string symbolName = "myVar";
-			bool succses = symbolTable.InsertSymbol(std::move(symbol), symbolName);
-			Assert::IsTrue(succses);
+			auto succses = symbolTable.InsertSymbol(std::move(symbol), symbolName);
+			Assert::IsTrue(succses == USL::FRONTEND::SymbolTable::InsertSymbolResult::succses);
 
 		}
 	};

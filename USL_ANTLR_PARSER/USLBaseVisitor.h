@@ -195,6 +195,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitPointer_type(USLParser::Pointer_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitArray_type(USLParser::Array_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitType(USLParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }

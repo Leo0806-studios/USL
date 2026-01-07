@@ -1,18 +1,22 @@
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
+#include <cstdint>
 #include <exception>
-#include <string>
 #include <sstream>
+#include <string>
+#include <utility>
 #else
+import <cstdint>;
+import <exception>;
 import <sstream>;
 import <string>;
-import <exception>;
+import <utility>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
-namespace USL::FRONTEND {
+namespace USL::FRONTEND { 
 	
 	class FatalError :public std::exception {
 	public:
-		enum class FailiurePhase {
+		enum class FailiurePhase:unsigned char {
 			Phase1,
 			Phase2,
 			Phase3
@@ -26,25 +30,29 @@ namespace USL::FRONTEND {
 		const char* functionInfo = nullptr;
 		 std::string errorstr;
 	public:
-		FatalError(FailiurePhase phase, std::string msg,int line,const char* file, const char* func) :phase(phase), message(std::move(msg)),lineInfo(line),fileInfo(file), functionInfo(func) {
+		FatalError(FailiurePhase FailurePhase, std::string msg, const char* file, int line, const char* func) :phase(FailurePhase), message(std::move(msg)), lineInfo(line), fileInfo(file), functionInfo(func) {
 			std::stringstream errorstream;
-			errorstream << "Fatal Error in phase ";
-			switch (phase) {
-				case FailiurePhase::Phase1:
+			errorstream << "Fatal Error in FailurePhase ";
+			switch (FailurePhase) {
+				using enum USL::FRONTEND::FatalError::FailiurePhase;
+				case Phase1:
 					errorstream << "1";
 					break;
-				case FailiurePhase::Phase2:
+				case Phase2:
 					errorstream << "2";
 					break;
-				case FailiurePhase::Phase3:
+				case Phase3:
 					errorstream << "3";
+					break;
+				default:
+					errorstream << "-1";
 					break;
 			}
 			errorstream << " : " << message
 				<< "\n In file: " << fileInfo
 				<< "\n In function: " << functionInfo
 				<< "\n At line: " << lineInfo << "\n";
-			this->errorstr = std::move(errorstream.str());
+			this->errorstr = errorstream.str();
 		}
 		[[nodiscard]] const char* what() const noexcept override {
 	
@@ -68,27 +76,27 @@ namespace USL::FRONTEND {
 		Critical = 'C'
 	};
 
-	enum class InternalErrors :unsigned int {
-		FailedToInsertSymbol ,
+	enum class InternalErrors :std::uint16_t {
+		FailedToInsertSymbol=0 ,
 		FailedToInsertScope ,
 		FailedToExitScope,
 		FailedToEnterScope ,
-		unknownInternalError ,
+		unknownInternalError =999,
 	};
-	enum class SymbolResolveErrors :unsigned int {
-		CouldNotResolveSymbol = 0,
+	enum class SymbolResolveErrors :std::uint16_t {
+		CouldNotResolveSymbol = 1000,
 	};
-	enum class StaticAnalysisErrors :unsigned int {
-		divisionByZero = 0,
-		nullDereference = 1,
-		accessMovedFromObject = 2,
+	enum class StaticAnalysisErrors :std::uint16_t {
+		divisionByZero = 3000,
+		nullDereference ,
+		accessMovedFromObject ,
 
 	};
-	enum class error :unsigned int {
-		DuplicateSymbolDeclaration = 0,
+	enum class error :std::uint16_t {
+		DuplicateSymbolDeclaration = 5000,
 	};
-	enum class WarningCodes :unsigned int {
-		PossibleNullDereference = 0,
-		UnusedVariable = 1,
+	enum class WarningCodes :std::uint16_t {
+		PossibleNullDereference = 7000,
+		UnusedVariable 
 	};
-}
+}//namespace USL::FRONTEND
