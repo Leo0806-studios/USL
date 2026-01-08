@@ -37,3 +37,13 @@ it uses boost::program_options for ARg parsing, ANTLR4 as the Parser and Lexer a
 
 
 
+
+# Dependencies
+## This project utilizes variouse 3rd party libraries.Tthose libraries are not included but will be build with VCPKG
+## The following List Contains all Explicitly imported libraries using vcpkg.json. Those are all used Libraries
+### (if this list is ever different from the actual libs included with vcpgk.json please open an issiue or pull request)
+### ANTLR4
+### LLVM
+### boost::program_options 
+### libzip
+
