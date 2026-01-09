@@ -1,3 +1,10 @@
+//################################################################
+//						ERROR_LISTENER
+//	Author: Leo0806
+//	Date created: 24.12.2025
+//	Last modified: 08.01.2026
+//	Purpose: Defines an error listener to be used dureing parsingto catch syntactic errors and store them for later diagnostics
+//################################################################
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 

@@ -1,9 +1,16 @@
+//################################################################
+//						SYMBOL_GATHERER.h
+//	Author: Leo0806
+//	Date created: 27.12.2026
+//	Last modified:08.01.2026
+//	Purpose: defines the symbol gathering visitor of the AST. 
+//################################################################
 #pragma once
 
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
+#include <antlr4-runtime.h>
 #include <memory>
 #include <string>
-#include <antlr4-runtime.h>
 #include <USLBaseListener.h>
 #include <USLParser.h>
 #include <vector>

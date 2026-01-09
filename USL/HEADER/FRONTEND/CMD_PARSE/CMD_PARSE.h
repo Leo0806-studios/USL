@@ -1,5 +1,25 @@
+//################################################################
+//						CMD_PARSE.h
+//	Author: Leo0806
+//	Date created: 22.12.2025
+//	Last modified: 08.01.2026
+//	Purpose:Header that defines the inerface for comand line Argument parsing and retriving of parsed arguments
+//################################################################
 #pragma once
-import std;
+#if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
+#include <filesystem>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#else
+import <filesystem>;
+import <string>;
+import <unordered_map>;
+import <vector>;
+#endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
+
+
+
 
 namespace USL::FRONTEND {
 	class Arguments {

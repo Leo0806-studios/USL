@@ -1,3 +1,10 @@
+//################################################################
+//						MANGLED_NAME.h
+//	Author: Leo0806
+//	Date created: 22.11.2025
+//	Last modified: 08.01.2026
+//	Purpose: Defines types and the interface related to Decorated names of symbols in the compiler. also includes std::hash specalisations
+//################################################################
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
 #include <algorithm>

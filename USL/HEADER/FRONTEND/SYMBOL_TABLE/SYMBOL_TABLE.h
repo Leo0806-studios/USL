@@ -1,6 +1,6 @@
 //################################################################
 //						SYMBOL_TABLE.h
-//	Author: Sam Stamatelos
+//	Author: Leo0806
 //	Date created: 07.12.2025
 //	Last modified:07.12.2025
 //	Purpose: Declarations for the Symbol table of the USL compiler.
@@ -8,7 +8,6 @@
 //	identifier of the symbol in the source-file without any decoration.
 //################################################################
 #pragma once
-#include "MACROS.h"
 #if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
 #include <utility>
 #include <string>

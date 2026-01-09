@@ -1018,9 +1018,9 @@ public:
     Integral_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *SHORT();
-    antlr4::tree::TerminalNode *UNSIGNED();
     antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *LONG();
+    antlr4::tree::TerminalNode *UNSIGNED();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

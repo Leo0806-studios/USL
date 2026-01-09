@@ -257,10 +257,10 @@ index_operator                      :'['expression(','expression)* ']';
 //type helpers
 cvu_type                            : cvu_decorators type IsArray = array_type? IsPointer= pointer_type?;
 pointer_type                        :'*' cvu_decorators;
-array_type                          :'[' expression(',' expression)?']';
+array_type                          :'[' (expression(',' expression)?)?']';
 type                                :(quailified_name) |AUTO|primitive;
 primitive                           :integral_type|floating_type|vector_type|STRING|HASH|CHAR|BYTE|BOOL|NULLPTR_T|VOID;
-integral_type                       :UNSIGNED? SHORT|INT|LONG;
+integral_type                       :UNSIGNED? (SHORT|INT|LONG);
 floating_type                       :FLOAT|DOUBLE|LONGDOUBLE;
 vector_type                         :M128|M128D|M128I|M256|M256D|M256I|M512|M512D|M512I;
 //function Signature Helpers

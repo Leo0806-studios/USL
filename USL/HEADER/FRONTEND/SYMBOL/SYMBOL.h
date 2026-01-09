@@ -1,3 +1,11 @@
+
+//################################################################
+//						SYMBOL.h
+//	Author: Leo0806
+//	Date created: 22.11.2025
+//	Last modified: 08.01.2026
+//	Purpose: defins types that represent symbols in the compilers symbol table
+//################################################################
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)|| defined(TESTS_BUILD)
 #include "HEADER/FRONTEND/MANGLED_NAME/MANGLED_NAME.h"

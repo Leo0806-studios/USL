@@ -1,6 +1,32 @@
+//################################################################
+//						FILENAME
+//	Author: 
+//	Date created:
+//	Last modified:
+//	Purpose:
+//################################################################
+
+#if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
+
+#include <string>
+#include <iostream>
+#include <filesystem>
+#include <vector>
+#include <cstdlib>
 #include <boost/program_options.hpp>
 #include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
-import std;
+#else
+import <cstdlib>;
+import <vector>;
+import <filesystem>;
+#pragma warning (push,0)
+import <boost/program_options.hpp>;
+#pragma warning(pop)
+import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
+import <string>;
+import <iostream>;
+#endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
+
 namespace USL::FRONTEND {
 	Arguments::Arguments(int argc, char** argv) {
 
@@ -19,6 +45,7 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 
 )";
 		desc.add_options()
+			("secret",boost::program_options::bool_switch(),"meow Mrrp")
 			("help,h", boost::program_options::bool_switch(), "Display help message")
 			("output,o", boost::program_options::value<std::string>(), "Output file")
 			("input,i", boost::program_options::value<std::vector<std::string>>(), "Input source files")
@@ -31,6 +58,20 @@ tc:  time compilation phases. output is  written to 'compiler_times.json' in the
 			("compilerDebug,d",boost::program_options::value<std::vector<std::string>>(), compilerDebugStr);
 		boost::program_options::variables_map ArgMap;
 		boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), ArgMap);
+		if (ArgMap["secret"].as<bool>()) {
+			std::cout << R"(
+				
+___  _____________________  ______ _   _________________________     _____ 
+|  \/  || ___ \ ___ \ ___ \ | ___ \ | | | ___ \ ___ \ ___ \ ___ \  _|____ |
+| .  . || |_/ / |_/ / |_/ / | |_/ / | | | |_/ / |_/ / |_/ / |_/ / (_)   / /
+| |\/| ||    /|    /|  __/  |  __/| | | |    /|    /|    /|    /        \ \
+| |  | || |\ \| |\ \| |     | |   | |_| | |\ \| |\ \| |\ \| |\ \   _.___/ /
+\_|  |_/\_| \_\_| \_\_|     \_|    \___/\_| \_\_| \_\_| \_\_| \_| (_)____/ 
+                                                                           
+                                                                           
+				)" << '\n' << std::flush;
+			exit(0);
+		}
 		if (ArgMap["help"].as<bool>()) {
 			std::cout << desc << '\n'<<std::flush;
 			exit(0);

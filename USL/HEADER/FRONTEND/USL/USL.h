@@ -1,3 +1,11 @@
+
+//################################################################
+//						USL.h
+//	Author: Leo0806
+//	Date created:25.12.2025
+//	Last modified:08.01.2026
+//	Purpose: The main interface for the USL compiler. 
+//################################################################
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 #include <atomic>
@@ -71,7 +79,7 @@ namespace USL::FRONTEND {
 		void printComStream_Syncs();
 
 		/// <summary>
-		/// main worker function wich handles compliling a single source file
+		/// main worker function wich handles compliling a single source file  
 		/// </summary>
 		void Worker();
 
@@ -99,8 +107,23 @@ namespace USL::FRONTEND {
 		/// <param name="argc">The argc.</param>
 		/// <param name="argv">The argv.</param>
 		USL_Compiler(int argc, char** argv);
+
+		/// <summary>
+		/// performs the actual compiling process and outputs compiler results
+		/// </summary>
+		/// <returns></returns>
 		const CompilerResults Compile();
+
+		/// <summary>
+		/// writes the resulting binary of the compiler to a file 
+		/// </summary>
+		/// <returns></returns>
 		bool WriteOutput();
+
+
+		/// <summary>
+		/// releases all ressources used by the compiler and joins all created threads
+		/// </summary>
 		~USL_Compiler();
 	};
 }// namespace USL::FRONTEND

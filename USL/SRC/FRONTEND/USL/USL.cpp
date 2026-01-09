@@ -272,7 +272,7 @@ namespace USL::FRONTEND {
 		printComStream_Syncs();
 		if (compilerArguments.IsDebugOptionEnabled(Arguments::CompilerDebugOptions::printParseTree)) {
 			localStream.str(std::string());
-			localStream << "-c ptr is set. printing parse tree... \n";
+			localStream << "-d ptr is set. printing parse tree... \n";
 			localStream << "Parse Tree for file: " << inputFile << '\n';
 			printAST(localStream, &(*parser), tree);
 			appendComStream();

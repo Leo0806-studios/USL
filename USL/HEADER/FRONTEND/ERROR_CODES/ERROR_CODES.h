@@ -1,3 +1,10 @@
+//################################################################
+//						ERROR_CODES
+//	Author: Leo0806
+//	Date created:27.12.2025
+//	Last modified: 08.01.2026
+//	Purpose: Defines variouse error types and a fatal exception for compiler diagnostics and output incase of malformed input source code
+//################################################################
 #pragma once
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 #include <cstdint>

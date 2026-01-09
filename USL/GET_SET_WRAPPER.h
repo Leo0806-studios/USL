@@ -7,7 +7,7 @@ import <type_traits>;
 import <utility>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
-//macro to create simplistic Get and Set functions for variables that optionaly return a reference and accept custom behaviour
+//macro to create simplistic Get and Set functions for variables
 #define GetSet(VarName)\
 void Set_##VarName(decltype(VarName) val) noexcept(std::is_nothrow_assignable_v<decltype(VarName),decltype(VarName)>){\
 this->VarName=std::move(val);\
