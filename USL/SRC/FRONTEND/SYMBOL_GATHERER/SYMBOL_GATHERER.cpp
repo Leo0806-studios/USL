@@ -243,11 +243,11 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
-		auto lovkedTable = this->table.lock();
-		const WeakScopePtr currentScope = lovkedTable->GetCurrentScope();
+		auto lockedTable = this->table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
 		std::unique_ptr<USL::FRONTEND::Symbol> functionSymbol = std::make_unique<USL::FRONTEND::FunctionSymbol>(currentScope);
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
-		switch (lovkedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
+		switch (lockedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
 			case iResultSymbol::succses: {
 					break;//nothing to do here
 				}
@@ -275,6 +275,27 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterVariable_declaration(USLParser::Variable_declarationContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
+		using iResultSymbol = SymbolTable::InsertSymbolResult;
+		switch (lockedTable->InsertSymbol(std::move(varSymbol),ctx->name->getText())) {
+			case iResultSymbol::succses: {
+					break;//nothing to do here
+				}
+			case iResultSymbol::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "Variable Symbol allready exists:  " + ctx->name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iResultSymbol::failiure: {
+					logError(InternalErrors::FailedToInsertSymbol, "failed to insert Variable symbol: " + ctx->name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "unknown error occured while inserting Variable Symbol: " + ctx->name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitVariable_declaration(USLParser::Variable_declarationContext* ctx)

@@ -36,6 +36,9 @@
     <ClCompile Include="SRC\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\FRONTEND\SYMBOL\SYMBOL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />

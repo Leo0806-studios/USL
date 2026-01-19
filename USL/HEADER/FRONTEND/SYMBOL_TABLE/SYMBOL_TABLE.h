@@ -47,7 +47,7 @@ namespace USL::FRONTEND {
 	class SymbolTable {
 	private:
 		std::mutex insertLock;
-		ScopePtr globalScope ;
+		ScopePtr globalScope;
 		std::unordered_map<DecoratedName, WeakSymbolPtr> FastMap;
 		std::unordered_map<std::thread::id, WeakScopePtr> currentScopes;
 	public:
@@ -56,7 +56,7 @@ namespace USL::FRONTEND {
 		/// only usable for single threaded environments
 		/// </summary>
 		SymbolTable();
-		SymbolTable(const SymbolTable&)	 = delete;
+		SymbolTable(const SymbolTable&) = delete;
 		SymbolTable& operator=(const SymbolTable&) = delete;
 		SymbolTable(SymbolTable&&)noexcept;
 		SymbolTable& operator=(SymbolTable&&)noexcept;
@@ -67,7 +67,7 @@ namespace USL::FRONTEND {
 		/// </summary>
 		/// <param name="maxThreads"></param>
 		explicit SymbolTable(const std::vector<std::thread>& threads);
-		
+
 		/// <summary>
 		/// builds the FastMap from the hierarchical table that can be indexed by the decorated name in O(1) time
 		/// </summary>
@@ -123,8 +123,8 @@ namespace USL::FRONTEND {
 
 		enum class InsertScopeResult :unsigned char {
 			succses = 0,
-			failiure=1,
-			allreadyExists=2
+			failiure = 1,
+			allreadyExists = 2
 		};
 		/// <summary>
 		/// inserts an empty scope with the given name into the current scope and enters it.
@@ -136,8 +136,8 @@ namespace USL::FRONTEND {
 
 		enum class InsertSymbolResult :unsigned char {
 			succses = 0,
-			failiure=1,
-			allreadyExists=2
+			failiure = 1,
+			allreadyExists = 2
 		};
 
 		/// <summary>
@@ -160,7 +160,11 @@ namespace USL::FRONTEND {
 		/// <returns></returns>
 		[[nodiscard]] InsertSymbolResult InsertScopeWithSymbol(const std::string& symbol_name, std::unique_ptr<Symbol>symbol, const std::string& scope_name);
 
-
-		
+		/// <summary>
+		/// aggregates the SymbolTable into a string for debug purposes 
+		/// throws if not called on the main thread
+		/// </summary>
+		/// <returns></returns>
+		[[nodiscard]] std::string ToString();
 	};
 }//namespace USL::FRONTEND

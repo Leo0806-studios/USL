@@ -289,4 +289,31 @@ namespace USL::FRONTEND {
 		currentScopeAfterInsert.lock()->Set_ownSymbol({ std::move(symbol),symbol_name });
 		return InsertSymbolResult::succses;
 	}
+	namespace {
+	std::string RecursiveappendSymbolTable(WeakScopePtr node, bool last,std::string intendent="") {
+		auto locked = node.lock();
+		auto& children = locked->GetChildScopes();
+		std::stringstream ret;
+		ret << intendent;
+		if (const auto symbol =locked->Get_ownSymbol().first.lock()) {
+			ret << locked->Get_ownSymbol().second << locked->Get_ownSymbol().first.lock()->ToString();
+		} 
+		else {
+			ret << locked->Get_simpleName();
+		}
+		for (auto it = children.begin(); it != children.end();it++) {
+			
+		}
+
+
+	}
+
+	}
+	std::string SymbolTable::ToString()
+	{
+		ThrowIfNotMainThread();
+		std::stringstream ret;
+		ret << RecursiveappendSymbolTable(globalScope,false) << '\n';
+		return ret.str();
+	}
 }// namespace USL::FRONTEND

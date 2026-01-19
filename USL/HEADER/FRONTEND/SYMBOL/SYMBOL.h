@@ -15,8 +15,10 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <variant>
 
 #else
+#import <variant>;
 import <utility>;
 import <string>;
 import <vector>;
@@ -82,6 +84,8 @@ namespace USL::FRONTEND {
 		[[nodiscard]] WeakScopePtr GetParentScope() const noexcept {
 			return ParentScope;
 		}
+		[[nodiscard]] virtual std::string ToString() const = 0;
+		virtual ~Symbol() = default;
 	};
 	class VariableSymbol :public Symbol {
 		std::weak_ptr<TypeSymbol> type ;
@@ -110,6 +114,7 @@ namespace USL::FRONTEND {
 			GetSet(DeclareInitialized)
 			GetSet(functionParameter)
 			[[nodiscard]]explicit VariableSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
+		[[nodiscard]] std::string ToString() const override;
 		
 	};
 	class FunctionSymbol :public Symbol {
@@ -117,25 +122,37 @@ namespace USL::FRONTEND {
 		std::vector<std::weak_ptr<VariableSymbol>> parameterList ;
 	public:
 			[[nodiscard]] explicit  FunctionSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
+			[[nodiscard]] std::string ToString() const override;
 
 	};
 	class EnumSymbol :public Symbol {
+		WeakSymbolPtr enumtype;
 	public:
 		[[nodiscard]] explicit  EnumSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] std::string ToString() const override;
 
 	};
 	class EnumConstant :public Symbol {
+		WeakSymbolPtr type;
+		std::variant<long long, unsigned long long> value;
 	public:
 		[[nodiscard]]  explicit EnumConstant(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] std::string ToString() const override;
 
 	};
 	class TypeSymbol:public Symbol{
+		size_t aligment = 0;
+		size_t size = 0;
 	public:
 		[[nodiscard]] explicit TypeSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] std::string ToString() const override;
+
 	};
 	class AttribueSymbol :public Symbol {
 	public:
 		[[nodiscard]] explicit AttribueSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] std::string ToString() const override;
+
 	};
 }// namespace USL::FRONTEND
 

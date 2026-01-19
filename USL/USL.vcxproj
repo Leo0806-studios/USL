@@ -270,6 +270,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SRC\FRONTEND\SYMBOL\SYMBOL.cpp" />
     <ClCompile Include="SRC\FRONTEND\SYMBOL_GATHERER\SYMBOL_GATHERER.cpp" />
     <ClCompile Include="SRC\FRONTEND\USL\COMPILER_HELPERS\COMPILER_HELPERS.cpp" />
     <ClCompile Include="SRC\utilitys.cpp" />
