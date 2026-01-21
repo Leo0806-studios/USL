@@ -44,5 +44,6 @@ it uses boost::program_options for ARg parsing, ANTLR4 as the Parser and Lexer a
 ### ANTLR4
 ### LLVM
 ### boost::program_options 
+### boost::uuid
 ### libzip
 
