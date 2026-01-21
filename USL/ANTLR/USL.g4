@@ -203,9 +203,9 @@ do_statement                        :DO basic_block;
 
 for_statement                       :FOR '('expression';'expression';'expression')'basic_block;
 
-switch_statement                    :SWITCH '('expression')' '{' case_statement*'}';
+switch_statement                    :SWITCH '('expression')' '{' case_statement* default_statement?'}';
 case_statement                      :CASE expression  ':' basic_block;
-
+default_statement                   :DEFAULT ':' basic_block;
 goto_statement                      :GOTO Target=ID;
 lable_statement                     :LABLE Name=ID;
 throw_statement                     :THROW expression;

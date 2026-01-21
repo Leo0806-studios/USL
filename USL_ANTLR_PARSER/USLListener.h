@@ -65,6 +65,9 @@ public:
   virtual void enterCase_statement(USLParser::Case_statementContext *ctx) = 0;
   virtual void exitCase_statement(USLParser::Case_statementContext *ctx) = 0;
 
+  virtual void enterDefault_statement(USLParser::Default_statementContext *ctx) = 0;
+  virtual void exitDefault_statement(USLParser::Default_statementContext *ctx) = 0;
+
   virtual void enterGoto_statement(USLParser::Goto_statementContext *ctx) = 0;
   virtual void exitGoto_statement(USLParser::Goto_statementContext *ctx) = 0;
 

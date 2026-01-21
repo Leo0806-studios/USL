@@ -67,6 +67,9 @@ public:
   virtual void enterCase_statement(USLParser::Case_statementContext * /*ctx*/) override { }
   virtual void exitCase_statement(USLParser::Case_statementContext * /*ctx*/) override { }
 
+  virtual void enterDefault_statement(USLParser::Default_statementContext * /*ctx*/) override { }
+  virtual void exitDefault_statement(USLParser::Default_statementContext * /*ctx*/) override { }
+
   virtual void enterGoto_statement(USLParser::Goto_statementContext * /*ctx*/) override { }
   virtual void exitGoto_statement(USLParser::Goto_statementContext * /*ctx*/) override { }
 

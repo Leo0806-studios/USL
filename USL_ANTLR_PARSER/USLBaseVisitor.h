@@ -83,6 +83,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitDefault_statement(USLParser::Default_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitGoto_statement(USLParser::Goto_statementContext *ctx) override {
     return visitChildren(ctx);
   }

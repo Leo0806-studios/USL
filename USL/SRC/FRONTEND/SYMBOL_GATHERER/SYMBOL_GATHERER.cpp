@@ -1,5 +1,6 @@
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 #include <antlr4-runtime.h>
+#include <boost/uuid.hpp>
 #include <FRONTEND/CMD_PARSE/CMD_PARSE.h>
 #include <FRONTEND/ERROR_CODES/ERROR_CODES.h>
 #include <FRONTEND/SYMBOL/SYMBOL.h>
@@ -27,6 +28,7 @@ import <antlr4-runtime.h>;
 import <USLParser.h>;
 #pragma warning (pop)
 import <utility>;
+import <boost/uuid.hpp>;
 import <vector>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
@@ -281,7 +283,7 @@ namespace USL::FRONTEND {
 		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
 		std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
-		switch (lockedTable->InsertSymbol(std::move(varSymbol),ctx->name->getText())) {
+		switch (lockedTable->InsertSymbol(std::move(varSymbol), ctx->name->getText())) {
 			case iResultSymbol::succses: {
 					break;//nothing to do here
 				}
@@ -336,18 +338,76 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterIf_statement(USLParser::If_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "if_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert If statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. If statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting If statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitIf_statement(USLParser::If_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit If statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterElse_statement(USLParser::Else_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "else_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert Else statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. Else statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Else statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitElse_statement(USLParser::Else_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit else statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterWhile_statement(USLParser::While_statementContext* ctx)

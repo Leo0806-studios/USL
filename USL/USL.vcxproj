@@ -188,7 +188,7 @@
       <EnableModules>false</EnableModules>
       <BuildStlModules>false</BuildStlModules>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>C:\Users\leo08\source\repos\USL\vcpkg_installed\x64-windows\x64-windows\include\antlr4-runtime;C:\Users\leo08\source\repos\USL\depend;C:\Users\leo08\source\repos\USL\USL\HEADER;C:\Users\leo08\source\repos\USL\USL;C:\Users\leo08\source\repos\USL\USL\MODULES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\vcpkg_installed\x64-windows\x64-windows\include\antlr4-runtime;$(SolutionDir)depend;$(SolutionDir)USL\HEADER;$(SolutionDir)USL;$(SolutionDir)USL\MODULES;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <TreatWarningAsError>true</TreatWarningAsError>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -196,7 +196,7 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableSpecificWarnings>5045;4820;4514;4100;4505;4583;4582;4264;4263;4625;4624;4626;4251;5027;5026;4623</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalBMIDirectories>C:\Users\leo08\source\repos\USL\USL;C:\Users\leo08\source\repos\USL\USL\HEADER;%(AdditionalBMIDirectories)</AdditionalBMIDirectories>
+      <AdditionalBMIDirectories>$(SolutionDir)USL;$(SolutionDir)USL\HEADER;%(AdditionalBMIDirectories)</AdditionalBMIDirectories>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <EnablePREfast>true</EnablePREfast>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>

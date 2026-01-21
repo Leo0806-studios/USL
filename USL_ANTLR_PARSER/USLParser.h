@@ -42,20 +42,20 @@ public:
     RuleFunction_declaration = 7, RuleBasic_block = 8, RuleVariable_declaration = 9, 
     RuleIf_statement = 10, RuleElse_statement = 11, RuleWhile_statement = 12, 
     RuleDo_statement = 13, RuleFor_statement = 14, RuleSwitch_statement = 15, 
-    RuleCase_statement = 16, RuleGoto_statement = 17, RuleLable_statement = 18, 
-    RuleThrow_statement = 19, RuleExpression_statement = 20, RuleExpression = 21, 
-    RuleAssignment_expr = 22, RuleEquality_expr = 23, RuleComparison_expr = 24, 
-    RuleBitshift_expr = 25, RuleAdditive_expr = 26, RuleMultiplicative_expr = 27, 
-    RulePostfix_expr = 28, RulePrefix_expr = 29, RulePrimary_expr = 30, 
-    RuleAcces_modifiers = 31, RuleThrows_postfix = 32, RuleQuailified_name = 33, 
-    RuleAttribute_addition = 34, RuleAttribute = 35, RuleComparision_operator = 36, 
-    RuleBitshift_operator = 37, RuleAdditive_operator = 38, RuleMultiplicative_operator = 39, 
-    RulePrefix_operator = 40, RulePostfix_operator = 41, RuleCall_operator = 42, 
-    RuleIndex_operator = 43, RuleCvu_type = 44, RulePointer_type = 45, RuleArray_type = 46, 
-    RuleType = 47, RulePrimitive = 48, RuleIntegral_type = 49, RuleFloating_type = 50, 
-    RuleVector_type = 51, RuleParemeter_list = 52, RuleParameter = 53, RuleLitteral = 54, 
-    RuleBool_litteral = 55, RuleCvu_decorators = 56, RuleScoperesolution_list = 57, 
-    RuleError_recovery = 58
+    RuleCase_statement = 16, RuleDefault_statement = 17, RuleGoto_statement = 18, 
+    RuleLable_statement = 19, RuleThrow_statement = 20, RuleExpression_statement = 21, 
+    RuleExpression = 22, RuleAssignment_expr = 23, RuleEquality_expr = 24, 
+    RuleComparison_expr = 25, RuleBitshift_expr = 26, RuleAdditive_expr = 27, 
+    RuleMultiplicative_expr = 28, RulePostfix_expr = 29, RulePrefix_expr = 30, 
+    RulePrimary_expr = 31, RuleAcces_modifiers = 32, RuleThrows_postfix = 33, 
+    RuleQuailified_name = 34, RuleAttribute_addition = 35, RuleAttribute = 36, 
+    RuleComparision_operator = 37, RuleBitshift_operator = 38, RuleAdditive_operator = 39, 
+    RuleMultiplicative_operator = 40, RulePrefix_operator = 41, RulePostfix_operator = 42, 
+    RuleCall_operator = 43, RuleIndex_operator = 44, RuleCvu_type = 45, 
+    RulePointer_type = 46, RuleArray_type = 47, RuleType = 48, RulePrimitive = 49, 
+    RuleIntegral_type = 50, RuleFloating_type = 51, RuleVector_type = 52, 
+    RuleParemeter_list = 53, RuleParameter = 54, RuleLitteral = 55, RuleBool_litteral = 56, 
+    RuleCvu_decorators = 57, RuleScoperesolution_list = 58, RuleError_recovery = 59
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -92,6 +92,7 @@ public:
   class For_statementContext;
   class Switch_statementContext;
   class Case_statementContext;
+  class Default_statementContext;
   class Goto_statementContext;
   class Lable_statementContext;
   class Throw_statementContext;
@@ -432,6 +433,7 @@ public:
     ExpressionContext *expression();
     std::vector<Case_statementContext *> case_statement();
     Case_statementContext* case_statement(size_t i);
+    Default_statementContext *default_statement();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -458,6 +460,22 @@ public:
   };
 
   Case_statementContext* case_statement();
+
+  class  Default_statementContext : public antlr4::ParserRuleContext {
+  public:
+    Default_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *DEFAULT();
+    Basic_blockContext *basic_block();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Default_statementContext* default_statement();
 
   class  Goto_statementContext : public antlr4::ParserRuleContext {
   public:

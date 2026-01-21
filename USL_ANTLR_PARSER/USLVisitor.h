@@ -53,6 +53,8 @@ public:
 
     virtual std::any visitCase_statement(USLParser::Case_statementContext *context) = 0;
 
+    virtual std::any visitDefault_statement(USLParser::Default_statementContext *context) = 0;
+
     virtual std::any visitGoto_statement(USLParser::Goto_statementContext *context) = 0;
 
     virtual std::any visitLable_statement(USLParser::Lable_statementContext *context) = 0;

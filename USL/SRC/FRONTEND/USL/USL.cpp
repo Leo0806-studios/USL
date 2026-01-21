@@ -10,7 +10,7 @@
 #include <memory>
 #include <mutex>
 #include <sstream>
-#include <string>
+#include <string>	
 #include <thread>
 #include <USLLexer.h>
 #include <USLParser.h>
@@ -230,10 +230,13 @@ namespace USL::FRONTEND {
 		printComStream_Syncs();
 
 		if (compilerArguments.IsDebugOptionEnabled(USL::FRONTEND::Arguments::CompilerDebugOptions::printToken)) {
+			localStream << "-d pt is set. printing tokens... \n";
+
 			localStream << "Tokens for file: " << inputFile;
 			for (const auto* token : tokenStream->getTokens()) {
 				localStream << token->toString() << '\n';
 			}
+			appendComStream();
 			printComStream_Syncs();
 		}
 

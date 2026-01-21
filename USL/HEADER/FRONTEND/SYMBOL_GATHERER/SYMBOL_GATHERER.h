@@ -36,7 +36,22 @@ namespace USL::FRONTEND {
 	class FunctionLocalBlockid {
 		std::string id;
 	public:
+		[[nodiscard]] FunctionLocalBlockid() = default;
 		[[nodiscard]] explicit FunctionLocalBlockid(std::string idStr) :id(std::move(idStr)) {}
+		[[nodiscard]] FunctionLocalBlockid(const FunctionLocalBlockid& other) : id(other.id) {}
+		[[nodiscard]] FunctionLocalBlockid(FunctionLocalBlockid&& other) noexcept :id(std::move(other.id)) {}
+		 FunctionLocalBlockid& operator=(const FunctionLocalBlockid& other) {
+			if (this != &other) {
+				id = other.id;
+			}
+			return *this;
+		}
+		 FunctionLocalBlockid& operator=(FunctionLocalBlockid&& other) noexcept {
+			if (this != &other) {
+				id = std::move(other.id);
+			}
+			return *this;
+		}
 		[[nodiscard]]const std::string& Get()const noexcept { return id; }
 	};
 	class SymbolGatherer :public USLBaseListener {
@@ -53,6 +68,12 @@ namespace USL::FRONTEND {
 		void logInfo(const std::string& infoMessage, size_t line, size_t pos);
 	public:
 		[[nodiscard]] explicit  SymbolGatherer(std::weak_ptr<SymbolTable> Table, std::weak_ptr<const Arguments> Args, std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames, std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
+
+		const std::vector<std::string>& GetErrors() const noexcept { return errors; }
+		const std::vector<std::string>& GetWarnings() const noexcept { return warnings; }
+		const std::vector<std::string>& GetInfos() const noexcept { return infos; }
+
+
 		void enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
 		void exitNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
 
@@ -94,5 +115,7 @@ namespace USL::FRONTEND {
 
 		void enterCase_statement(USLParser::Case_statementContext* ctx) override;
 		void exitCase_statement(USLParser::Case_statementContext* ctx) override;
+		void enterDefault_statement(USLParser::Default_statementContext* ctx) override;
+		void exitDefault_statement(USLParser::Default_statementContext* ctx) override;
 	};
 }//namespace USL::FRONTEND
