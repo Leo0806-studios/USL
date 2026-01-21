@@ -76,10 +76,12 @@ namespace USL::FRONTEND {
 	}
 	SymbolGatherer::SymbolGatherer(std::weak_ptr<SymbolTable> Table,
 								   std::weak_ptr<const Arguments> Args,
-								   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames) :
+								   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames,
+								   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds) :
 		table(std::move(Table)),
 		args(std::move(Args)),
-		DecoratedNames(std::move(DecoratedNames))
+		DecoratedNames(std::move(DecoratedNames)),
+		LocalBlockIds(std::move(LocalBlockIds))
 	{
 	}
 
@@ -304,6 +306,28 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterLable_statement(USLParser::Lable_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		std::unique_ptr<Symbol> lableSymbol = std::make_unique<LableSymbol>(currentScope);
+		using iResultsymbol = SymbolTable::InsertSymbolResult;
+		switch (lockedTable->InsertSymbol(std::move(lableSymbol), ctx->Name->getText())) {
+			case iResultsymbol::succses: {
+					break;//nothing else to do here
+				}
+			case iResultsymbol::failiure: {
+					logError(InternalErrors::FailedToInsertSymbol, "failed to insert lable symbol: " + ctx->Name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iResultsymbol::allreadyExists: {
+
+					logError(error::DuplicateSymbolDeclaration, "Lable symbol allready exists: " + ctx->Name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "unknown error occured while inserting Lable Symbol: " + ctx->Name->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitLable_statement(USLParser::Lable_statementContext* ctx)

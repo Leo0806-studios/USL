@@ -2114,7 +2114,7 @@ USLParser::Goto_statementContext* USLParser::goto_statement() {
     setState(301);
     match(USLParser::GOTO);
     setState(302);
-    match(USLParser::ID);
+    antlrcpp::downCast<Goto_statementContext *>(_localctx)->Target = match(USLParser::ID);
    
   }
   catch (RecognitionException &e) {
@@ -2181,7 +2181,7 @@ USLParser::Lable_statementContext* USLParser::lable_statement() {
     setState(304);
     match(USLParser::LABLE);
     setState(305);
-    match(USLParser::ID);
+    antlrcpp::downCast<Lable_statementContext *>(_localctx)->Name = match(USLParser::ID);
    
   }
   catch (RecognitionException &e) {

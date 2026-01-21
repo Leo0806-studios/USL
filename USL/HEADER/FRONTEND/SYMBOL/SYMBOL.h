@@ -18,7 +18,7 @@
 #include <variant>
 
 #else
-#import <variant>;
+import <variant>;
 import <utility>;
 import <string>;
 import <vector>;
@@ -153,6 +153,11 @@ namespace USL::FRONTEND {
 		[[nodiscard]] explicit AttribueSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 		[[nodiscard]] std::string ToString() const override;
 
+	};
+	class LableSymbol :public Symbol {
+	public:
+		[[nodiscard]] explicit LableSymbol(WeakScopePtr parrentScope) :Symbol(std::move(parrentScope)) {}
+		[[nodiscard]] std::string ToString() const noexcept;
 	};
 }// namespace USL::FRONTEND
 

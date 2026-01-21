@@ -461,6 +461,7 @@ public:
 
   class  Goto_statementContext : public antlr4::ParserRuleContext {
   public:
+    antlr4::Token *Target = nullptr;
     Goto_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *GOTO();
@@ -477,6 +478,7 @@ public:
 
   class  Lable_statementContext : public antlr4::ParserRuleContext {
   public:
+    antlr4::Token *Name = nullptr;
     Lable_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *LABLE();

@@ -1,7 +1,8 @@
 {
   "dependencies": [
-    
+    "antlr4",
     "boost-program-options",
+    "boost-uuid",
     "libzip",
     {
       "name": "llvm",
@@ -10,6 +11,6 @@
         "target-x86"
       ]
     },
-    "antlr4"
+    "atl"
   ]
 }

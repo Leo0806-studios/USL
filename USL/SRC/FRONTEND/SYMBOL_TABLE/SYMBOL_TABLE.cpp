@@ -295,6 +295,12 @@ namespace USL::FRONTEND {
 		auto& children = locked->GetChildScopes();
 		std::stringstream ret;
 		ret << intendent;
+		if (last) {
+			ret << "|__";
+		}
+		else {
+			ret << "|--";
+		}
 		if (const auto symbol =locked->Get_ownSymbol().first.lock()) {
 			ret << locked->Get_ownSymbol().second << locked->Get_ownSymbol().first.lock()->ToString();
 		} 
@@ -302,9 +308,10 @@ namespace USL::FRONTEND {
 			ret << locked->Get_simpleName();
 		}
 		for (auto it = children.begin(); it != children.end();it++) {
-			
+			const std::string str = RecursiveappendSymbolTable((*it).second, it == (children.end()--), intendent + "\t");
+			ret << "Symbol: " << (*it).first << " " << str << "\n";
 		}
-
+		return ret.str();
 
 	}
 
@@ -313,7 +320,8 @@ namespace USL::FRONTEND {
 	{
 		ThrowIfNotMainThread();
 		std::stringstream ret;
-		ret << RecursiveappendSymbolTable(globalScope,false) << '\n';
+		const std::string str= RecursiveappendSymbolTable(globalScope, false);
+		ret <<str  << '\n';
 		return ret.str();
 	}
 }// namespace USL::FRONTEND

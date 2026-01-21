@@ -206,8 +206,8 @@ for_statement                       :FOR '('expression';'expression';'expression
 switch_statement                    :SWITCH '('expression')' '{' case_statement*'}';
 case_statement                      :CASE expression  ':' basic_block;
 
-goto_statement                      :GOTO ID;
-lable_statement                     :LABLE ID;
+goto_statement                      :GOTO Target=ID;
+lable_statement                     :LABLE Name=ID;
 throw_statement                     :THROW expression;
 
 expression_statement                :expression;

@@ -82,4 +82,9 @@ std::string AttribueSymbol::ToString() const
 	return std::string();
 }
 
+std::string LableSymbol::ToString() const noexcept
+{
+	return std::string();
+}
+
 }//namespace USL::FRONTEND
