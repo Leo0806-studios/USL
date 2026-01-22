@@ -84,7 +84,7 @@ namespace USL::FRONTEND {
 		for (size_t i = 0; i < tree->children.size(); i++) {
 			printAST(outstream, parser, tree->children[i], newIndent, i == tree->children.size() - 1);
 		}
-	}
+	} 
 
 		USL_Compiler::USL_Compiler(int argc, char** argv) : compilerArguments(argc, argv), SyncPoint(static_cast<int>(compilerArguments.GetSourceFiles().size()))
 	{
