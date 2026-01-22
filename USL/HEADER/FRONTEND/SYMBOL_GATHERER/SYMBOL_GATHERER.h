@@ -67,7 +67,10 @@ namespace USL::FRONTEND {
 		void logWarning(WarningCodes warning, const std::string& warningMessage, size_t line, size_t pos);
 		void logInfo(const std::string& infoMessage, size_t line, size_t pos);
 	public:
-		[[nodiscard]] explicit  SymbolGatherer(std::weak_ptr<SymbolTable> Table, std::weak_ptr<const Arguments> Args, std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames, std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
+		[[nodiscard]] explicit  SymbolGatherer(std::weak_ptr<SymbolTable> Table,
+											   std::weak_ptr<const Arguments> Args,
+											   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames, 
+											   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
 
 		const std::vector<std::string>& GetErrors() const noexcept { return errors; }
 		const std::vector<std::string>& GetWarnings() const noexcept { return warnings; }

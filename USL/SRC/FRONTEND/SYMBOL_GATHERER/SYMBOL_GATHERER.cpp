@@ -412,26 +412,135 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterWhile_statement(USLParser::While_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "while_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert While statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. While statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting While statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitWhile_statement(USLParser::While_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit while statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterDo_statement(USLParser::Do_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "do_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert Do statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. Do statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Do statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitDo_statement(USLParser::Do_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Do statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterFor_statement(USLParser::For_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "For_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert For statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. For statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting For statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
+
+		if (auto loopVar = ctx->Initializer) {
+			std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
+			using iResultSymbol = SymbolTable::InsertSymbolResult;
+			switch (lockedTable->InsertSymbol(std::move(varSymbol), loopVar->name->getText())) {
+				case iResultSymbol::succses: {
+						break;//nothing to do here
+					}
+				case iResultSymbol::allreadyExists: {
+						logError(error::DuplicateSymbolDeclaration, "Variable Symbol allready exists:  " + loopVar->name->getText(), loopVar->getStart()->getLine(), loopVar->getStart()->getCharPositionInLine());
+						return;
+					}
+				case iResultSymbol::failiure: {
+						logError(InternalErrors::FailedToInsertSymbol, "failed to insert Variable symbol: " + loopVar->name->getText(), loopVar->getStart()->getLine(), loopVar->getStart()->getCharPositionInLine());
+						return;
+					}
+				default: {
+						logError(InternalErrors::unknownInternalError, "unknown error occured while inserting Variable Symbol: " + loopVar->name->getText(), loopVar->getStart()->getLine(), loopVar->getStart()->getCharPositionInLine());
+						return;
+					}
+			}
+		}
 	}
 
 	void SymbolGatherer::exitFor_statement(USLParser::For_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit For statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterSwitch_statement(USLParser::Switch_statementContext* ctx)
@@ -447,6 +556,12 @@ namespace USL::FRONTEND {
 	}
 
 	void SymbolGatherer::exitCase_statement(USLParser::Case_statementContext* ctx)
+	{
+	}
+	void SymbolGatherer::enterDefault_statement(USLParser::Default_statementContext* ctx)
+	{
+	}
+	void SymbolGatherer::exitDefault_statement(USLParser::Default_statementContext* ctx)
 	{
 	}
 }// namespace USL::FRONTEND

@@ -46,7 +46,7 @@ import <USLLexer.h>;
 import <USLParser.h>;
 #pragma warning(pop)
 import <FRONTEND/ERROR_LISTENER/ERROR_LISTENER.h>;
-#include <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>
+import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 
 namespace USL::FRONTEND {
@@ -56,6 +56,7 @@ namespace USL::FRONTEND {
 		std::ifstream InputFileStream;
 		std::unique_ptr<antlr4::ANTLRInputStream> InputStream;
 		std::unique_ptr<antlr4::CommonTokenStream> TokeStream;
+		std::unique_ptr < USL::FRONTEND::SymbolGatherer> symbolGatherer;
 		std::unique_ptr<USLLexer> Lexer;
 		std::unique_ptr<USLParser> Parser;
 		antlr4::tree::ParseTree* tree = nullptr;
@@ -182,8 +183,8 @@ namespace USL::FRONTEND {
 		}
 		printComStream_Syncs();
 
-		using antlr4Istream = std::unique_ptr< antlr4::ANTLRInputStream>;
-		antlr4Istream& inputStream = [&]()->std::unique_ptr< antlr4::ANTLRInputStream>&{
+		
+		std::unique_ptr< antlr4::ANTLRInputStream>& inputStream = [&]()->std::unique_ptr< antlr4::ANTLRInputStream>&{
 			ThreadData_g.InputStream = std::make_unique<antlr4::ANTLRInputStream>(fileStream);
 			return ThreadData_g.InputStream;
 			}();
@@ -240,8 +241,8 @@ namespace USL::FRONTEND {
 			printComStream_Syncs();
 		}
 
-		using USLParser = std::unique_ptr<::USLParser>;
-		USLParser& parser = [&]()->std::unique_ptr<::USLParser>&{
+		
+		std::unique_ptr<::USLParser>& parser = [&]()->std::unique_ptr<::USLParser>&{
 			ThreadData_g.Parser = std::make_unique<::USLParser>(static_cast<antlr4::TokenStream*>(&(*tokenStream)));
 			return ThreadData_g.Parser;
 			}();
@@ -283,6 +284,11 @@ namespace USL::FRONTEND {
 			printComStream_Syncs();
 		}
 		SyncPoint.arrive_and_wait();
+
+		std::unique_ptr< USL::FRONTEND::SymbolGatherer>& symbolGatherer = [&]()->std::unique_ptr< USL::FRONTEND::SymbolGatherer>& {
+			ThreadData_g.symbolGatherer = std::make_unique< USL::FRONTEND::SymbolGatherer>(symbolTable, compilerArguments, localStream);
+			return ThreadData_g.symbolGatherer;
+			}();
 	}
 
 	void USL::FRONTEND::USL_Compiler::Phase2()

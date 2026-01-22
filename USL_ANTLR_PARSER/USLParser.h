@@ -1,5 +1,5 @@
 
-// Generated from c:/Users/leo08/source/repos/USL/USL/ANTLR/USL.g4 by ANTLR 4.13.2
+// Generated from c:/Users/leo08/source/repos/Leo0806-studios/USL/USL/ANTLR/USL.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -413,12 +413,16 @@ public:
 
   class  For_statementContext : public antlr4::ParserRuleContext {
   public:
+    USLParser::Variable_declarationContext *Initializer = nullptr;
+    USLParser::ExpressionContext *Conditional = nullptr;
+    USLParser::ExpressionContext *PostItteration = nullptr;
     For_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *FOR();
+    Basic_blockContext *basic_block();
+    Variable_declarationContext *variable_declaration();
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
-    Basic_blockContext *basic_block();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

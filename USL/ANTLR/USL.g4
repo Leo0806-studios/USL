@@ -172,45 +172,43 @@ global_statement                    :namespace_declaration|
 
 
 //
-statement                           :variable_declaration';'|
-                                    function_declaration|
-                                    goto_statement';'|
-                                    lable_statement';'|
+statement                           :variable_declaration|
+                                    goto_statement|
+                                    lable_statement|
                                     while_statement|
                                     if_statement|
                                     for_statement|
                                     switch_statement|
-                                    expression_statement';'|
-                                    error_recovery;
+                                    expression_statement;
 
 //scope Statements (excluding controll flow)
 namespace_declaration               :NAMESPACE NamespaceName =ID '{'global_statement* '}';  
-class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? basic_block ';';
+class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? '{'classmember_declaration*'}' ';';
 enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? )* (',')? '}' ';';
 attribute_declaration               :ATRIBUTE AttributeName=ID '{''}';
-function_declaration                :attribute_addition? acces_modifiers ReturnType=cvu_type FunctionName=ID '('paremeter_list? ')'CONST? throws_postfix? basic_block;
+function_declaration                :attribute_addition? acces_modifiers ReturnType=cvu_type FunctionName=ID '('paremeter_list? ')'CONST? VOLATILE? UNSAFE? throws_postfix? basic_block';';
 basic_block                         :'{'statement*'}';
 
-variable_declaration                :acces_modifiers? Type = cvu_type name = ID (ASSIGN_OP expression)?;
+variable_declaration                :acces_modifiers? Type = cvu_type name = ID (ASSIGN_OP expression)?';';
 
 //controll_flow
-if_statement                        :IF '('expression')' basic_block else_statement?; 
+if_statement                        :IF '('expression')' '{'statement*'}' else_statement?; 
 else_statement                      :ELSE (if_statement|basic_block);
 
 
 while_statement                     :WHILE '(' expression')' basic_block ;
 do_statement                        :DO basic_block;
 
-for_statement                       :FOR '('expression';'expression';'expression')'basic_block;
+for_statement                       :FOR '('Initializer=variable_declaration?';'Conditional=expression?';'PostItteration=expression?')'basic_block;
 
 switch_statement                    :SWITCH '('expression')' '{' case_statement* default_statement?'}';
 case_statement                      :CASE expression  ':' basic_block;
 default_statement                   :DEFAULT ':' basic_block;
-goto_statement                      :GOTO Target=ID;
-lable_statement                     :LABLE Name=ID;
-throw_statement                     :THROW expression;
+goto_statement                      :GOTO Target=ID';';
+lable_statement                     :LABLE Name=ID';';
+throw_statement                     :THROW expression';';
 
-expression_statement                :expression;
+expression_statement                :expression';';
 
 
 //expressions
@@ -237,6 +235,8 @@ primary_expr                        :  quailified_name
 
 
 //helper rules
+classmember_declaration             :function_declaration|
+                                    variable_declaration;
 acces_modifiers                     :PUBLIC|PRIVATE|PROTECTED;
 throws_postfix                      :THROWS'('(quailified_name(','quailified_name)*)|MAYBE ')';
 quailified_name                     :scoperesolution_list? ID;
@@ -250,7 +250,7 @@ additive_operator                   :PLUS_OP|MINUS_OP;
 multiplicative_operator             :MULT_OP | DIV_OP | MOD_OP;
 prefix_operator                      :INCREMENT | DECREMENT | NOT|HASH_OP;
 postfix_operator                    :call_operator|index_operator|INCREMENT|DECREMENT;
-call_operator                       :'('expression (',' expression)*')';
+call_operator                       :'('(expression (',' expression)*)?')';
 
 index_operator                      :'['expression(','expression)* ']';
 
