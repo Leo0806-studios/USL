@@ -110,6 +110,9 @@ public:
   virtual void enterPrimary_expr(USLParser::Primary_exprContext *ctx) = 0;
   virtual void exitPrimary_expr(USLParser::Primary_exprContext *ctx) = 0;
 
+  virtual void enterClassmember_declaration(USLParser::Classmember_declarationContext *ctx) = 0;
+  virtual void exitClassmember_declaration(USLParser::Classmember_declarationContext *ctx) = 0;
+
   virtual void enterAcces_modifiers(USLParser::Acces_modifiersContext *ctx) = 0;
   virtual void exitAcces_modifiers(USLParser::Acces_modifiersContext *ctx) = 0;
 

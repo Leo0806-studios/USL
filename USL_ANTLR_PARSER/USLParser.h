@@ -47,15 +47,16 @@ public:
     RuleExpression = 22, RuleAssignment_expr = 23, RuleEquality_expr = 24, 
     RuleComparison_expr = 25, RuleBitshift_expr = 26, RuleAdditive_expr = 27, 
     RuleMultiplicative_expr = 28, RulePostfix_expr = 29, RulePrefix_expr = 30, 
-    RulePrimary_expr = 31, RuleAcces_modifiers = 32, RuleThrows_postfix = 33, 
-    RuleQuailified_name = 34, RuleAttribute_addition = 35, RuleAttribute = 36, 
-    RuleComparision_operator = 37, RuleBitshift_operator = 38, RuleAdditive_operator = 39, 
-    RuleMultiplicative_operator = 40, RulePrefix_operator = 41, RulePostfix_operator = 42, 
-    RuleCall_operator = 43, RuleIndex_operator = 44, RuleCvu_type = 45, 
-    RulePointer_type = 46, RuleArray_type = 47, RuleType = 48, RulePrimitive = 49, 
-    RuleIntegral_type = 50, RuleFloating_type = 51, RuleVector_type = 52, 
-    RuleParemeter_list = 53, RuleParameter = 54, RuleLitteral = 55, RuleBool_litteral = 56, 
-    RuleCvu_decorators = 57, RuleScoperesolution_list = 58, RuleError_recovery = 59
+    RulePrimary_expr = 31, RuleClassmember_declaration = 32, RuleAcces_modifiers = 33, 
+    RuleThrows_postfix = 34, RuleQuailified_name = 35, RuleAttribute_addition = 36, 
+    RuleAttribute = 37, RuleComparision_operator = 38, RuleBitshift_operator = 39, 
+    RuleAdditive_operator = 40, RuleMultiplicative_operator = 41, RulePrefix_operator = 42, 
+    RulePostfix_operator = 43, RuleCall_operator = 44, RuleIndex_operator = 45, 
+    RuleCvu_type = 46, RulePointer_type = 47, RuleArray_type = 48, RuleType = 49, 
+    RulePrimitive = 50, RuleIntegral_type = 51, RuleFloating_type = 52, 
+    RuleVector_type = 53, RuleParemeter_list = 54, RuleParameter = 55, RuleLitteral = 56, 
+    RuleBool_litteral = 57, RuleCvu_decorators = 58, RuleScoperesolution_list = 59, 
+    RuleError_recovery = 60
   };
 
   explicit USLParser(antlr4::TokenStream *input);
@@ -107,6 +108,7 @@ public:
   class Postfix_exprContext;
   class Prefix_exprContext;
   class Primary_exprContext;
+  class Classmember_declarationContext;
   class Acces_modifiersContext;
   class Throws_postfixContext;
   class Quailified_nameContext;
@@ -176,7 +178,6 @@ public:
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Variable_declarationContext *variable_declaration();
-    Function_declarationContext *function_declaration();
     Goto_statementContext *goto_statement();
     Lable_statementContext *lable_statement();
     While_statementContext *while_statement();
@@ -184,7 +185,6 @@ public:
     For_statementContext *for_statement();
     Switch_statementContext *switch_statement();
     Expression_statementContext *expression_statement();
-    Error_recoveryContext *error_recovery();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -219,12 +219,13 @@ public:
     antlr4::Token *TypeName = nullptr;
     Class_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Basic_blockContext *basic_block();
     antlr4::tree::TerminalNode *CLASS();
     antlr4::tree::TerminalNode *STRUCT();
     antlr4::tree::TerminalNode *ID();
     Attribute_additionContext *attribute_addition();
     Quailified_nameContext *quailified_name();
+    std::vector<Classmember_declarationContext *> classmember_declaration();
+    Classmember_declarationContext* classmember_declaration(size_t i);
     antlr4::tree::TerminalNode *PUBLIC();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -291,6 +292,8 @@ public:
     Attribute_additionContext *attribute_addition();
     Paremeter_listContext *paremeter_list();
     antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *VOLATILE();
+    antlr4::tree::TerminalNode *UNSAFE();
     Throws_postfixContext *throws_postfix();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -345,7 +348,8 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IF();
     ExpressionContext *expression();
-    Basic_blockContext *basic_block();
+    std::vector<StatementContext *> statement();
+    StatementContext* statement(size_t i);
     Else_statementContext *else_statement();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -720,6 +724,22 @@ public:
   };
 
   Primary_exprContext* primary_expr();
+
+  class  Classmember_declarationContext : public antlr4::ParserRuleContext {
+  public:
+    Classmember_declarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Function_declarationContext *function_declaration();
+    Variable_declarationContext *variable_declaration();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Classmember_declarationContext* classmember_declaration();
 
   class  Acces_modifiersContext : public antlr4::ParserRuleContext {
   public:

@@ -83,6 +83,8 @@ public:
 
     virtual std::any visitPrimary_expr(USLParser::Primary_exprContext *context) = 0;
 
+    virtual std::any visitClassmember_declaration(USLParser::Classmember_declarationContext *context) = 0;
+
     virtual std::any visitAcces_modifiers(USLParser::Acces_modifiersContext *context) = 0;
 
     virtual std::any visitThrows_postfix(USLParser::Throws_postfixContext *context) = 0;

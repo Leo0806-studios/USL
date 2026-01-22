@@ -112,6 +112,9 @@ public:
   virtual void enterPrimary_expr(USLParser::Primary_exprContext * /*ctx*/) override { }
   virtual void exitPrimary_expr(USLParser::Primary_exprContext * /*ctx*/) override { }
 
+  virtual void enterClassmember_declaration(USLParser::Classmember_declarationContext * /*ctx*/) override { }
+  virtual void exitClassmember_declaration(USLParser::Classmember_declarationContext * /*ctx*/) override { }
+
   virtual void enterAcces_modifiers(USLParser::Acces_modifiersContext * /*ctx*/) override { }
   virtual void exitAcces_modifiers(USLParser::Acces_modifiersContext * /*ctx*/) override { }
 

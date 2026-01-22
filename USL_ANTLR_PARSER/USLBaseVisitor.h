@@ -143,6 +143,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitClassmember_declaration(USLParser::Classmember_declarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitAcces_modifiers(USLParser::Acces_modifiersContext *ctx) override {
     return visitChildren(ctx);
   }

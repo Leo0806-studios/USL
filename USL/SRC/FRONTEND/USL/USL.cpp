@@ -85,7 +85,7 @@ namespace USL::FRONTEND {
 		}
 	}
 
-	USL_Compiler::USL_Compiler(int argc, char** argv) : compilerArguments(argc, argv), SyncPoint(static_cast<int>(compilerArguments.GetSourceFiles().size()))
+		USL_Compiler::USL_Compiler(int argc, char** argv) : compilerArguments(argc, argv), SyncPoint(static_cast<int>(compilerArguments.GetSourceFiles().size()))
 	{
 #pragma warning (push)
 #pragma warning (disable: 4365)
