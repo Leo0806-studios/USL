@@ -118,16 +118,23 @@ namespace USL::FRONTEND {
 		
 	};
 	class FunctionSymbol :public Symbol {
+		WeakScopePtr ownScope;
+
 		std::weak_ptr<TypeSymbol> returnType ;
 		std::vector<std::weak_ptr<VariableSymbol>> parameterList ;
 	public:
+		GetSet(ownScope)
+
 			[[nodiscard]] explicit  FunctionSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
 			[[nodiscard]] std::string ToString() const override;
 
 	};
 	class EnumSymbol :public Symbol {
 		WeakSymbolPtr enumtype;
+		WeakScopePtr ownScope;
 	public:
+		GetSet(enumtype)
+		GetSet(ownScope)
 		[[nodiscard]] explicit  EnumSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 		[[nodiscard]] std::string ToString() const override;
 
@@ -136,6 +143,7 @@ namespace USL::FRONTEND {
 		WeakSymbolPtr type;
 		std::variant<long long, unsigned long long> value;
 	public:
+		GetSet(type)
 		[[nodiscard]]  explicit EnumConstant(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 		[[nodiscard]] std::string ToString() const override;
 
@@ -143,13 +151,21 @@ namespace USL::FRONTEND {
 	class TypeSymbol:public Symbol{
 		size_t aligment = 0;
 		size_t size = 0;
+		WeakScopePtr ownScope;
+
 	public:
+		GetSet(ownScope)
+
 		[[nodiscard]] explicit TypeSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 		[[nodiscard]] std::string ToString() const override;
 
 	};
 	class AttribueSymbol :public Symbol {
+		WeakScopePtr ownScope;
+
 	public:
+		GetSet(ownScope)
+
 		[[nodiscard]] explicit AttribueSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
 		[[nodiscard]] std::string ToString() const override;
 

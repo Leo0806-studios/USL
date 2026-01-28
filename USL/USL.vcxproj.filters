@@ -39,6 +39,9 @@
     <ClCompile Include="SRC\FRONTEND\SYMBOL\SYMBOL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SRC\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TextFile1.txt" />
@@ -82,6 +85,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GET_SET_WRAPPER.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HEADER\FRONTEND\SYMBOL_RESOLVER\SYMBOL_RESOLVER.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

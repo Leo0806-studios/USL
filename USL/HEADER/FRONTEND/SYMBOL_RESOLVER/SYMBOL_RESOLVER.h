@@ -1,82 +1,38 @@
-//################################################################
-//						SYMBOL_GATHERER.h
-//	Author: Leo0806
-//	Date created: 27.12.2026
-//	Last modified:08.01.2026
-//	Purpose: defines the symbol gathering visitor of the AST. 
-//################################################################
 #pragma once
-
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
 #include <antlr4-runtime.h>
-#include <memory>
-#include <string>
 #include <USLBaseListener.h>
-#include <USLParser.h>
-#include <vector>
+#include <memory>
 #include "FRONTEND/CMD_PARSE/CMD_PARSE.h"
-#include "FRONTEND/ERROR_CODES/ERROR_CODES.h"
-#include "FRONTEND/MANGLED_NAME/MANGLED_NAME.h"
 #include "FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h"
-
+#include "FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h"
 #else
-
-import <USLBaseListener.h>;
-import<USLParser.h>;
 import <memory>;
-import<string>;
 import <antlr4-runtime.h>;
-import <vector>;
+import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
 import <FRONTEND/CMD_PARSE/CMD_PARSE.h>;
-import <FRONTEND/ERROR_CODES/ERROR_CODES.h>;
-import <FRONTEND/MANGLED_NAME/MANGLED_NAME.h>;
+import <USLBaseListener.h>;
 import <FRONTEND/SYMBOL_TABLE/SYMBOL_TABLE.h>;
 #endif //  __clang__ || __INTELLISENSE__||defined(TESTS_BUILD)
 namespace USL::FRONTEND {
-	class FunctionLocalBlockid {
-		std::string id;
-	public:
-		[[nodiscard]] FunctionLocalBlockid() = default;
-		[[nodiscard]] explicit FunctionLocalBlockid(std::string idStr) :id(std::move(idStr)) {}
-		[[nodiscard]] FunctionLocalBlockid(const FunctionLocalBlockid& other) : id(other.id) {}
-		[[nodiscard]] FunctionLocalBlockid(FunctionLocalBlockid&& other) noexcept :id(std::move(other.id)) {}
-		 FunctionLocalBlockid& operator=(const FunctionLocalBlockid& other) {
-			if (this != &other) {
-				id = other.id;
-			}
-			return *this;
-		}
-		 FunctionLocalBlockid& operator=(FunctionLocalBlockid&& other) noexcept {
-			if (this != &other) {
-				id = std::move(other.id);
-			}
-			return *this;
-		}
-		[[nodiscard]]const std::string& Get()const noexcept { return id; }
-	};
-	class SymbolGatherer :public USLBaseListener {
+	class SymbolResolver :public USLBaseListener {
 		std::weak_ptr<SymbolTable> table;
 		std::vector<std::string> errors;
 		std::vector<std::string> warnings;
 		std::vector<std::string> infos;
 		std::weak_ptr<const Arguments> args;
-		std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>>DecoratedNames; 
+		std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>>DecoratedNames;
 		std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds;
 		void logError(InternalErrors error, const std::string& errorMessage, size_t line, size_t pos);
 		void logError(error error, const std::string& errorMessage, size_t line, size_t pos);
+		void logError(SymbolResolveErrors error, const std::string& errorMessage, size_t line, size_t pos);
 		void logWarning(WarningCodes warning, const std::string& warningMessage, size_t line, size_t pos);
 		void logInfo(const std::string& infoMessage, size_t line, size_t pos);
 	public:
-		[[nodiscard]] explicit  SymbolGatherer(std::weak_ptr<SymbolTable> Table,
-											   std::weak_ptr<const Arguments> Args,
-											   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames, 
-											   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
-
-		const std::vector<std::string>& GetErrors() const noexcept { return errors; }
-		const std::vector<std::string>& GetWarnings() const noexcept { return warnings; }
-		const std::vector<std::string>& GetInfos() const noexcept { return infos; }
-
-		void enterProgram(USLParser::ProgramContext* ctx) override;
+		SymbolResolver(std::weak_ptr<SymbolTable> Table,
+					   std::weak_ptr<const Arguments> Args,
+					   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames,
+					   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
 
 		void enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
 		void exitNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
@@ -121,5 +77,6 @@ namespace USL::FRONTEND {
 		void exitCase_statement(USLParser::Case_statementContext* ctx) override;
 		void enterDefault_statement(USLParser::Default_statementContext* ctx) override;
 		void exitDefault_statement(USLParser::Default_statementContext* ctx) override;
+
 	};
-}//namespace USL::FRONTEND
+}

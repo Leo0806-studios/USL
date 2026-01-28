@@ -91,22 +91,6 @@ namespace USL::FRONTEND {
 		}
 		return ret;
 	}
-	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const
-	{
-		const std::thread::id thread_id = std::this_thread::get_id();
-		const ScopePtr current = (*currentScopes.find(thread_id)).second.lock();
-		auto& symbols = current->GetSymbols();
-		try {
-			const SymbolPtr symbol = symbols.at(name);
-			return symbol;
-
-		}
-		catch (const std::out_of_range&) {
-			return{};
-		}
-
-
-	}
 
 	/// <summary>
 	/// recursively looksup a symbol from the provided scope and the scopes in the stack. returns an ampty weak pointer if not found
@@ -153,6 +137,16 @@ namespace USL::FRONTEND {
 		return RecursiveLookuphelper(symbolName, scopes, (*nextScope).second);
 
 
+
+
+	}
+	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const
+	{
+		const std::thread::id thread_id = std::this_thread::get_id();
+		const ScopePtr current = (*currentScopes.find(thread_id)).second.lock();
+		std::stack<std::string> dummyStack;
+		return RecursiveLookuphelper(name,dummyStack,current);
+		
 
 
 	}

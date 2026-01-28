@@ -86,6 +86,42 @@ namespace USL::FRONTEND {
 		LocalBlockIds(std::move(LocalBlockIds))
 	{
 	}
+	namespace {
+		void InsertPrimitive(std::weak_ptr<SymbolTable> table, const std::string& name) {
+			auto locked = table.lock();
+			std::unique_ptr<Symbol> Symbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope());
+			locked->InsertSymbol(std::move(Symbol), name);
+		}
+	}
+	void SymbolGatherer::enterProgram(USLParser::ProgramContext* ctx)
+	{
+		InsertPrimitive(table, "bool");
+		InsertPrimitive(table, "char");
+		InsertPrimitive(table, "unsigned char");
+		InsertPrimitive(table, "short");
+		InsertPrimitive(table, "unsigned short");
+		InsertPrimitive(table, "int");
+		InsertPrimitive(table, "unsigned int");
+		InsertPrimitive(table, "long");
+		InsertPrimitive(table, "unsigned long");
+		InsertPrimitive(table, "void");
+		InsertPrimitive(table, "hash");
+		InsertPrimitive(table, "string");
+		InsertPrimitive(table, "type");
+		InsertPrimitive(table, "m128");
+		InsertPrimitive(table, "m128i");
+		InsertPrimitive(table, "m128d");
+		InsertPrimitive(table, "m256");
+		InsertPrimitive(table, "m256i");
+		InsertPrimitive(table, "m256d");
+		InsertPrimitive(table, "m512");
+		InsertPrimitive(table, "m512i");
+		InsertPrimitive(table, "m512d");
+		InsertPrimitive(table, "float");
+		InsertPrimitive(table, "double");
+		InsertPrimitive(table, "w_double");
+		InsertPrimitive(table, "nullptr_t");
+	}
 
 	void SymbolGatherer::enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
 	{
@@ -128,6 +164,8 @@ namespace USL::FRONTEND {
 		switch (lockedTable->InsertScopeWithSymbol(ctx->TypeName->getText(), std::move(classSymbol), ctx->TypeName->getText()))
 		{
 			case iResultSymbol::succses: {
+				std::static_pointer_cast<TypeSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
+
 					break; //nothing else to do here. just exists for future proofing
 				}
 			case iResultSymbol::failiure: {
@@ -166,6 +204,7 @@ namespace USL::FRONTEND {
 		switch (lovkedTable->InsertScopeWithSymbol(ctx->EnumName->getText(), std::move(enumSymbol), ctx->EnumName->getText()))
 		{
 			case iResultSymbol::succses: {
+				std::static_pointer_cast<EnumSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
 					break; //nothing else to do here. just exists for future proofing
 				}
 			case iResultSymbol::failiure: {
@@ -253,6 +292,8 @@ namespace USL::FRONTEND {
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
 			case iResultSymbol::succses: {
+				std::static_pointer_cast<FunctionSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
+
 					break;//nothing to do here
 				}
 			case iResultSymbol::allreadyExists: {
@@ -513,7 +554,7 @@ namespace USL::FRONTEND {
 				}
 		}
 
-		if (auto loopVar = ctx->Initializer) {
+		if (auto*const loopVar = ctx->Initializer) {
 			std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
 			using iResultSymbol = SymbolTable::InsertSymbolResult;
 			switch (lockedTable->InsertSymbol(std::move(varSymbol), loopVar->name->getText())) {
@@ -545,23 +586,110 @@ namespace USL::FRONTEND {
 
 	void SymbolGatherer::enterSwitch_statement(USLParser::Switch_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "Switch_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert Switch statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. Switch statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Switch statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitSwitch_statement(USLParser::Switch_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Switch statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 
 	void SymbolGatherer::enterCase_statement(USLParser::Case_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "Case_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert Case statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. Case statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting Case statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 
 	void SymbolGatherer::exitCase_statement(USLParser::Case_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit Case statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 	void SymbolGatherer::enterDefault_statement(USLParser::Default_statementContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
+		using iScopeResult = SymbolTable::InsertScopeResult;
+		auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
+		std::string conditionScopeName = "Default_scope_" + uuid;
+		FunctionLocalBlockid blockId(conditionScopeName);
+		LocalBlockIds.lock()->put(ctx, blockId);
+
+
+		switch (lockedTable->InsertScope(conditionScopeName)) {
+			case iScopeResult::succses: {
+					break;//nothing else to do here
+				}
+			case iScopeResult::failiure: {
+					logError(InternalErrors::FailedToInsertScope, "Failed to insert Defult statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case iScopeResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "this error should never show up. Default statement scope allready exists: " + ctx->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting default statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
 	}
 	void SymbolGatherer::exitDefault_statement(USLParser::Default_statementContext* ctx)
 	{
+		if (!table.lock()->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "Failed to exit default statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+		}
 	}
 }// namespace USL::FRONTEND

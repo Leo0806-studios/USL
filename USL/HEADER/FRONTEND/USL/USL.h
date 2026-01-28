@@ -59,21 +59,35 @@ namespace USL::FRONTEND {
 		};
 	private:
 		friend class CompilerHelpers;
-		Arguments compilerArguments;
+		const std::shared_ptr<Arguments> compilerArguments;
 		std::vector<std::thread> WorkerThreads;
 		std::atomic_bool StartCompiler{ false };
 		std::atomic_size_t SafeCounter{ 0 };
 		std::stringstream ComStream;
 		std::mutex ComStreamMutex;
 		std::barrier<> SyncPoint;
-		FRONTEND::SymbolTable symbolTable;
+		std::shared_ptr<FRONTEND::SymbolTable> symbolTable;
 		std::unordered_map<std::thread::id, CompilerResults> Results;
+		std::atomic_size_t finishedThreads{ 0 };
+		class OutDetector {
+			USL_Compiler& compiler;
+		public:
+			OutDetector(USL_Compiler& compiler_):compiler(compiler_){}
+			OutDetector(const OutDetector&) = delete;
+			OutDetector(OutDetector&&) = delete;
+			OutDetector& operator=(const OutDetector&) = delete;
+			OutDetector& operator=(OutDetector&&) = delete;
+			~OutDetector() {
+				compiler.finishedThreads.fetch_add(1);
+			}
+		};
+		friend OutDetector;
 		/// <summary>
 		/// Appends the local stream of the thread to the comstream in a threadsafe way
 		/// </summary>
 		void appendComStream();
 		/// <summary>
-		/// Prints the com stream to the console on the main thread and clears the comstream afterwards.
+		/// Prints the com stream to the console on the Log Thread and clears the comstream afterwards.
 		/// fully guards and makes all threads wait untill the print is done
 		/// </summary>
 		void printComStream_Syncs();
