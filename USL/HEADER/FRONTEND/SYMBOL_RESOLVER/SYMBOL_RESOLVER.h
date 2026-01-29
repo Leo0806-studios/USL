@@ -23,6 +23,7 @@ namespace USL::FRONTEND {
 		std::weak_ptr<const Arguments> args;
 		std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>>DecoratedNames;
 		std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds;
+		std::weak_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> ResolvedSymbols;
 		void logError(InternalErrors error, const std::string& errorMessage, size_t line, size_t pos);
 		void logError(error error, const std::string& errorMessage, size_t line, size_t pos);
 		void logError(SymbolResolveErrors error, const std::string& errorMessage, size_t line, size_t pos);
@@ -32,7 +33,8 @@ namespace USL::FRONTEND {
 		SymbolResolver(std::weak_ptr<SymbolTable> Table,
 					   std::weak_ptr<const Arguments> Args,
 					   std::weak_ptr< antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames,
-					   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds);
+					   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds,
+					   std::weak_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> resolvedSymbols);
 
 		void enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
 		void exitNamespace_declaration(USLParser::Namespace_declarationContext* ctx) override;
@@ -78,5 +80,7 @@ namespace USL::FRONTEND {
 		void enterDefault_statement(USLParser::Default_statementContext* ctx) override;
 		void exitDefault_statement(USLParser::Default_statementContext* ctx) override;
 
+		void enterQuailified_name(USLParser::Quailified_nameContext* ctx) override;
+		void exitQuailified_name(USLParser::Quailified_nameContext* ctx) override;
 	};
 }

@@ -58,8 +58,9 @@ namespace USL::FRONTEND {
 	SymbolResolver::SymbolResolver(std::weak_ptr<SymbolTable> Table,
 								   std::weak_ptr<const Arguments> Args,
 								   std::weak_ptr<antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames,
-								   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds)
-		:table(Table),args(Args),DecoratedNames(DecoratedNames),LocalBlockIds(LocalBlockIds)
+								   std::weak_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> LocalBlockIds,
+								   std::weak_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>>ResolvedSymbols)
+		:table(Table), args(Args), DecoratedNames(DecoratedNames), LocalBlockIds(LocalBlockIds), ResolvedSymbols(ResolvedSymbols)
 	{
 	}
 	void SymbolResolver::enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
@@ -185,6 +186,20 @@ namespace USL::FRONTEND {
 	{
 	}
 	void SymbolResolver::exitDefault_statement(USLParser::Default_statementContext* ctx)
+	{
+	}
+	void SymbolResolver::enterQuailified_name(USLParser::Quailified_nameContext* ctx)
+	{
+		auto locked = table.lock();
+		std::weak_ptr<VariableSymbol> varSymbol = std::dynamic_pointer_cast< VariableSymbol >(locked->LookupSymbol(ctx->getText()).lock());
+		if (varSymbol.expired()) {
+			logError(SymbolResolveErrors::CouldNotResolveSymbol, "unable to resolve quailified name: " + ctx->getText(), GetLine(ctx), GetCharPos(ctx));
+			return;
+		}
+
+
+	}
+	void SymbolResolver::exitQuailified_name(USLParser::Quailified_nameContext* ctx)
 	{
 	}
 }
