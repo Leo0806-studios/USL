@@ -184,7 +184,7 @@ statement                           :variable_declaration|
 //scope Statements (excluding controll flow)
 namespace_declaration               :NAMESPACE NamespaceName =ID '{'global_statement* '}';  
 class_declaration                   :attribute_addition? (CLASS|STRUCT)TypeName= ID (':' PUBLIC? quailified_name )? '{'classmember_declaration*'}' ';';
-enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive)? '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? )* (',')? '}' ';';
+enum_declaration                    :attribute_addition? ENUM EnumName= ID (':'EnumType= primitive) '{'ID (ASSIGN_OP litteral)? (',' ID (ASSIGN_OP litteral)? )* (',')? '}' ';';
 attribute_declaration               :ATRIBUTE AttributeName=ID '{''}';
 function_declaration                :attribute_addition? acces_modifiers ReturnType=cvu_type FunctionName=ID '('paremeter_list? ')'CONST? VOLATILE? UNSAFE? throws_postfix? basic_block';';
 basic_block                         :'{'statement*'}';

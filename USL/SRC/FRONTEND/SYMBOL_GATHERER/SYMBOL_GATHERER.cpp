@@ -87,40 +87,94 @@ namespace USL::FRONTEND {
 	{
 	}
 	namespace {
-		void InsertPrimitive(std::weak_ptr<SymbolTable> table, const std::string& name) {
+		[[nodiscard]] bool InsertPrimitive(std::weak_ptr<SymbolTable> table, const std::string& name) {
 			auto locked = table.lock();
 			std::unique_ptr<Symbol> Symbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope());
-			locked->InsertSymbol(std::move(Symbol), name);
+			auto ret = locked->InsertSymbol(std::move(Symbol), name);
+			return ret == SymbolTable::InsertSymbolResult::succses;
 		}
 	}
 	void SymbolGatherer::enterProgram(USLParser::ProgramContext* ctx)
 	{
-		InsertPrimitive(table, "bool");
-		InsertPrimitive(table, "char");
-		InsertPrimitive(table, "unsigned char");
-		InsertPrimitive(table, "short");
-		InsertPrimitive(table, "unsigned short");
-		InsertPrimitive(table, "int");
-		InsertPrimitive(table, "unsigned int");
-		InsertPrimitive(table, "long");
-		InsertPrimitive(table, "unsigned long");
-		InsertPrimitive(table, "void");
-		InsertPrimitive(table, "hash");
-		InsertPrimitive(table, "string");
-		InsertPrimitive(table, "type");
-		InsertPrimitive(table, "m128");
-		InsertPrimitive(table, "m128i");
-		InsertPrimitive(table, "m128d");
-		InsertPrimitive(table, "m256");
-		InsertPrimitive(table, "m256i");
-		InsertPrimitive(table, "m256d");
-		InsertPrimitive(table, "m512");
-		InsertPrimitive(table, "m512i");
-		InsertPrimitive(table, "m512d");
-		InsertPrimitive(table, "float");
-		InsertPrimitive(table, "double");
-		InsertPrimitive(table, "w_double");
-		InsertPrimitive(table, "nullptr_t");
+
+		if (!InsertPrimitive(table, "bool")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "char")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "unsigned char")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "short")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "unsigned short")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "int")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "unsigned int")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "long")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "unsigned long")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "void")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "hash")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "string")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "type")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m128")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m128i")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m128d")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m256")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m256i")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m256d")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m512")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m512i")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "m512d")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "float")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "double")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "w_double")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
+		if (!InsertPrimitive(table, "nullptr_t")) {
+			logError(InternalErrors::unknownInternalError, "failed to insert primiive", 0, 0);
+		}
 	}
 
 	void SymbolGatherer::enterNamespace_declaration(USLParser::Namespace_declarationContext* ctx)
@@ -164,7 +218,7 @@ namespace USL::FRONTEND {
 		switch (lockedTable->InsertScopeWithSymbol(ctx->TypeName->getText(), std::move(classSymbol), ctx->TypeName->getText()))
 		{
 			case iResultSymbol::succses: {
-				std::static_pointer_cast<TypeSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
+					std::static_pointer_cast<TypeSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
 
 					break; //nothing else to do here. just exists for future proofing
 				}
@@ -204,7 +258,7 @@ namespace USL::FRONTEND {
 		switch (lovkedTable->InsertScopeWithSymbol(ctx->EnumName->getText(), std::move(enumSymbol), ctx->EnumName->getText()))
 		{
 			case iResultSymbol::succses: {
-				std::static_pointer_cast<EnumSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
+					std::static_pointer_cast<EnumSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
 					break; //nothing else to do here. just exists for future proofing
 				}
 			case iResultSymbol::failiure: {
@@ -292,7 +346,7 @@ namespace USL::FRONTEND {
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
 			case iResultSymbol::succses: {
-				std::static_pointer_cast<FunctionSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
+					std::static_pointer_cast<FunctionSymbol>(table.lock()->GetCurrentScope().lock()->Get_ownSymbol().first.lock())->Set_ownScope(table.lock()->GetCurrentScope());
 
 					break;//nothing to do here
 				}
@@ -554,7 +608,7 @@ namespace USL::FRONTEND {
 				}
 		}
 
-		if (auto*const loopVar = ctx->Initializer) {
+		if (auto* const loopVar = ctx->Initializer) {
 			std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
 			using iResultSymbol = SymbolTable::InsertSymbolResult;
 			switch (lockedTable->InsertSymbol(std::move(varSymbol), loopVar->name->getText())) {

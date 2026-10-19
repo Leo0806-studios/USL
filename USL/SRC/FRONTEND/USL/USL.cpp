@@ -64,6 +64,7 @@ namespace USL::FRONTEND {
 		antlr4::tree::ParseTree* tree = nullptr;
 		std::shared_ptr<antlr4::tree::ParseTreeProperty<DecoratedName>> DecoratedNames;
 		std::shared_ptr<antlr4::tree::ParseTreeProperty<FunctionLocalBlockid>> FunctionBlockIds;
+		std::shared_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> ResolvedSymbols;
 		std::shared_ptr<SymbolResolver> SymbolResolver;
 		std::shared_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> IdSymbols;
 		std::filesystem::path InputFile;
@@ -339,6 +340,18 @@ namespace USL::FRONTEND {
 
 		printComStream_Syncs();
 
+		std::weak_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> resolvedSymbols = [&]()->std::weak_ptr<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>> {
+			return ThreadData_g.ResolvedSymbols = std::make_shared<antlr4::tree::ParseTreeProperty<WeakSymbolPtr>>();
+			}();
+		if (!resolvedSymbols.lock()) {
+			localStream.str(std::string());//might be unnecesary
+			localStream << "failed to allocate and create antr4ParseTreePropertyResolvedSymbols on thread:" << std::this_thread::get_id() << " for file: " << inputFile << '\n';
+			appendComStream();
+			SyncPoint.arrive_and_drop();
+			ThreadData_g.failed.store(true);
+			return;
+		}
+		printComStream_Syncs();
 		std::weak_ptr< USL::FRONTEND::SymbolGatherer> symbolGatherer = [&]()->std::weak_ptr< USL::FRONTEND::SymbolGatherer> {
 			ThreadData_g.symbolGatherer = std::make_shared< USL::FRONTEND::SymbolGatherer>(std::weak_ptr<SymbolTable>(symbolTable), std::weak_ptr<Arguments>(compilerArguments), ThreadData_g.DecoratedNames, ThreadData_g.FunctionBlockIds);
 			return ThreadData_g.symbolGatherer;
@@ -366,7 +379,7 @@ namespace USL::FRONTEND {
 		}
 		printComStream_Syncs();
 		std::weak_ptr<SymbolResolver> symbolResolver = [&]() {
-			return ThreadData_g.SymbolResolver = std::make_shared<SymbolResolver>(symbolTable, compilerArguments, ThreadData_g.DecoratedNames, ThreadData_g.FunctionBlockIds);
+			return ThreadData_g.SymbolResolver = std::make_shared<SymbolResolver>(symbolTable, compilerArguments, ThreadData_g.DecoratedNames, ThreadData_g.FunctionBlockIds,ThreadData_g.ResolvedSymbols);
 			}();
 		if (!symbolResolver.lock()) {
 			localStream.str(std::string());//might me uneccesary

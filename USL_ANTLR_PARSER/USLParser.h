@@ -1,5 +1,5 @@
 
-// Generated from c:/Users/leo08/source/repos/Leo0806-studios/USL/USL/ANTLR/USL.g4 by ANTLR 4.13.2
+// Generated from d:/CODE/source/repos/USL/USL/ANTLR/USL.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -247,11 +247,11 @@ public:
     std::vector<antlr4::tree::TerminalNode *> ID();
     antlr4::tree::TerminalNode* ID(size_t i);
     Attribute_additionContext *attribute_addition();
+    PrimitiveContext *primitive();
     std::vector<antlr4::tree::TerminalNode *> ASSIGN_OP();
     antlr4::tree::TerminalNode* ASSIGN_OP(size_t i);
     std::vector<LitteralContext *> litteral();
     LitteralContext* litteral(size_t i);
-    PrimitiveContext *primitive();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
