@@ -23,6 +23,26 @@ namespace USL::FRONTEND {
 		size_t GetCharPos(antlr4::ParserRuleContext* ctx) {
 			return ctx->getStart()->getCharPositionInLine();
 		}
+		struct PackedName {
+			std::string id;
+			std::vector<std::string> scopeList;
+		};
+		PackedName ParseType(USLParser::TypeContext* ctx) {
+			PackedName ret;
+			if (ctx->quailified_name()) {
+				ret.id = ctx->quailified_name()->getText();
+				for (auto& scope : ctx->quailified_name()->scoperesolution_list()->ID()) {
+					ret.scopeList.push_back(scope->getText());
+				}
+			}
+			else if (ctx->primitive()) {
+				ret.id = ctx->primitive()->getText();
+			}
+			else if (ctx->AUTO()) {
+				ret.id = "auto";
+			}
+			return ret;
+		}
 	}
 	void SymbolResolver::logError(InternalErrors error, const std::string& errorMessage, size_t line, size_t pos)
 	{	
@@ -94,7 +114,11 @@ namespace USL::FRONTEND {
 	void SymbolResolver::enterEnum_declaration(USLParser::Enum_declarationContext* ctx)
 	{
 		auto locked = table.lock();
-		std::weak_ptr<EnumSymbol> enumSymbol = std::dynamic_pointer_cast<EnumSymbol>(locked->LookupSymbol(ctx->EnumName->getText()).lock());
+		if (!locked->EnterScope(ctx->EnumName->getText())) {
+			logError(InternalErrors::FailedToEnterScope, "failed to enter enum scope during symbol Resolving", GetLine(ctx), GetCharPos(ctx));
+		}
+		auto currentScope = locked->GetCurrentScope();
+		std::weak_ptr<EnumSymbol> enumSymbol = std::dynamic_pointer_cast<EnumSymbol>(currentScope.lock()->Get_ownSymbol().first.lock());
 		if (enumSymbol.expired()) {
 			logError(InternalErrors::unknownInternalError, "cant find symbol that should exist. this error should never show up. good luck", GetLine(ctx), GetCharPos(ctx));
 			}
@@ -124,9 +148,27 @@ namespace USL::FRONTEND {
 	}
 	void SymbolResolver::enterFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		if (!lockedTable->EnterScope(ctx->FunctionName->getText())) {
+			logError(InternalErrors::FailedToEnterScope, "failed to enter function scope during symbol Resolving", GetLine(ctx), GetCharPos(ctx));
+		}
+		auto currentScope = lockedTable->GetCurrentScope();
+		auto functionSymbol = std::dynamic_pointer_cast<FunctionSymbol>(currentScope.lock()->Get_ownSymbol().first.lock());
+		PackedName returnType = ParseType(ctx->ReturnType->type());
+		functionSymbol->Set_returnType(std::dynamic_pointer_cast<TypeSymbol>(lockedTable->LookupSymbol(returnType.id, returnType.scopeList).lock()));
+		for (auto& param : ctx->paremeter_list()->parameter()) {
+			auto type = param->cvu_type()->type();
+			PackedName paramType = ParseType(type);
+			functionSymbol->AddParameter(std::dynamic_pointer_cast<VariableSymbol>(lockedTable->LookupSymbol(paramType.id, paramType.scopeList).lock()));
+		}
+
 	}
 	void SymbolResolver::exitFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
+		auto lockedTable = table.lock();
+		if (!lockedTable->ExitScope()) {
+			logError(InternalErrors::FailedToExitScope, "failed to exit function scope during symbol resolving", GetLine(ctx), GetCharPos(ctx));
+		}
 	}
 	void SymbolResolver::enterVariable_declaration(USLParser::Variable_declarationContext* ctx)
 	{

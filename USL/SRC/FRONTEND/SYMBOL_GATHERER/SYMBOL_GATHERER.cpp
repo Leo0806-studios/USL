@@ -89,9 +89,10 @@ namespace USL::FRONTEND {
 	namespace {
 		[[nodiscard]] bool InsertPrimitive(std::weak_ptr<SymbolTable> table, const std::string& name) {
 			auto locked = table.lock();
-			std::unique_ptr<Symbol> Symbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope());
+			auto typeSymbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope());
+			std::unique_ptr<Symbol> Symbol = std::move(typeSymbol);
 			auto ret = locked->InsertSymbol(std::move(Symbol), name);
-			return ret == SymbolTable::InsertSymbolResult::succses;
+			return ret != SymbolTable::InsertSymbolResult::failiure;//for primitiv es i dont care about them allready existing 
 		}
 	}
 	void SymbolGatherer::enterProgram(USLParser::ProgramContext* ctx)

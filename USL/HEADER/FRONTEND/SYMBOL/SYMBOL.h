@@ -124,7 +124,15 @@ namespace USL::FRONTEND {
 		std::vector<std::weak_ptr<VariableSymbol>> parameterList ;
 	public:
 		GetSet(ownScope)
+			GetSet(returnType)
+			void AddParameter(std::weak_ptr<VariableSymbol> param) {
+			parameterList.emplace_back(std::move(param));
+		
 
+		}
+		auto& GetParameterList() noexcept {
+			return parameterList;
+		}
 			[[nodiscard]] explicit  FunctionSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
 			[[nodiscard]] std::string ToString() const override;
 

@@ -116,6 +116,8 @@ namespace USL::FRONTEND {
 		Worker();
 		while (finishedThreads != (WorkerThreads.size()+1)) {}
 		std::cout << ComStream.str() << '\n' << std::flush;
+		std::cout << symbolTable->ToString() << '\n' << std::flush;
+		std::cout << "finished compiling all source files\n" << std::flush;
 		return CompilerResults();
 	}
 
