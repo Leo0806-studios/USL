@@ -115,7 +115,7 @@ namespace USL_COMPILER_TESTS
 		}
 		TEST_METHOD(TestInsertSymbolValid){
 		SymbolTable symbolTable;
-			auto symbol = std::make_unique<VariableSymbol>(symbolTable.GetCurrentScope());
+			auto symbol = std::make_unique<VariableSymbol>(symbolTable.GetCurrentScope(),"myVar");
 			std::string symbolName = "myVar";
 			auto succses = symbolTable.InsertSymbol(std::move(symbol), symbolName);
 			Assert::IsTrue(succses == USL::FRONTEND::SymbolTable::InsertSymbolResult::succses);

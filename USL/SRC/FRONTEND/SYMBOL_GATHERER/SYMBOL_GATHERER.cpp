@@ -89,7 +89,7 @@ namespace USL::FRONTEND {
 	namespace {
 		[[nodiscard]] bool InsertPrimitive(std::weak_ptr<SymbolTable> table, const std::string& name) {
 			auto locked = table.lock();
-			auto typeSymbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope());
+			auto typeSymbol = std::make_unique<TypeSymbol>(locked->GetCurrentScope(),name);
 			std::unique_ptr<Symbol> Symbol = std::move(typeSymbol);
 			auto ret = locked->InsertSymbol(std::move(Symbol), name);
 			return ret != SymbolTable::InsertSymbolResult::failiure;//for primitiv es i dont care about them allready existing 
@@ -214,7 +214,7 @@ namespace USL::FRONTEND {
 		auto lockedTable = this->table.lock();
 
 		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
-		std::unique_ptr<USL::FRONTEND::Symbol> classSymbol = std::make_unique<USL::FRONTEND::TypeSymbol>(currentScope);
+		std::unique_ptr<USL::FRONTEND::Symbol> classSymbol = std::make_unique<USL::FRONTEND::TypeSymbol>(currentScope,ctx->ID()->getText());
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertScopeWithSymbol(ctx->TypeName->getText(), std::move(classSymbol), ctx->TypeName->getText()))
 		{
@@ -254,7 +254,7 @@ namespace USL::FRONTEND {
 		auto lovkedTable = this->table.lock();
 
 		const WeakScopePtr currentScope = lovkedTable->GetCurrentScope();
-		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::EnumSymbol>(currentScope);
+		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::EnumSymbol>(currentScope,ctx->EnumName->getText());
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lovkedTable->InsertScopeWithSymbol(ctx->EnumName->getText(), std::move(enumSymbol), ctx->EnumName->getText()))
 		{
@@ -278,7 +278,7 @@ namespace USL::FRONTEND {
 		//enum is different to classes and such since there are no helper rules and we have to enumerate the enum values here
 		const auto enumIds = ctx->ID();
 		for (const auto& id : enumIds) {
-			std::unique_ptr<Symbol> symbol = std::make_unique<EnumConstant>(lovkedTable->GetCurrentScope());
+			std::unique_ptr<Symbol> symbol = std::make_unique<EnumConstant>(lovkedTable->GetCurrentScope(),id->getText());
 			switch (lovkedTable->InsertSymbol(std::move(symbol), id->getText())) {
 				case iResultSymbol::succses: {
 						break;//nothing to do
@@ -311,7 +311,7 @@ namespace USL::FRONTEND {
 		auto lokedTable = this->table.lock();
 
 		const WeakScopePtr currentScope = lokedTable->GetCurrentScope();
-		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::AttribueSymbol>(currentScope);
+		std::unique_ptr<USL::FRONTEND::Symbol> enumSymbol = std::make_unique<USL::FRONTEND::AttribueSymbol>(currentScope,ctx->ID()->getText());
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lokedTable->InsertScopeWithSymbol(ctx->AttributeName->getText(), std::move(enumSymbol), ctx->AttributeName->getText()))
 		{
@@ -343,7 +343,7 @@ namespace USL::FRONTEND {
 	{
 		auto lockedTable = this->table.lock();
 		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
-		std::unique_ptr<USL::FRONTEND::Symbol> functionSymbol = std::make_unique<USL::FRONTEND::FunctionSymbol>(currentScope);
+		std::unique_ptr<USL::FRONTEND::Symbol> functionSymbol = std::make_unique<USL::FRONTEND::FunctionSymbol>(currentScope,ctx->ID()->getText());
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertScopeWithSymbol(ctx->FunctionName->getText(), std::move(functionSymbol), ctx->FunctionName->getText())) {
 			case iResultSymbol::succses: {
@@ -364,6 +364,7 @@ namespace USL::FRONTEND {
 					return;
 				}
 		}
+
 	}
 
 	void SymbolGatherer::exitFunction_declaration(USLParser::Function_declarationContext* ctx)
@@ -377,7 +378,7 @@ namespace USL::FRONTEND {
 	{
 		auto lockedTable = table.lock();
 		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
-		std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
+		std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope,ctx->ID()->getText());
 		using iResultSymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertSymbol(std::move(varSymbol), ctx->name->getText())) {
 			case iResultSymbol::succses: {
@@ -406,7 +407,7 @@ namespace USL::FRONTEND {
 	{
 		auto lockedTable = table.lock();
 		const WeakScopePtr currentScope = lockedTable->GetCurrentScope();
-		std::unique_ptr<Symbol> lableSymbol = std::make_unique<LableSymbol>(currentScope);
+		std::unique_ptr<Symbol> lableSymbol = std::make_unique<LableSymbol>(currentScope , ctx->ID()->getText());
 		using iResultsymbol = SymbolTable::InsertSymbolResult;
 		switch (lockedTable->InsertSymbol(std::move(lableSymbol), ctx->Name->getText())) {
 			case iResultsymbol::succses: {
@@ -610,7 +611,7 @@ namespace USL::FRONTEND {
 		}
 
 		if (auto* const loopVar = ctx->Initializer) {
-			std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope);
+			std::unique_ptr<Symbol> varSymbol = std::make_unique<VariableSymbol>(currentScope,loopVar->ID()->getText());
 			using iResultSymbol = SymbolTable::InsertSymbolResult;
 			switch (lockedTable->InsertSymbol(std::move(varSymbol), loopVar->name->getText())) {
 				case iResultSymbol::succses: {
@@ -746,5 +747,30 @@ namespace USL::FRONTEND {
 		if (!table.lock()->ExitScope()) {
 			logError(InternalErrors::FailedToExitScope, "Failed to exit default statement scope", ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
 		}
+	}
+	void SymbolGatherer::enterParameter(USLParser::ParameterContext* ctx)
+	{
+		auto lockedTable = table.lock();
+		auto result=lockedTable->InsertSymbol(std::make_unique<VariableSymbol>(lockedTable->GetCurrentScope(),ctx->ID()->getText()), ctx->ID()->getText());
+		switch (result) {
+			case SymbolTable::InsertSymbolResult::succses: {
+					break;
+				}
+			case SymbolTable::InsertSymbolResult::failiure: {
+					logError(InternalErrors::FailedToInsertSymbol, "Failed to insert parameter symbol: " + ctx->ID()->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			case SymbolTable::InsertSymbolResult::allreadyExists: {
+					logError(error::DuplicateSymbolDeclaration, "Parameter symbol already exists: " + ctx->ID()->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+			default: {
+					logError(InternalErrors::unknownInternalError, "Unknown error occurred while inserting parameter symbol: " + ctx->ID()->getText(), ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine());
+					return;
+				}
+		}
+	}
+	void SymbolGatherer::exitParameter(USLParser::ParameterContext* ctx)
+	{
 	}
 }// namespace USL::FRONTEND

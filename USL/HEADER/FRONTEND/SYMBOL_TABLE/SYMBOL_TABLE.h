@@ -86,7 +86,7 @@ namespace USL::FRONTEND {
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		[[nodiscard]] WeakSymbolPtr LookupSymbol(const std::string& name)const;
+		//[[nodiscard]] WeakSymbolPtr LookupSymbol(const std::string& name)const;
 
 		/// <summary>
 		/// performs a lookup for a symbol by its simple name in the given scope.

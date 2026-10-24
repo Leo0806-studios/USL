@@ -1,4 +1,5 @@
 #if   defined(__clang__)  || defined(__INTELLISENSE__)||defined(TESTS_BUILD)
+#include <boost/assert.hpp>
 #include <antlr4-runtime.h>
 #include <USLBaseListener.h>
 #include <memory>
@@ -7,6 +8,7 @@
 #include "FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h"
 #include "FRONTEND/SYMBOL_RESOLVER/SYMBOL_RESOLVER.h"
 #else
+import <boost/assert.hpp>;
 import <memory>;
 import <antlr4-runtime.h>;
 import <FRONTEND/SYMBOL_GATHERER/SYMBOL_GATHERER.h>;
@@ -122,7 +124,8 @@ namespace USL::FRONTEND {
 		if (enumSymbol.expired()) {
 			logError(InternalErrors::unknownInternalError, "cant find symbol that should exist. this error should never show up. good luck", GetLine(ctx), GetCharPos(ctx));
 			}
-		std::weak_ptr<TypeSymbol> enumType = std::dynamic_pointer_cast<TypeSymbol>(locked->LookupSymbol(ctx->EnumType->getText()).lock());
+		std::string enumTypeName = ctx->EnumType->getText();
+		std::weak_ptr<TypeSymbol> enumType = std::dynamic_pointer_cast<TypeSymbol>(locked->LookupSymbol(enumTypeName, {}).lock());
 		if (enumType.expired()) {
 			logError(InternalErrors::unknownInternalError, " cant resolve enum symbol Type. this error should never appear since the parser only accepts primitives. good luck", GetLine(ctx), GetCharPos(ctx));
 		}
@@ -149,17 +152,21 @@ namespace USL::FRONTEND {
 	void SymbolResolver::enterFunction_declaration(USLParser::Function_declarationContext* ctx)
 	{
 		auto lockedTable = table.lock();
-		if (!lockedTable->EnterScope(ctx->FunctionName->getText())) {
+		std::string name = ctx->FunctionName->getText();
+		if (!lockedTable->EnterScope(name)) {
 			logError(InternalErrors::FailedToEnterScope, "failed to enter function scope during symbol Resolving", GetLine(ctx), GetCharPos(ctx));
 		}
 		auto currentScope = lockedTable->GetCurrentScope();
+		BOOST_ASSERT_MSG(!currentScope.expired(), "currentScope should not be expired");
+		
 		auto functionSymbol = std::dynamic_pointer_cast<FunctionSymbol>(currentScope.lock()->Get_ownSymbol().first.lock());
+		BOOST_ASSERT_MSG(functionSymbol, "functionSymbol should not be null");
 		PackedName returnType = ParseType(ctx->ReturnType->type());
 		functionSymbol->Set_returnType(std::dynamic_pointer_cast<TypeSymbol>(lockedTable->LookupSymbol(returnType.id, returnType.scopeList).lock()));
 		for (auto& param : ctx->paremeter_list()->parameter()) {
 			auto type = param->cvu_type()->type();
 			PackedName paramType = ParseType(type);
-			functionSymbol->AddParameter(std::dynamic_pointer_cast<VariableSymbol>(lockedTable->LookupSymbol(paramType.id, paramType.scopeList).lock()));
+			functionSymbol->AddParameter(std::dynamic_pointer_cast<VariableSymbol>(lockedTable->LookupSymbol(param->ID()->getText(), {}).lock()));
 		}
 
 	}
@@ -233,7 +240,7 @@ namespace USL::FRONTEND {
 	void SymbolResolver::enterQuailified_name(USLParser::Quailified_nameContext* ctx)
 	{
 		auto locked = table.lock();
-		std::weak_ptr<VariableSymbol> varSymbol = std::dynamic_pointer_cast< VariableSymbol >(locked->LookupSymbol(ctx->getText()).lock());
+		std::weak_ptr<VariableSymbol> varSymbol = std::dynamic_pointer_cast<VariableSymbol>(locked->LookupSymbol(ctx->getText(), {}).lock());
 		if (varSymbol.expired()) {
 			logError(SymbolResolveErrors::CouldNotResolveSymbol, "unable to resolve quailified name: " + ctx->getText(), GetLine(ctx), GetCharPos(ctx));
 			return;
@@ -242,6 +249,18 @@ namespace USL::FRONTEND {
 
 	}
 	void SymbolResolver::exitQuailified_name(USLParser::Quailified_nameContext* ctx)
+	{
+	}
+	void SymbolResolver::enterParameter(USLParser::ParameterContext* ctx)
+	{
+		auto lockedTable = table.lock();
+		auto param = std::dynamic_pointer_cast<VariableSymbol>(lockedTable->LookupSymbol(ctx->ID()->getText(), {}).lock());
+		auto type = ctx->cvu_type()->type();
+		PackedName paramType = ParseType(type);
+		auto resolvedType = std::dynamic_pointer_cast<TypeSymbol>(lockedTable->LookupSymbol(paramType.id, paramType.scopeList).lock());
+		param->Set_type(resolvedType);
+	}
+	void SymbolResolver::exitParameter(USLParser::ParameterContext* ctx)
 	{
 	}
 }

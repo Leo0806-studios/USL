@@ -140,16 +140,16 @@ namespace USL::FRONTEND {
 
 
 	}
-	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const
-	{
-		const std::thread::id thread_id = std::this_thread::get_id();
-		const ScopePtr current = (*currentScopes.find(thread_id)).second.lock();
-		std::stack<std::string> dummyStack;
-		return RecursiveLookuphelper(name,dummyStack,current);
-		
-
-
-	}
+//	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name) const
+//	{
+//		const std::thread::id thread_id = std::this_thread::get_id();
+//		const ScopePtr current = (*currentScopes.find(thread_id)).second.lock();
+//		std::stack<std::string> dummyStack;
+//		return RecursiveLookuphelper(name,dummyStack,current);
+//		
+//
+//
+//	}
 	WeakSymbolPtr SymbolTable::LookupSymbol(const std::string& name, const std::vector< std::string>& scopes) const
 	{
 		std::stack<std::string> scopesStack = DEFAULTINIT;
@@ -305,7 +305,7 @@ namespace USL::FRONTEND {
 			const std::string str = RecursiveappendSymbolTable((*it).second, it == (children.end()--), intendent + "\t");
 			ret << "Symbol: " << (*it).first << " " << str << "\n";
 		}
-		return ret.str();
+		return "\n" + ret.str() + "\n";
 
 	}
 

@@ -37,7 +37,7 @@ std::string VariableSymbol::ToString() const
 std::string FunctionSymbol::ToString() const
 {
 	std::stringstream ret;
-	ret << "Function Symbol: "
+	ret << "Function Symbol: " 
 		<< " Return Type: " << returnType.lock()->ToString()
 		<< " Parameters: ";
 	for (const auto& parameter : parameterList) {

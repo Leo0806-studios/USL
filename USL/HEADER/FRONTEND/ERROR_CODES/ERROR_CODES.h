@@ -107,3 +107,10 @@ namespace USL::FRONTEND {
 		UnusedVariable 
 	};
 }//namespace USL::FRONTEND
+#define Verify(X,phase, message)\
+do{\
+	if(!(X)){\
+		throw USL::FRONTEND::FatalError((phase),"Verification failed: "#X " message: " message,__FILE__,__LINE__,__FUNCTION__);\
+	}\
+}\
+while(0)

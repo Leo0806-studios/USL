@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "antlr4",
+    "atl",
     "boost-program-options",
     "boost-uuid",
     "libzip",
@@ -11,6 +12,6 @@
         "target-x86"
       ]
     },
-    "atl"
+    "boost-assert"
   ]
 }

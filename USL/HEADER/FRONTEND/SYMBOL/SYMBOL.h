@@ -79,13 +79,17 @@ namespace USL::FRONTEND {
 	class Symbol {
 	private:
 		WeakScopePtr ParentScope ;
+		std::string simpleName;
 		public:
-			[[nodiscard]]explicit Symbol(WeakScopePtr parentScope) :ParentScope(std::move(parentScope)) {}
+			[[nodiscard]]explicit Symbol(WeakScopePtr parentScope,std::string simpleName) :ParentScope(std::move(parentScope)),simpleName(std::move(simpleName)) {}
 		[[nodiscard]] WeakScopePtr GetParentScope() const noexcept {
 			return ParentScope;
 		}
 		[[nodiscard]] virtual std::string ToString() const = 0;
 		virtual ~Symbol() = default;
+		std::string GetSimpleName() const noexcept {
+			return simpleName;
+		}
 	};
 	class VariableSymbol :public Symbol {
 		std::weak_ptr<TypeSymbol> type ;
@@ -113,7 +117,7 @@ namespace USL::FRONTEND {
 			GetSet(StackAllocated)
 			GetSet(DeclareInitialized)
 			GetSet(functionParameter)
-			[[nodiscard]]explicit VariableSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
+			[[nodiscard]]explicit VariableSymbol(WeakScopePtr parentScope,std::string simpleName):Symbol(std::move(parentScope),std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const override;
 		
 	};
@@ -133,7 +137,7 @@ namespace USL::FRONTEND {
 		auto& GetParameterList() noexcept {
 			return parameterList;
 		}
-			[[nodiscard]] explicit  FunctionSymbol(WeakScopePtr parentScope):Symbol(std::move(parentScope)) {}
+			[[nodiscard]] explicit  FunctionSymbol(WeakScopePtr parentScope,std::string simpleName):Symbol(std::move(parentScope),std::move(simpleName)) {}
 			[[nodiscard]] std::string ToString() const override;
 
 	};
@@ -143,7 +147,7 @@ namespace USL::FRONTEND {
 	public:
 		GetSet(enumtype)
 		GetSet(ownScope)
-		[[nodiscard]] explicit  EnumSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] explicit  EnumSymbol(WeakScopePtr parentScope,std::string simpleName) :Symbol(std::move(parentScope),std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const override;
 
 	};
@@ -152,7 +156,7 @@ namespace USL::FRONTEND {
 		std::variant<long long, unsigned long long> value;
 	public:
 		GetSet(type)
-		[[nodiscard]]  explicit EnumConstant(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]]  explicit EnumConstant(WeakScopePtr parentScope,std::string simpleName) :Symbol(std::move(parentScope), std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const override;
 
 	};
@@ -164,7 +168,7 @@ namespace USL::FRONTEND {
 	public:
 		GetSet(ownScope)
 
-		[[nodiscard]] explicit TypeSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+		[[nodiscard]] explicit TypeSymbol(WeakScopePtr parentScope,std::string simpleName) :Symbol(std::move(parentScope), std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const override;
 
 	};
@@ -174,13 +178,14 @@ namespace USL::FRONTEND {
 	public:
 		GetSet(ownScope)
 
-		[[nodiscard]] explicit AttribueSymbol(WeakScopePtr parentScope) :Symbol(std::move(parentScope)) {}
+
+		[[nodiscard]] explicit AttribueSymbol(WeakScopePtr parentScope,std::string simpleName) :Symbol(std::move(parentScope), std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const override;
 
 	};
 	class LableSymbol :public Symbol {
 	public:
-		[[nodiscard]] explicit LableSymbol(WeakScopePtr parrentScope) :Symbol(std::move(parrentScope)) {}
+		[[nodiscard]] explicit LableSymbol(WeakScopePtr parrentScope,std::string simpleName) :Symbol(std::move(parrentScope), std::move(simpleName)) {}
 		[[nodiscard]] std::string ToString() const noexcept;
 	};
 }// namespace USL::FRONTEND

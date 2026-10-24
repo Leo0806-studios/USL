@@ -82,5 +82,7 @@ namespace USL::FRONTEND {
 
 		void enterQuailified_name(USLParser::Quailified_nameContext* ctx) override;
 		void exitQuailified_name(USLParser::Quailified_nameContext* ctx) override;
+		virtual void enterParameter(USLParser::ParameterContext* ctx) override;
+		virtual void exitParameter(USLParser::ParameterContext* ctx) override;
 	};
 }

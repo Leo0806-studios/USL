@@ -121,6 +121,9 @@ namespace USL::FRONTEND {
 		void exitCase_statement(USLParser::Case_statementContext* ctx) override;
 		void enterDefault_statement(USLParser::Default_statementContext* ctx) override;
 		void exitDefault_statement(USLParser::Default_statementContext* ctx) override;
+
+		virtual void enterParameter(USLParser::ParameterContext* ctx) override;
+		virtual void exitParameter(USLParser::ParameterContext* ctx) override;
 	};
 }//namespace USL::FRONTEND
 
